@@ -16,7 +16,7 @@ Supported devices:
 
     - .homeassistant/custom_components/wolf/binary_sensor.py
     - .homeassistant/custom_components/wolf/sensor.py
-    - .homeassistant/custom_components/wolf/__init__.py
+    - .homeassistant/custom_components/wolf/\_\_init\_\_.py
 
 3. Add the integration in the configuration.yaml and specify the devices you own. The numbers are important if you have several identical modules, most commonly several BM's. If you only have 1 device, its number is .....1 ! Here the example configuration for 1 central heating (CGB2-14 in my case), with one integrated controller device and a solar module (there can be only one solar module, so no numbers)
 
