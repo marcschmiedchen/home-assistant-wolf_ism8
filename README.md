@@ -1,5 +1,5 @@
 # homeassistant-wolf-ism8
-An integration of from Wolf's Heating ISM8 module into Home Assistant.
+An integration of WOLF's Heating ISM8 module into Home Assistant.
 
 Supported devices:
   - HG(1-4) ("HeizGerät")
