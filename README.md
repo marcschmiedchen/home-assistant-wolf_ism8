@@ -11,15 +11,20 @@ Supported devices:
   
   
 ### INSTALLATION
-1. Have Home-Assistant readily installed
+1. Install the wolf_ism8 module from PyPi. Make sure you are targeting the right venv-environment:
 
-2. Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homesassistant". If it doesn't exist there, create it):
+```yaml7
+   source <put here your homeassistant_directory>/bin/activate
+   pip install wolf_ism8
+```
+
+2. Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homesassistant" in your home. If it doesn't exist there, create it):
 
     - .homeassistant/custom_components/wolf/binary_sensor.py
     - .homeassistant/custom_components/wolf/sensor.py
     - .homeassistant/custom_components/wolf/\_\_init\_\_.py
 
-3. Add the integration in the configuration.yaml and specify the devices you own. The numbers are important if you have several identical modules, most commonly several BM's. If you only have 1 device, its number is .....1 ! Here the example configuration for 1 central heating (CGB2-14 in my case), with one integrated controller device and a solar module (there can be only one solar module, so no numbers)
+3. Add the integration in the configuration.yaml and specify the devices you own. The numbers are important if you have several identical modules, most commonly several BM's. If you only have 1 device, its number is .....1 ! Here the example configuration for 1 central heating (CGB2-14 in my case), with one integrated controller device and a solar module (there can be only one solar module, so no numbers):
 
 
     ```yaml7
