@@ -18,7 +18,7 @@ Supported devices:
    pip install wolf_ism8
 ```
 
-2. Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homesassistant" in your home. If it doesn't exist there, create it):
+2. Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homeassistant" in your home. If it doesn't exist there, create it):
 
     - .homeassistant/custom_components/wolf/binary_sensor.py
     - .homeassistant/custom_components/wolf/sensor.py
