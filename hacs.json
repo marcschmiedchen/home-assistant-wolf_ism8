@@ -1,0 +1,5 @@
+{
+  "name": "Wolf Climate Control ISM8",
+  "render_readme": true,
+  "iot_class": "local_polling"
+}

@@ -1,4 +1,4 @@
-# homeassistant-wolf_ism8
+# Wolf Climate Control ISM8 for Home Assistant
 An integration of WOLF's Heating ISM8 module into Home Assistant.
 
 Supported devices:
@@ -9,8 +9,7 @@ Supported devices:
   - KM ("KaskadenModul")
   - CWL ("Comfort WohnungsLüftung")
   
-  
-### INSTALLATION
+## INSTALLATION
 1. Install the wolf_ism8 module from PyPi. Make sure you are targeting the right venv-environment:
 
 ```yaml7
@@ -39,12 +38,10 @@ Supported devices:
 
 6. The sensors will be populated by the ISM8 over some time, since they only are updated when relevant changes occur. Enjoy. 
 
-### SCREENSHOTS
+## SCREENSHOTS
 <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s1.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s2.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s3.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s4.PNG">
 
-
-
-### TODO
+## TODO
 
  - writing support for automation & control of the heating. Will definitely not be in the nearer future -- maybe never.
  - autodiscover device

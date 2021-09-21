@@ -1,10 +1,12 @@
+
 {
-"domain": "wolf",
-"name": "Wolf Heating Systems",
-"documentation": "https://github.com/marcschmiedchen/home-assistant-wolf_ism8",
-"dependencies": [],
-"codeowners": ["https://github.com/marcschmiedchen"],
-"requirements": ["wolf_ism8>=0.51"],
-"config_flow": false,
-"version": "1.0"
+    "codeowners": ["@marcschmiedchen"],
+    "config_flow": false,
+    "dependencies": [],
+    "documentation": " https://github.com/marcschmiedchen/home-assistant-wolf_ism8",
+    "domain": "wolf",
+    "iot_class": "local_polling",
+    "name": "Wolf Climate Control ISM8",
+    "requirements": ["wolf-ism8"],
+    "version": "1.0.0"
 }
