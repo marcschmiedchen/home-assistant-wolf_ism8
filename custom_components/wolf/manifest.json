@@ -7,6 +7,7 @@
     "domain": "wolf",
     "iot_class": "local_polling",
     "name": "Wolf Climate Control ISM8",
-    "requirements": ["wolf-ism8"],
-    "version": "1.0.0"
+    "requirements": ["wolf-ism8==1.7"],
+    "version": "1.0.1",
+    "issue_tracker" : "https://github.com/marcschmiedchen/home-assistant-wolf_ism8/issues"
 }

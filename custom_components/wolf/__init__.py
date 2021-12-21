@@ -1,8 +1,6 @@
 """
 Support for Wolf heating system ISM via ISM8 adapter
 """
-REQUIREMENTS = ['wolf_ism8>=0.51']
-
 import logging
 import socket
 import asyncio
