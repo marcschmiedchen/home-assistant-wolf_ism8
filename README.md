@@ -8,6 +8,7 @@ Supported devices:
   - SM ("SolarModul")
   - KM ("KaskadenModul")
   - CWL ("Comfort WohnungsLüftung")
+  - BWL ("Luft-Wärmepumpe BWL")
   
 ## INSTALLATION 
 1. Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homeassistant" in your home. If it doesn't exist there, create it):
