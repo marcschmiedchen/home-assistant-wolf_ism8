@@ -37,10 +37,8 @@ Supported devices:
      wolf:
        devices:
          - HG1
-       host:
-         - 192.168.2.222
-       port:
-         - 12004
+       host: 192.168.1.111
+       port: 12004
     ```
 
 The host option lets you set an IP adress to listen ON, if your homeassistant server has several network adresses. The default port number of ISM8 is 12004, you can change it in the ISM8 GUI; in this case you will have to provide the custom port with the "port"-configuration option.
