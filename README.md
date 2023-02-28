@@ -18,6 +18,7 @@ Current Versions should be discoverable and use the GUI for configuration:
 
 2. Enter the port number the integration should LISTEN on. Standard value for ISM8 is 12004. However, if you change that in the config, you have to provide the port-number to the integration. Careful: ISM8 needs a reboot before changes are accepted.
 
+3. Select the devices you have installed in your HVAC system. Datapoints from those devices are automatically added to HA, but only populated if the device is really on your network. So no harm in selecting more than you have, but it generates unneccesary entities in HA. Unfortunately you cannot tune this setting later on; in order to change the installed devices you would have to complete delete/reboot Server/reinstall the integration.
 
 
 ## SCREENSHOTS
