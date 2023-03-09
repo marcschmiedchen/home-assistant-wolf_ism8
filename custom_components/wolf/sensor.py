@@ -11,7 +11,8 @@ from homeassistant.const import (
     PRECISION_TENTHS,
     TEMP_KELVIN,
     PRESSURE_PA,
-    POWER_KILO_WATT
+    POWER_KILO_WATT,
+    UnitOfVolumeFlowRate
 )
 from homeassistant.helpers.entity import Entity
 from homeassistant.components.sensor import SensorDeviceClass
@@ -61,7 +62,8 @@ async def async_setup_entry(
             elif ism8.get_type(nbr) == SensorType.DPT_DATE:
                 continue  # :(None, None, type(datetime), None, None),
             elif ism8.get_type(nbr) == SensorType.DPT_FLOWRATE_M3:
-                continue  # :(-2147483647, 2147483647, type(int), 1 / 10000, "m3/h"),
+                sensors.append(WolfAirFlowSensor(ism8, nbr))
+                #continue  # :(-2147483647, 2147483647, type(int), 1 / 10000, "m3/h"),
 
     async_add_entities(sensors)
 
@@ -78,6 +80,7 @@ class WolfBaseSensor(Entity):
         self._device = ism8.get_device(dp_nbr)
         self._name = self._device+"_"+ism8.get_name(dp_nbr)
         self._type = ism8.get_type(dp_nbr)
+        self._step_value = ism8.get_step_value(dp_nbr)
         self._state = STATE_UNKNOWN
 
     @property
@@ -240,3 +243,24 @@ class WolfFlowSensor1(WolfBaseSensor):
     def unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
         return "l/h"
+
+class WolfAirFlowSensor(WolfBaseSensor):
+    """Implementing the air flow sensors"""
+
+    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
+        _LOGGER.debug(
+            "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
+        )
+
+    @property
+    def state(self) -> int | str:
+        """Return the state of the device."""
+        if isinstance(self._state, str):
+            return self._state
+        return round(float(self._state) * self._step_value)
+
+    @property
+    def unit_of_measurement(self) -> str:
+        """Return the unit of measurement of this entity."""
+        return UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
