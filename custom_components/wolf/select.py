@@ -114,26 +114,14 @@ class WolfSelect(SelectEntity):
         """Return all available options"""
 
         _options = []
-        if self._type == SensorType.DPT_HVACCONTRMODE:
+        if self._type in (SensorType.DPT_HVACCONTRMODE,
+                          SensorType.DPT_HVACMODE,
+                          SensorType.DPT_DHWMODE,
+                          SensorType.DPT_TEMPD,
+                          SensorType.DPT_SWITCH):
+  
             for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(HVACContrModes[opt])
-
-        elif self._type == SensorType.DPT_HVACMODE:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(HVACModes[opt])
-
-        elif self._type == SensorType.DPT_DHWMODE:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(DHWModes[opt])
-
-        elif self._type == SensorType.DPT_TEMPD:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(str(opt))
-
-        elif self._type == SensorType.DPT_SWITCH:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(str(opt))
-
+                _options.append(opt)
         else:
             _LOGGER.error("Unknown datapoint type %s for select sensor", self._type)
         return _options

@@ -82,6 +82,9 @@ class WolfBaseSensor(Entity):
         self._type = ism8.get_type(dp_nbr)
         self._step_value = ism8.get_step_value(dp_nbr)
         self._state = STATE_UNKNOWN
+        _LOGGER.debug(
+            "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
+        )
 
     @property
     def name(self) -> str:
@@ -114,10 +117,7 @@ class WolfTemperatureSensor(WolfBaseSensor):
 
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        _LOGGER.debug(
-              "setup temperature sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
-        )
-
+      
     @property
     def state(self):
         """Return the state of the device."""
@@ -149,15 +149,12 @@ class WolfScaleSensor(WolfBaseSensor):
 
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        _LOGGER.debug(
-            "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
-        )
-
+       
     @property
     def state(self):
         """Return the state of the device."""
         if isinstance(self._state, float):
-            return round(self._state, 1)
+            return round(self._state)
         return self._state
 
     @property
@@ -171,10 +168,7 @@ class WolfPressureSensor(WolfBaseSensor):
 
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        _LOGGER.debug(
-            "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
-        )
-
+ 
     @property
     def state(self) -> float:
         """Return the state of the device."""
@@ -200,15 +194,12 @@ class WolfPowerSensor(WolfBaseSensor):
 
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        _LOGGER.debug(
-            "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
-        )
 
     @property
     def state(self) -> float:
         """Return the state of the device."""
         if isinstance(self._state, float):
-            return round(self._state)
+            return round(self._state,2)
         return self._state
 
     @property
@@ -221,16 +212,11 @@ class WolfPowerSensor(WolfBaseSensor):
         """Return the unit of measurement of this entity."""
         return POWER_KILO_WATT
     
-    
-    
 class WolfFlowSensor1(WolfBaseSensor):
     """Implementing the power sensors"""
 
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        _LOGGER.debug(
-            "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
-        )
 
     @property
     def state(self) -> int:
@@ -249,16 +235,13 @@ class WolfAirFlowSensor(WolfBaseSensor):
 
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        _LOGGER.debug(
-            "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
-        )
-
+    
     @property
-    def state(self) -> int | str:
+    def state(self) -> float:
         """Return the state of the device."""
-        if isinstance(self._state, str):
-            return self._state
-        return round(float(self._state) * self._step_value)
+        if isinstance(self._state, float):
+            return round(self._state)
+        return self._state
 
     @property
     def unit_of_measurement(self) -> str:

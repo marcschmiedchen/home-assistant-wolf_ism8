@@ -31,7 +31,7 @@ async def async_setup_entry(
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
 
     buttons = []
-    for nbr in range(193,195):
+    for nbr in (193,194):
         if ism8.get_device(nbr) in config[CONF_DEVICES]:
                 buttons.append(WolfButton(ism8, nbr))
 
