@@ -80,7 +80,6 @@ class WolfBaseSensor(Entity):
         self._device = ism8.get_device(dp_nbr)
         self._name = self._device+"_"+ism8.get_name(dp_nbr)
         self._type = ism8.get_type(dp_nbr)
-        self._step_value = ism8.get_step_value(dp_nbr)
         self._state = STATE_UNKNOWN
         _LOGGER.debug(
             "setup sensor no. %d on %s as %s", self.dp_nbr, self._device, self._type
