@@ -154,7 +154,7 @@ class WolfScaleSensor(WolfBaseSensor):
     def state(self):
         """Return the state of the device."""
         if isinstance(self._state, float):
-            return round(self._state)
+            return round(self._state,1)
         return self._state
 
     @property
