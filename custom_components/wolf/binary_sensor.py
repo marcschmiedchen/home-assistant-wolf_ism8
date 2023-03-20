@@ -2,12 +2,8 @@
 Support for Wolf heating via ISM8 adapter
 """
 import logging
-from collections.abc import Callable
-
-from homeassistant import config_entries
-from homeassistant.helpers.entity import Entity
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from wolf_ism8 import Ism8
 from .const import (
     DOMAIN,
@@ -28,9 +24,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
-    config_entry: config_entries.ConfigEntry,
-    async_add_entities: Callable,
+    hass,
+    config_entry,
+    async_add_entities,
 ):
     """
     performs setup of the binary sensors, needs a
@@ -54,7 +50,7 @@ async def async_setup_entry(
     async_add_entities(sensors)
 
 
-class WolfBinarySensor(Entity):
+class WolfBinarySensor(BinarySensorEntity):
     """Binary sensor representation for DPT_SWITCH, DPT_BOOL,
     DPT_ENABLE, DPT_OPENCLOSE types"""
 

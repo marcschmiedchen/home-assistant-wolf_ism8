@@ -4,10 +4,8 @@ Support for Wolf heating via ISM8 adapter
 
 import logging
 from homeassistant.components.select import SelectEntity
-
 from homeassistant.const import CONF_DEVICES
-from homeassistant.helpers.typing import HomeAssistantType
-from wolf_ism8 import Ism8, HVACContrModes, HVACModes, DHWModes
+from wolf_ism8 import Ism8
 from .const import (
     DOMAIN,
     WOLF,
@@ -19,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
+    hass,
     config_entry,
     async_add_entities,
 ):

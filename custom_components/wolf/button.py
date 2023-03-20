@@ -2,11 +2,8 @@
 Support for Wolf heating via ISM8 adapter
 """
 import logging
-from collections.abc import Callable
-from homeassistant import config_entries
 from homeassistant.components.button import ButtonEntity
 from homeassistant.const import CONF_DEVICES
-from homeassistant.helpers.typing import HomeAssistantType
 from wolf_ism8 import Ism8
 from .const import (
     DOMAIN,
@@ -18,9 +15,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
-    config_entry: config_entries.ConfigEntry,
-    async_add_entities: Callable,
+    hass,
+    config_entry,
+    async_add_entities,
 ):
     """
     performs setup of the button entities, needs a
