@@ -8,7 +8,6 @@ import socket
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
-import homeassistant.helpers.config_validation as cv
 from wolf_ism8 import Ism8
 from .const import DOMAIN
 
@@ -37,7 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
         for soc in _server.sockets:
             _LOGGER.debug("Listening for ISM8 on %s : %s", soc.getsockname(), _config[CONF_PORT])
 
-    # Forward the setup to the sensor platform.
+    # Forward the setup to the different platforms.
     for sensor in PLATFORMS:
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(entry, sensor))
 

@@ -2,8 +2,6 @@
 Support for Wolf heating via ISM8 adapter
 """
 import logging
-from collections.abc import Callable
-from homeassistant import config_entries
 from homeassistant.const import (
     CONF_DEVICES,
     STATE_UNKNOWN,
@@ -15,9 +13,8 @@ from homeassistant.const import (
     PERCENTAGE,
     UnitOfVolumeFlowRate
 )
-from homeassistant.helpers.entity import Entity
 from homeassistant.components.sensor import SensorDeviceClass
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.components.sensor import SensorEntity
 from wolf_ism8 import Ism8
 from .const import (
     DOMAIN,
@@ -30,9 +27,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
-    config_entry: config_entries.ConfigEntry,
-    async_add_entities: Callable,
+    hass,
+    config_entry,
+    async_add_entities,
 ):
     """
     performs setup of the analog sensors, expects a
@@ -57,19 +54,18 @@ async def async_setup_entry(
             elif ism8.get_type(nbr) == SensorType.DPT_POWER:
                 sensors.append(WolfPowerSensor(ism8, nbr))
             elif ism8.get_type(nbr) == SensorType.DPT_VALUE_VOLUME_FLOW:
-                sensors.append(WolfFlowSensor1(ism8, nbr))
+                sensors.append(WolfFlowSensor(ism8, nbr))
             elif ism8.get_type(nbr) == SensorType.DPT_TIMEOFDAY:
                 continue  # :(None, None, type(time), None, None),
             elif ism8.get_type(nbr) == SensorType.DPT_DATE:
                 continue  # :(None, None, type(datetime), None, None),
             elif ism8.get_type(nbr) == SensorType.DPT_FLOWRATE_M3:
                 sensors.append(WolfAirFlowSensor(ism8, nbr))
-                #continue  # :(-2147483647, 2147483647, type(int), 1 / 10000, "m3/h"),
 
     async_add_entities(sensors)
 
 
-class WolfBaseSensor(Entity):
+class WolfBaseSensor(SensorEntity):
     """Implementation of Wolf Heating System Sensor via ISM8-network adapter
     dp_nbr represents the unique identifier of the up to 200 different
     sensors
@@ -106,33 +102,30 @@ class WolfBaseSensor(Entity):
             "model": WOLF_ISM8,
         }
 
-    async def async_update(self):
-        """Return state"""
-        self._state = self._ism8.read(self.dp_nbr)
-        return
-
-
-class WolfTemperatureSensor(WolfBaseSensor):
-    """Implementing the temperature sensors"""
-
-    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
-        super().__init__(ism8, dp_nbr)
-      
     @property
     def state(self):
         """Return the state of the device."""
         if isinstance(self._state, float):
             return round(self._state, 1)
         return self._state
+    
+
+    async def async_update(self):
+        """Return state"""
+        self._state = self._ism8.read(self.dp_nbr)
+        return
+    
+
+
+class WolfTemperatureSensor(WolfBaseSensor):
+    """Implementing the temperature sensors"""
 
     @property
     def device_class(self) -> str:
-        """Return the class of the device."""
         return SensorDeviceClass.TEMPERATURE
 
     @property
     def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
         if self._type == SensorType.DPT_VALUE_TEMP:
             return TEMP_CELSIUS
         elif self._type == SensorType.DPT_VALUE_TEMPD:
@@ -140,115 +133,53 @@ class WolfTemperatureSensor(WolfBaseSensor):
 
     @property
     def precision(self):
-        """Return the precision of the system."""
         return PRECISION_TENTHS
 
-
 class WolfScaleSensor(WolfBaseSensor):
-    """Implementing the temperature sensors"""
-
-    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
-        super().__init__(ism8, dp_nbr)
-       
-    @property
-    def state(self):
-        """Return the state of the device."""
-        if isinstance(self._state, float):
-            return round(self._state,1)
-        return self._state
+    """Implementing the sclae sensors in (%) """
 
     @property
     def device_class(self) -> str:
-        """Return the state of the device."""
         return SensorDeviceClass.POWER_FACTOR
     
     @property
     def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
         return PERCENTAGE
 
 
 class WolfPressureSensor(WolfBaseSensor):
-    """Implementing the temperature sensors"""
-
-    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
-        super().__init__(ism8, dp_nbr)
- 
-    @property
-    def state(self) -> float:
-        """Return the state of the device."""
-        if isinstance(self._state, float):
-            return round(self._state)
-        return self._state
-        
+    """Implementing the pressure sensors"""
 
     @property
     def device_class(self) -> str:
-        """Return the class of the device."""
         return SensorDeviceClass.PRESSURE
-        
-    
+          
     @property
     def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
         return PRESSURE_PA
     
     
 class WolfPowerSensor(WolfBaseSensor):
     """Implementing the power sensors"""
 
-    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
-        super().__init__(ism8, dp_nbr)
-
-    @property
-    def state(self) -> float:
-        """Return the state of the device."""
-        if isinstance(self._state, float):
-            return round(self._state,2)
-        return self._state
-
     @property
     def device_class(self) -> str:
-        """Return the class of the device."""
         return SensorDeviceClass.POWER
     
     @property
     def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
         return POWER_KILO_WATT
     
-class WolfFlowSensor1(WolfBaseSensor):
-    """Implementing the power sensors"""
-
-    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
-        super().__init__(ism8, dp_nbr)
-
-    @property
-    def state(self) -> int:
-        """Return the state of the device."""
-        if isinstance(self._state, float):
-            return round(self._state)
-        return self._state
+class WolfFlowSensor(WolfBaseSensor):
+    """Implementing the liquid flow sensors (l/h)"""
 
     @property
     def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
         return "l/h"
 
 class WolfAirFlowSensor(WolfBaseSensor):
     """Implementing the air flow sensors"""
-
-    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
-        super().__init__(ism8, dp_nbr)
     
     @property
-    def state(self) -> float:
-        """Return the state of the device."""
-        if isinstance(self._state, float):
-            return round(self._state)
-        return self._state
-
-    @property
     def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
         return UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
