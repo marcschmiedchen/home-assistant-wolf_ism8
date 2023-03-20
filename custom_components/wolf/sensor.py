@@ -12,6 +12,7 @@ from homeassistant.const import (
     TEMP_KELVIN,
     PRESSURE_PA,
     POWER_KILO_WATT,
+    PERCENTAGE,
     UnitOfVolumeFlowRate
 )
 from homeassistant.helpers.entity import Entity
@@ -160,6 +161,11 @@ class WolfScaleSensor(WolfBaseSensor):
     def device_class(self) -> str:
         """Return the state of the device."""
         return SensorDeviceClass.POWER_FACTOR
+    
+    @property
+    def unit_of_measurement(self) -> str:
+        """Return the unit of measurement of this entity."""
+        return PERCENTAGE
 
 
 class WolfPressureSensor(WolfBaseSensor):
