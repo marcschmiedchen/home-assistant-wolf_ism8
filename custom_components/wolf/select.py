@@ -4,10 +4,8 @@ Support for Wolf heating via ISM8 adapter
 
 import logging
 from homeassistant.components.select import SelectEntity
-
 from homeassistant.const import CONF_DEVICES
-from homeassistant.helpers.typing import HomeAssistantType
-from wolf_ism8 import Ism8, HVACContrModes, HVACModes, DHWModes
+from wolf_ism8 import Ism8
 from .const import (
     DOMAIN,
     WOLF,
@@ -19,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
+    hass,
     config_entry,
     async_add_entities,
 ):
@@ -114,26 +112,14 @@ class WolfSelect(SelectEntity):
         """Return all available options"""
 
         _options = []
-        if self._type == SensorType.DPT_HVACCONTRMODE:
+        if self._type in (SensorType.DPT_HVACCONTRMODE,
+                          SensorType.DPT_HVACMODE,
+                          SensorType.DPT_DHWMODE,
+                          SensorType.DPT_TEMPD,
+                          SensorType.DPT_SWITCH):
+  
             for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(HVACContrModes[opt])
-
-        elif self._type == SensorType.DPT_HVACMODE:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(HVACModes[opt])
-
-        elif self._type == SensorType.DPT_DHWMODE:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(DHWModes[opt])
-
-        elif self._type == SensorType.DPT_TEMPD:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(str(opt))
-
-        elif self._type == SensorType.DPT_SWITCH:
-            for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(str(opt))
-
+                _options.append(opt)
         else:
             _LOGGER.error("Unknown datapoint type %s for select sensor", self._type)
         return _options
