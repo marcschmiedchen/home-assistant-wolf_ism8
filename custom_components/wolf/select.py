@@ -119,14 +119,14 @@ class WolfSelect(SelectEntity):
                           SensorType.DPT_SWITCH):
   
             for opt in self._ism8.get_value_area(self.dp_nbr):
-                _options.append(opt)
+                _options.append(str(opt))
         else:
             _LOGGER.error("Unknown datapoint type %s for select sensor", self._type)
         return _options
 
     async def async_update(self) -> None:
         """Return state"""
-        self._attr_current_option = self._ism8.read(self.dp_nbr)
+        self._attr_current_option = str(self._ism8.read(self.dp_nbr))
         return
 
     async def async_select_option(self, option: str) -> None:
