@@ -133,6 +133,9 @@ class WolfSelect(SelectEntity):
         """Change the selected option."""
         if self._type == SensorType.DPT_TEMPD:
             option = float(option)
+        elif self._type == SensorType.DPT_SWITCH:
+            option = int(option)
+
         _LOGGER.debug("sent value %s to ISM8 dp nbr: %s", option, self.dp_nbr)            
         self._ism8.send_dp_value(self.dp_nbr, option)
 
