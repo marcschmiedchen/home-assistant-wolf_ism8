@@ -17,7 +17,7 @@ Current Versions should be discoverable and use the GUI for configuration:
 
 1. - Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homeassistant" in your home. If it doesn't exist there, create it). Place the "wolf"-folder into the custom-components directory:  
   .homeassistant/custom_components/wolf   
-   - Alternatively, the integration should be available by using [HACS](https://hacs.xyz/), the Home Assistant Community Store.    
+   - Alternatively, the integration should be available by using [HACS](https://hacs.xyz/), the Home Assistant Community Store. To do this, click on the 3 dots at the top right under HACS to add a user-defined repository. Enter the URL of this GitHub project as the repository. As category "Integration".  
 2. Enter the IP adress the integration should LISTEN on, which is the IP adress of the home assistant server. Alternatively you can leave the default 0.0.0.0, which listens on all available IP adresses. [By the way: the same adress must obviously be entered in the ISM8 web-configuration. Careful: ISM8 needs a reboot before changes are accepted]
 
 3. Enter the port number the integration should LISTEN on. Standard value for ISM8 is 12004. However, if you change that in the config, you have to provide the port-number to the integration. Careful: ISM8 needs a reboot before changes are accepted.
