@@ -1,11 +1,11 @@
 {
-    "config_flow": true,
     "domain": "wolf",
     "name": "Wolf Climate Control ISM8",
     "codeowners": [
         "@marcschmiedchen",
         "@maxibick"
     ],
+    "config_flow": true,
     "dependencies": [],
     "documentation": "https://github.com/marcschmiedchen/home-assistant-wolf_ism8",
     "integration_type": "device",
