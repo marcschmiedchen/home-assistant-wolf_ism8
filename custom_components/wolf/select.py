@@ -126,7 +126,7 @@ class WolfSelect(SelectEntity):
 
     async def async_update(self) -> None:
         """Return state"""
-        self._attr_current_option = str(self._ism8.read(self.dp_nbr))
+        self._attr_current_option = str(self._ism8.read_sensor(self.dp_nbr))
         return
 
     async def async_select_option(self, option: str) -> None:
@@ -188,11 +188,11 @@ class WolfProgrammSelect(SelectEntity):
     async def async_update(self) -> None:
         """Return state"""
         _prog = "1"
-        if self._ism8.read(self.dp_nbr):
+        if self._ism8.read_sensor(self.dp_nbr):
             _prog = "1"
-        elif self._ism8.read(self.dp_nbr + 1):
+        elif self._ism8.read_sensor(self.dp_nbr + 1):
             _prog = "2"
-        elif self._ism8.read(self.dp_nbr + 2):
+        elif self._ism8.read_sensor(self.dp_nbr + 2):
             _prog = "3"
         self._attr_current_option = _prog
         return

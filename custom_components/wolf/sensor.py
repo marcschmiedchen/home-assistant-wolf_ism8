@@ -5,13 +5,13 @@ import logging
 from homeassistant.const import (
     CONF_DEVICES,
     STATE_UNKNOWN,
-    TEMP_CELSIUS,
     PRECISION_TENTHS,
-    TEMP_KELVIN,
-    PRESSURE_PA,
-    POWER_KILO_WATT,
-    PERCENTAGE,
-    UnitOfVolumeFlowRate
+    UnitOfTemperature,
+    UnitOfPressure,
+    UnitOfPower,
+    UnitOfVolumeFlowRate,
+    PERCENTAGE
+  
 )
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorEntity
@@ -112,7 +112,7 @@ class WolfBaseSensor(SensorEntity):
 
     async def async_update(self):
         """Return state"""
-        self._state = self._ism8.read(self.dp_nbr)
+        self._state = self._ism8.read_sensor(self.dp_nbr)
         return
     
 
@@ -127,9 +127,9 @@ class WolfTemperatureSensor(WolfBaseSensor):
     @property
     def unit_of_measurement(self) -> str:
         if self._type == SensorType.DPT_VALUE_TEMP:
-            return TEMP_CELSIUS
+            return UnitOfTemperature.CELSIUS
         elif self._type == SensorType.DPT_VALUE_TEMPD:
-            return TEMP_KELVIN
+            return UnitOfTemperature.KELVIN
 
     @property
     def precision(self):
@@ -156,7 +156,7 @@ class WolfPressureSensor(WolfBaseSensor):
           
     @property
     def unit_of_measurement(self) -> str:
-        return PRESSURE_PA
+        return UnitOfPressure.PA
     
     
 class WolfPowerSensor(WolfBaseSensor):
@@ -168,7 +168,7 @@ class WolfPowerSensor(WolfBaseSensor):
     
     @property
     def unit_of_measurement(self) -> str:
-        return POWER_KILO_WATT
+        return UnitOfPower.KILO_WATT
     
 class WolfFlowSensor(WolfBaseSensor):
     """Implementing the liquid flow sensors (l/h)"""

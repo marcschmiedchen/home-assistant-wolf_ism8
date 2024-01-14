@@ -117,5 +117,5 @@ class WolfBinarySensor(BinarySensorEntity):
 
     async def async_update(self):
         """Return state"""
-        self._state = self._ism8.read(self.dp_nbr)
+        self._state = self._ism8.read_sensor(self.dp_nbr)
         return
