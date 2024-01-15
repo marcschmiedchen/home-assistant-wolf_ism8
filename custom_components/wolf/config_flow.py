@@ -20,7 +20,7 @@ WOLF_HOST_SCHEMA = {
 WOLF_DEVICE_SCHEMA = {}
 for _device in Ism8.get_all_devices():
     device_is_default = _device in WOLF_DEFAULT_DEVICES
-    WOLF_DEVICE_SCHEMA[vol.Optional(_device, default=device_is_default)] = bool
+    WOLF_DEVICE_SCHEMA[vol.Optional(_device, default=device_is_default)] = cv.boolean
 
 
 class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

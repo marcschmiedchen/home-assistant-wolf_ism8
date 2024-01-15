@@ -6,16 +6,13 @@ DOMAIN: Final = "wolf"
 DEFAULT_HOST: Final = "0.0.0.0"
 DEFAULT_PORT: Final = 12004
 
-WOLF_DEFAULT_DEVICES: Final = [
-    "HG1",
-    "SYM",
-]
-
 WOLF: Final = "Wolf"
 WOLF_ISM8: Final = "ISM8"
 
+WOLF_DEFAULT_DEVICES: Final = ["Heizgeraet1", "Systembedienmodul"]
 
-class SensorType(StrEnum):
+
+class SENSOR_TYPES(StrEnum):
     """Datapoint classes according to wolf_ism8 datapoint types"""
 
     DPT_SWITCH = "DPT_Switch"
