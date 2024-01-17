@@ -27,7 +27,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             continue
         if not ism8.is_writable(nbr):
             continue
-        # (those are DPT_SWITCH, but trigger (button-)entities
+        # those are DPT_SWITCH, but trigger (button-)entities
         if nbr in (193, 194):
             continue
 
@@ -74,6 +74,7 @@ class WolfSelect(WolfEntity, SelectEntity):
         self._attr_current_option = str(self._ism8.read_sensor(self.dp_nbr))
         if self._attr_current_option is None:
             self._attr_current_option = STATE_UNKNOWN
+        self._state = self._attr_current_option
         return
 
     async def async_select_option(self, option: str) -> None:
@@ -93,16 +94,23 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
         """Return all available options"""
         return ["1", "2", "3"]
 
+    # take away the last two chars from "zeitprogramm options-name
+    @property
+    def name(self) -> str:
+        """Return the name of this entity."""
+        return self._name[:-2]
+
     async def async_update(self) -> None:
         """Return state"""
-        _prog = "1"
-        if self._ism8.read_sensor(self.dp_nbr):
+        _prog = STATE_UNKNOWN
+        if self._ism8.read_sensor(self.dp_nbr) == 1:
             _prog = "1"
-        elif self._ism8.read_sensor(self.dp_nbr + 1):
+        elif self._ism8.read_sensor(self.dp_nbr + 1) == 1:
             _prog = "2"
-        elif self._ism8.read_sensor(self.dp_nbr + 2):
+        elif self._ism8.read_sensor(self.dp_nbr + 2) == 1:
             _prog = "3"
         self._attr_current_option = _prog
+        self._state = _prog
         return
 
     async def async_select_option(self, option: str) -> None:
