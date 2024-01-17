@@ -1,7 +1,6 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
-import logging
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from wolf_ism8 import Ism8
@@ -15,8 +14,6 @@ from homeassistant.const import (
     STATE_ON,
     STATE_OFF,
 )
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(

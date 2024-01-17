@@ -2,28 +2,19 @@
 Support for Wolf heating via ISM8 adapter
 """
 
-import logging
 from homeassistant.components.select import SelectEntity
 from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN, SENSOR_TYPES
 
-_LOGGER = logging.getLogger(__name__)
 
-
-async def async_setup_entry(
-    hass,
-    config_entry,
-    async_add_entities,
-):
+async def async_setup_entry(hass, config_entry, async_add_entities):
     """
-    performs setup of the <select> entities, expects a
-    reference to an ism8-adapter via hass.data
+    performs setup of the <select> entities
     """
 
     config = hass.data[DOMAIN][config_entry.entry_id]
-    _LOGGER.debug("%s", config[CONF_DEVICES])
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
 
     select_entities = []
@@ -36,21 +27,18 @@ async def async_setup_entry(
             continue
         if not ism8.is_writable(nbr):
             continue
-        # (those are button-entities)
+        # (those are DPT_SWITCH, but trigger (button-)entities
         if nbr in (193, 194):
             continue
 
-        _LOGGER.debug("start processing select-entity %s: %s", nbr, wolf_name)
         # check if datapoint is on of the "Program"-Triples.
         # in this case, only the first entry is instantiated as a
         # WolfSelect-Entity with custom range from 1..3, the other two
         # datapoint-entries do not create a sensor instance
         if wolf_name[-2:] in (" 1", " 2", " 3"):
             if wolf_name[-2:] == " 1":
-                _LOGGER.debug("found <Programm> Entity: %s", wolf_name)
+                # _LOGGER.debug("found <Programm> Entity: %s", wolf_name)
                 select_entities.append(WolfProgrammSelect(ism8, nbr))
-            else:
-                _LOGGER.debug("skipped %s; dp has been merged to first entry", nbr)
         elif wolf_type in (
             SENSOR_TYPES.DPT_HVACCONTRMODE,
             SENSOR_TYPES.DPT_HVACMODE,
@@ -79,8 +67,6 @@ class WolfSelect(WolfEntity, SelectEntity):
         ):
             for opt in self._value_range:
                 _options.append(str(opt))
-        else:
-            _LOGGER.error("Unknown datapoint type %s for select sensor", self._type)
         return _options
 
     async def async_update(self) -> None:
@@ -94,8 +80,6 @@ class WolfSelect(WolfEntity, SelectEntity):
         """Change the selected option."""
         if self._type == SENSOR_TYPES.DPT_SWITCH:
             option = int(option)
-
-        _LOGGER.debug("sent value %s to ISM8 dp nbr: %s", option, self.dp_nbr)
         self._ism8.send_dp_value(self.dp_nbr, option)
 
 
@@ -123,5 +107,4 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        _LOGGER.debug("sent value to ISM8: %s", self.dp_nbr + (int(option) - 1))
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)

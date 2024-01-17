@@ -1,18 +1,18 @@
 # Wolf Climate Control ISM8 for Home Assistant
 An integration of WOLF's Heating ISM8 module into Home Assistant.
 
-Supported devices:
+Supported devices (in German):
   - Heizgerät 1-4
   - direkter Heizkreis
   - Mischerkreis 1-3
   - Kaskadenmodul
-  - SolarModul
+  - Solarmodul
   - Comfort Wohnraumlüftung
   - Wärmepumpe
   - Systembedienmodul (BM2)
   
 ## INSTALLATION 
-Current Versions use the GUI for Home assistant config-worklflow for configuration. Furthermore the integration is discoverable in HACS.
+Current Versions use the GUI for Home assistant config-workflow for configuration.
 
 1. - Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homeassistant" in your home. If it doesn't exist there, create it). Place the "wolf"-folder into the custom-components directory:  
   .homeassistant/custom_components/wolf   

@@ -36,7 +36,7 @@ class WolfEntity(Entity):
                 self._min_value = min(self._value_range)
                 self._step_value = abs(self._value_range[0] - self._value_range[1])
         _LOGGER.debug(
-            "setup wolf entity no. %d on %s as %s for writing %d",
+            "setup wolf entity no. %d on %s as %s. Write access: %d",
             self.dp_nbr,
             self._device,
             self._type,

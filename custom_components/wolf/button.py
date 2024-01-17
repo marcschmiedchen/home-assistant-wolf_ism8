@@ -1,14 +1,11 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
-import logging
 from homeassistant.components.button import ButtonEntity
 from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN
-
-_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -55,7 +52,6 @@ class WolfRequestDataButton(WolfEntity, ButtonEntity):
         self._name = "Datenanforderung"
         self._ism8 = ism8
         self._state = STATE_UNKNOWN
-        _LOGGER.debug("setup button: DataRequest")
 
     @property
     def unique_id(self):
@@ -69,5 +65,4 @@ class WolfRequestDataButton(WolfEntity, ButtonEntity):
 
     async def async_press(self) -> None:
         """Handle the button press."""
-        _LOGGER.debug("sending Datapoint Request to ISM8")
         self._ism8.request_all_datapoints()
