@@ -32,12 +32,11 @@ class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.port = None
         self.devices = None
 
-    async def async_step_user(self, user_input = None):
+    async def async_step_user(self, user_input=None):
         """Invoked when a user initiates a flow via the user interface."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
-
             self.host = user_input[CONF_HOST]
             self.port = user_input[CONF_PORT]
 
@@ -47,12 +46,11 @@ class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user", data_schema=vol.Schema(WOLF_HOST_SCHEMA), errors=errors
         )
 
-    async def async_step_device(self, user_input = None):
+    async def async_step_device(self, user_input=None):
         """Invoked when a user initiates a flow via the user interface."""
         errors: dict[str, str] = {}
 
         if user_input is not None:
-
             # Input is valid, set data.
             self.devices = []
             for _device in Ism8.get_all_devices():
@@ -65,7 +63,6 @@ class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_DEVICES: self.devices,
             }
 
-            # User is done adding repos, create the config entry.
             return self.async_create_entry(title="ISM8", data=data)
 
         return self.async_show_form(

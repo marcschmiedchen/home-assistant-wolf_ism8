@@ -1,0 +1,41 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                },
+                "description": "IP Adresse und Port auf dem Home Assistant auf Nachrichten von ISM8 wartet. \nBeides wird im ISM8i Web-Interface hinterlegt.",
+                "title": "WOLF ISM8 Adapter"
+            },
+            "device": {
+                "data": {
+                    "Heizgeraet1": "Heizgerät 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Heizgeraet2": "Heizgerät 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Heizgeraet3": "Heizgerät 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Heizgeraet4": "Heizgerät 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Systembedienmodul": "Systembedienmodul",
+                    "Direkter_Heizkreis_WW": "Direkter Heizkreis/WW",
+                    "Mischerkreis1": "Mischerkreis 1",
+                    "Mischerkreis2": "Mischerkreis 2",
+                    "Mischerkreis3": "Mischerkreis 3",
+                    "Kaskadenmodul" : "Kaskadenmodul",
+                    "Mischermodul1": "Mischermodul 1",
+                    "Mischermodul2": "Mischermodul 2",
+                    "Mischermodul3": "Mischermodul 3",
+                    "Solarmodul":  "Solarmodul SM",
+                    "CWL_Wohnraumlueftung": "Wohnraumlüftung: CWL-300 / CWL-2",
+                    "Waermepumpe": "Wärmepumpe: BWL-1S, CHA",
+                    "Bedienmodul_BM2": "Bedienmodul BM2",
+                    "undok_Daten" : "undokumentierte Daten -- fuer Entwickler"
+                },
+                "description": "Wählen Sie zu installierende Geräte. Nicht vorhandene Geräte erzeugen unnnötige (tote) Sensor-Einträge.",
+                "title": "WOLF Komponenten auswählen"
+            }
+        }
+    }
+}
