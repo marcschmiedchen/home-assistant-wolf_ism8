@@ -27,7 +27,7 @@ class WolfEntity(Entity):
         self._state = STATE_UNKNOWN
         self._is_writable = ism8.is_writable(dp_nbr)
         if self._is_writable:
-            self._value_range = ism8.get_value_area(dp_nbr)
+            self._value_range = ism8.get_value_range(dp_nbr)
             # if allowed range is a number, calculate min and max
             if isinstance(self._value_range[0], float) or isinstance(
                 self._value_range[0], int
