@@ -1,10 +1,11 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
+
 import logging
 from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
-from .const import DOMAIN, WOLF, WOLF_ISM8
+from .const import DOMAIN, WOLF, WOLF_ISM8, SENSOR_TYPES
 from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
@@ -72,7 +73,14 @@ class WolfEntity(Entity):
 
     async def async_update(self):
         """Return state"""
-        self._state = self._ism8.read_sensor(self.dp_nbr)
+        value = self._ism8.read_sensor(self.dp_nbr)
+        # ignore wrong data , not clear where it comes from so far
+        if (
+            self._type in (SENSOR_TYPES.DPT_FLOWRATE_M3, SENSOR_TYPES.DPT_POWER)
+            and value > 1000.0
+        ):
+            return
+        self._state = value
         if self._state is None:
             self._state = STATE_UNKNOWN
         return
