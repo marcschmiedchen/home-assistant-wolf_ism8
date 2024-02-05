@@ -1,6 +1,7 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
+
 import logging
 from homeassistant.components.select import SelectEntity
 from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
