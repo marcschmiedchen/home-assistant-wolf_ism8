@@ -82,7 +82,8 @@ class WolfEntity(Entity):
             and value > 1000.0
         ):
             return
-        self._state = value
         if self._state is None:
             self._state = STATE_UNKNOWN
+        else:
+            self._state = value
         return
