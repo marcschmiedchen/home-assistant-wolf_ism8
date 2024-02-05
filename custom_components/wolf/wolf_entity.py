@@ -12,9 +12,10 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class WolfEntity(Entity):
-    """Implementation of Wolf Heating System Sensor via ISM8-network adapter
-    dp_nbr represents the unique identifier of the up to 200 different
-    sensors
+    """
+    Generic / Base Implementation of Wolf Heating System Sensor via ISM8-adapter.
+    This class is used as a base class and shares all the functions and
+    attributes which are the same in all Wolf Sensors.
     """
 
     _attr_has_entity_name = True
@@ -76,7 +77,8 @@ class WolfEntity(Entity):
         value = self._ism8.read_sensor(self.dp_nbr)
         # ignore wrong data , not clear where it comes from so far
         if (
-            self._type in (SENSOR_TYPES.DPT_FLOWRATE_M3, SENSOR_TYPES.DPT_POWER)
+            value is not None
+            and self._type in (SENSOR_TYPES.DPT_FLOWRATE_M3, SENSOR_TYPES.DPT_POWER)
             and value > 1000.0
         ):
             return
