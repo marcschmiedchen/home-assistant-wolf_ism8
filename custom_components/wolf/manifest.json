@@ -12,7 +12,7 @@
     "iot_class": "local_polling",
     "issue_tracker": "https://github.com/marcschmiedchen/home-assistant-wolf_ism8/issues",
     "requirements": [
-        "wolf_ism8==3.0"
+        "wolf_ism8==3.0.1"
     ],
-    "version": "3.0"
+    "version": "3.0.1"
 }

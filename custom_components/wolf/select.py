@@ -83,9 +83,7 @@ class WolfSelect(WolfEntity, SelectEntity):
         """Change the selected option."""
         if self._type == SENSOR_TYPES.DPT_SWITCH:
             option = int(option)
-        _LOGGER.debug(
-            "sending datapoint {self.dp_nbr} with value {option}, class {option.class}"
-        )
+        #_LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
 
 
