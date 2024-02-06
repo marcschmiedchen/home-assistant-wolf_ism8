@@ -2,11 +2,14 @@
 Support for Wolf heating via ISM8 adapter
 """
 
+import logging
 from homeassistant.components.select import SelectEntity
 from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN, SENSOR_TYPES
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -81,6 +84,7 @@ class WolfSelect(WolfEntity, SelectEntity):
         """Change the selected option."""
         if self._type == SENSOR_TYPES.DPT_SWITCH:
             option = int(option)
+        _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
 
 
@@ -116,3 +120,5 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)
+        self._attr_current_option = option
+        self._state = option

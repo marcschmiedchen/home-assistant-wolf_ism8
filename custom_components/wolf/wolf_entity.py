@@ -1,19 +1,21 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
+
 import logging
 from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
-from .const import DOMAIN, WOLF, WOLF_ISM8
+from .const import DOMAIN, WOLF, WOLF_ISM8, SENSOR_TYPES
 from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class WolfEntity(Entity):
-    """Implementation of Wolf Heating System Sensor via ISM8-network adapter
-    dp_nbr represents the unique identifier of the up to 200 different
-    sensors
+    """
+    Generic / Base Implementation of Wolf Heating System Sensor via ISM8-adapter.
+    This class is used as a base class and shares all the functions and
+    attributes which are the same in all Wolf Sensors.
     """
 
     _attr_has_entity_name = True
@@ -72,7 +74,16 @@ class WolfEntity(Entity):
 
     async def async_update(self):
         """Return state"""
-        self._state = self._ism8.read_sensor(self.dp_nbr)
+        value = self._ism8.read_sensor(self.dp_nbr)
+        # ignore wrong data , not clear where it comes from so far
+        if (
+            value is not None
+            and self._type in (SENSOR_TYPES.DPT_FLOWRATE_M3, SENSOR_TYPES.DPT_POWER)
+            and value > 1000.0
+        ):
+            return
         if self._state is None:
             self._state = STATE_UNKNOWN
+        else:
+            self._state = value
         return

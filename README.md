@@ -1,7 +1,7 @@
-# Wolf Climate Control ISM8 for Home Assistant
-An integration of WOLF's Heating ISM8 module into Home Assistant.
+# Wolf Climate Control ISM8 für Home Assistant
+Eine Home Assistant Integration für das WOLF ISM8 Modul.
 
-Supported devices (in German):
+Kompatibel mit:
   - Heizgerät 1-4
   - direkter Heizkreis
   - Mischerkreis 1-3
@@ -12,22 +12,30 @@ Supported devices (in German):
   - Systembedienmodul (BM2)
   
 ## INSTALLATION 
-Current Versions use the GUI for Home assistant config-workflow for configuration.
 
-1. - Download and place the integration files in the "custom_components" folder (it's located in the directory with your configuration files. Usually named ".homeassistant" in your home. If it doesn't exist there, create it). Place the "wolf"-folder into the custom-components directory:  
-  .homeassistant/custom_components/wolf   
-   - Alternatively, the integration should be available by using [HACS](https://hacs.xyz/), the Home Assistant Community Store. To do this, click on the 3 dots at the top right under HACS to add a user-defined repository. Enter the URL of this GitHub project as the repository. As category "Integration".  
-2. Enter the IP adress the integration should LISTEN on, which is the IP adress of the home assistant server. Alternatively you can leave the default 0.0.0.0, which listens on all available IP adresses. [By the way: the same adress must obviously be entered in the ISM8 web-configuration. Careful: ISM8 needs a reboot before changes are accepted]
+### Manuelle Version
+1. Download und entpacken der Dateien in den Ordner"custom_components" im Konfigurationsverzeichnis von Home Assistant (Heißt meistens ".homeassistant" in Core, oder auch "config" im Docker Container. Wenn es noch nicht existiert, einfach erzeugen.)
+2. Der "wolf"-Unterordner muss dort reinkopiert werden. 
+3. Neustart von Home Assistant. Zuverlässiger ist das von Unix aus, aus der GUI habe ich manchmal das Gefühl, dass anklicken von "Neustart" nicht ausreicht. 
+4. Unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" wählen, nach Wolf suchen und installieren.
 
-3. Enter the port number the integration should LISTEN on. Standard value for ISM8 is 12004. However, if you change that in the config, you have to provide the port-number to the integration. Careful: ISM8 needs a reboot before changes are accepted.
+### Installation über HACS
+1. Mittlerweile ist die Integration im HACS Store auffindbar. Einfach nach Wolf suchen, anklicken und so downloaden.
+2. Nach dem Download neu starten(!). Danach kann die Integration wieder unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" installiert werden. 
 
-4. Select the devices you have installed in your HVAC system. Datapoints from those devices are automatically added to HA, but only populated if the device is really on your network. So no harm in selecting more than you have, but it generates unneccesary entities in HA. Unfortunately you cannot tune this setting later on; in order to change the installed devices you would have to complete delete/reboot Server/reinstall the integration.
 
+Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/nach der Installation. 
+
+### Weitere Schritte & Konfiguration
+1. (optional): Angabe der IP Adresse und des Ports, auf dem die Integration am Netzwerk lauscht. Das ist NICHT die Adresse des ISM8-Moduls, sondern die HA-Server IP-Adresse, die mit dem ISM8 kommunizieren soll. Die Standardeinstellung "0.0.0.0" lauscht auf allen verfügbaren Netzwerkkarten und sollte fast immer OK sein. 12004 ist der Standard-Port, mit dem das ISM8 geliefert wird, und das sollte eigentlich auch fast immer OK sein.
+2. Die IP-Adresse eurer HA-Instanz und die Portnummer muss im ISM8 hinterlegt sein. Achtung, das ISM8 muss neu booten, wenn man die Einstellungen ändert.
+3. Im letzten Schritt alle Geräte auswählen, die ihr besitzt oder angezeigt bekommen wollt. Wenn ihr mehr auswählt, ist das zwar nicht schlimm, aber es werden dann ungenutzte Entitäten in HA angelegt, die nie einen Wert bekommen. 
+4. Es gibt einen Punkt "undokumentierte Daten" --> manchmal kommen Daten vom ISM8, die in der Doku (noch nicht) hinterlegt ist. Damit sie nicht verloren gehen oder Fehler auslösen, habe ich sie hierhin verschoben. Wenn jemand rausfindet was das ist, integriere ich sie gern.
 
 ## SCREENSHOTS
 <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s1.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s2.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s3.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s4.PNG">
 
 ## TODO
 
- - make integration async (local push)
- - autodiscover 
+ - Integration von Pull auf Push umstellen
+ - ggf. Autodiscover 
