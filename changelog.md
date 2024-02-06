@@ -1,3 +1,15 @@
+3.0.1 (2024-02-05)
+------------------
+
+New
+~~~
+- ignoring datapoints with unrealistic values (>1000°C, >1000m3/h)
+
+Fixes
+~~~~~~~
+- fixed problem with "Programm" Selects
+- several fixes in the wolf-api-library (on pypi: caching issues, conversion errors)
+
 3.0 (2024-01-18)
 ------------------
 
