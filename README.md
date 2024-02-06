@@ -26,9 +26,9 @@ Kompatibel mit:
 
 Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/nach der Installation. 
 
-### weitere Schritte in der Konfiguration
-1. (optional): Angabe der IP Adresse und des Ports, auf der die Integration am Netzwerk lauscht. Das ist NICHT die Adresse des ISM8-Moduls, sondern die IP-Adresse, die mit dem ISM8 kommunizieren soll. Die Standardeinstellung 0.0.0.0 lauscht auf allen verfügbaren Netzwerkkarten und sollte fast immer OK sein. 12004 ist der Standard mit dem das ISM8 kommt, und das sollte eigentlich auch fast immer OK sein.
-2. Die IP-Adresse des Servers und die Portnummer muss im ISM8 hinterlegt sein. Achtung, das ISM8 muss neu booten, wenn man die Einstellungen ändert.
+### Weitere Schritte & Konfiguration
+1. (optional): Angabe der IP Adresse und des Ports, auf dem die Integration am Netzwerk lauscht. Das ist NICHT die Adresse des ISM8-Moduls, sondern die HA-Server IP-Adresse, die mit dem ISM8 kommunizieren soll. Die Standardeinstellung "0.0.0.0" lauscht auf allen verfügbaren Netzwerkkarten und sollte fast immer OK sein. 12004 ist der Standard-Port, mit dem das ISM8 geliefert wird, und das sollte eigentlich auch fast immer OK sein.
+2. Die IP-Adresse eurer HA-Instanz und die Portnummer muss im ISM8 hinterlegt sein. Achtung, das ISM8 muss neu booten, wenn man die Einstellungen ändert.
 3. Im letzten Schritt alle Geräte auswählen, die ihr besitzt oder angezeigt bekommen wollt. Wenn ihr mehr auswählt, ist das zwar nicht schlimm, aber es werden dann ungenutzte Entitäten in HA angelegt, die nie einen Wert bekommen. 
 4. Es gibt einen Punkt "undokumentierte Daten" --> manchmal kommen Daten vom ISM8, die in der Doku (noch nicht) hinterlegt ist. Damit sie nicht verloren gehen oder Fehler auslösen, habe ich sie hierhin verschoben. Wenn jemand rausfindet was das ist, integriere ich sie gern.
 
