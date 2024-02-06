@@ -1,5 +1,5 @@
 # Changelog
-## 3.0.1 - 2024-02-05
+## 3.0.1 (2024-02-05)
 ### Added
 - ignoring datapoints with unrealistic values (>1000°C, >1000m3/h)
 ### Fixed
@@ -14,7 +14,7 @@
 ### Changed
 - updated config workflow
 - **Breaking:**: renamed all devices to full name instead of abbreviation (feature request)
-#### Fixed
+### Fixed
 - catch "invalid data" from ISM8 and ignore it
 - fixed update isses with select entities
 
