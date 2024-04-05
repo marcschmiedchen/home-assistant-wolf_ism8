@@ -1,6 +1,7 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
+
 from homeassistant.const import (
     CONF_DEVICES,
     UnitOfTemperature,
@@ -39,6 +40,7 @@ async def async_setup_entry(
                 SENSOR_TYPES.DPT_POWER,
                 SENSOR_TYPES.DPT_VALUE_VOLUME_FLOW,
                 SENSOR_TYPES.DPT_FLOWRATE_M3,
+                SENSOR_TYPES.DPT_HVACCONTRMODE,
             ):
                 sensors.append(WolfSensor(ism8, nbr))
     async_add_entities(sensors)

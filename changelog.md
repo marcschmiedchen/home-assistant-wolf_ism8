@@ -1,4 +1,8 @@
 # Changelog
+## 3.0.2 (2024-04-05)
+### Added
+- added support for HVACCONTRMODE-Sensor
+
 ## 3.0.1 (2024-02-05)
 ### Added
 - ignoring datapoints with unrealistic values (>1000°C, >1000m3/h)
