@@ -20,8 +20,7 @@ Kompatibel mit:
 4. Unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" wählen, nach Wolf suchen und installieren.
 
 ### Installation über HACS
-1. Mittlerweile ist die Integration über den HACS Store installierbar. Dazu muss oben rechts mit den drei Punkten ein "benutzerdefiniertes Repository" hinzugefügt werden. Hier wird der Link auf das Github-Repo einmalig eingetragen [https://github.com/marcschmiedchen/home-assistant-wolf_ism8].
-2. <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/wolf_hacs.PNG"> 
+1. Mittlerweile ist die Integration über den HACS Store installierbar. Dazu muss oben rechts mit den drei Punkten ein "benutzerdefiniertes Repository" hinzugefügt werden. Hier wird der Link auf das Github-Repo einmalig eingetragen ( [https://github.com/marcschmiedchen/home-assistant-wolf_ism8] ). Danach bleibt es in der eigenen HACS Installation immmer sichtbar.
 3. Danach kann man es auswählen und installieren. Dieser Vorgang lädt aber nur die Integration herunter, danach muss man sie im übernächsten Schritt noch selbst installieren.
 4. Nach dem Download unbedingt neu starten(!).
 5. Danach kann die Integration dann endlich selbst unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" installiert werden.
