@@ -1,6 +1,7 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
+
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from wolf_ism8 import Ism8
@@ -9,8 +10,6 @@ from .const import DOMAIN, SENSOR_TYPES
 from homeassistant.const import (
     CONF_DEVICES,
     STATE_UNKNOWN,
-    STATE_PROBLEM,
-    STATE_OK,
     STATE_ON,
     STATE_OFF,
 )
@@ -50,22 +49,16 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     @property
     def state(self):
         """Return the state of the device."""
-        if self.device_class == BinarySensorDeviceClass.PROBLEM:
-            if self._state is True:
-                return STATE_PROBLEM
-            if self._state is False:
-                return STATE_OK
-        else:
-            if self._state is True:
-                return STATE_ON
-            if self._state is False:
-                return STATE_OFF
+        if self._state is True:
+            return STATE_ON
+        if self._state is False:
+            return STATE_OFF
         return STATE_UNKNOWN
 
     @property
     def is_on(self) -> str:
         """Return true if the binary sensor is on."""
-        return self._state
+        return bool(self._state)
 
     @property
     def device_class(self):

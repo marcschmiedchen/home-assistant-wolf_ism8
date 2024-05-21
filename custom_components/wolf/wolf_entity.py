@@ -73,7 +73,7 @@ class WolfEntity(Entity):
         return self._state
 
     async def async_update(self):
-        """Return state"""
+        """set state"""
         value = self._ism8.read_sensor(self.dp_nbr)
         # ignore wrong data , not clear where it comes from so far
         if (
@@ -82,8 +82,6 @@ class WolfEntity(Entity):
             and value > 1000.0
         ):
             return
-        if self._state is None:
-            self._state = STATE_UNKNOWN
-        else:
-            self._state = value
+        self._state = STATE_UNKNOWN if value is None else value
+        _LOGGER.debug(f"value={value}, set state to {self._state}")
         return
