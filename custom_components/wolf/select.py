@@ -111,6 +111,17 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
             _prog = "3"
         return _prog
 
+    @property
+    def state(self) -> str | None:
+        """Return the entity state."""
+        return self.current_option
+
+    async def async_added_to_hass(self) -> None:
+        """Register callbacks for all 3 datapoints which may affect this entity."""
+        self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr)
+        self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr + 1)
+        self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr + 2)
+
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)
