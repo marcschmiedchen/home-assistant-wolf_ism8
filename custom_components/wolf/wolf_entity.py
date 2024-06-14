@@ -5,7 +5,8 @@ Support for Wolf heating via ISM8 adapter
 import logging
 from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
-from .const import DOMAIN, WOLF, WOLF_ISM8, SENSOR_TYPES
+from .const import DOMAIN, WOLF, WOLF_ISM8
+
 from homeassistant.const import STATE_UNKNOWN
 
 _LOGGER = logging.getLogger(__name__)
@@ -18,16 +19,17 @@ class WolfEntity(Entity):
     attributes which are the same in all Wolf Sensors.
     """
 
-    _attr_has_entity_name = True
-
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
+        _LOGGER.debug(f"setup wolf entity {dp_nbr}")
         self.dp_nbr = dp_nbr
         self._ism8 = ism8
         self._device = ism8.get_device(dp_nbr)
         self._name = ism8.get_name(dp_nbr)
         self._type = ism8.get_type(dp_nbr)
+        self._library_version = ism8.get_library_version()
         self._state = STATE_UNKNOWN
         self._is_writable = ism8.is_writable(dp_nbr)
+
         if self._is_writable:
             self._value_range = ism8.get_value_range(dp_nbr)
             # if allowed range is a number, calculate min and max
@@ -37,13 +39,24 @@ class WolfEntity(Entity):
                 self._max_value = max(self._value_range)
                 self._min_value = min(self._value_range)
                 self._step_value = abs(self._value_range[0] - self._value_range[1])
-        _LOGGER.debug(
-            "setup wolf entity  %s on %s as %s. Write access: %d",
-            self._name,
-            self._device,
-            self._type,
-            self._is_writable,
-        )
+
+    async def async_added_to_hass(self) -> None:
+        """Register callback for this datapoint when entity is added to HA."""
+        self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr)
+
+    async def async_will_remove_from_hass(self) -> None:
+        """un-register callback for this datapoint when entity is removed."""
+        self._ism8.remove_callback(self.dp_nbr)
+
+    @property
+    def should_poll(self) -> bool:
+        """Return False, because integration is now fully asnyc"""
+        return False
+
+    @property
+    def has_entity_name(self) -> bool:
+        """Return False, because integration is now fully asnyc"""
+        return True
 
     @property
     def name(self) -> str:
@@ -68,20 +81,7 @@ class WolfEntity(Entity):
     @property
     def state(self):
         """Return the state of the device."""
-        if isinstance(self._state, float):
-            return round(self._state, 1)
-        return self._state
-
-    async def async_update(self):
-        """set state"""
         value = self._ism8.read_sensor(self.dp_nbr)
-        # ignore wrong data , not clear where it comes from so far
-        if (
-            value is not None
-            and self._type in (SENSOR_TYPES.DPT_FLOWRATE_M3, SENSOR_TYPES.DPT_POWER)
-            and value > 1000.0
-        ):
-            return
-        self._state = STATE_UNKNOWN if value is None else value
-        _LOGGER.debug(f"value={value}, set state to {self._state}")
-        return
+        self._state = round(value, 1) if isinstance(value, float) else value
+        _LOGGER.debug(f"value from ism: {value}, set DP {self.dp_nbr} to {self._state}")
+        return STATE_UNKNOWN if self._state is None else self._state

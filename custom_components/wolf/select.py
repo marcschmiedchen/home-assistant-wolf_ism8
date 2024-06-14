@@ -40,7 +40,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         # datapoint-entries do not create a sensor instance
         if wolf_name[-2:] in (" 1", " 2", " 3"):
             if wolf_name[-2:] == " 1":
-                # _LOGGER.debug("found <Programm> Entity: %s", wolf_name)
+                _LOGGER.debug("initialized <Programm> Entity: %s", wolf_name)
                 select_entities.append(WolfProgrammSelect(ism8, nbr))
         elif wolf_type in (
             SENSOR_TYPES.DPT_HVACCONTRMODE,
@@ -48,6 +48,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             SENSOR_TYPES.DPT_DHWMODE,
             SENSOR_TYPES.DPT_SWITCH,
         ):
+            _LOGGER.debug("initialized <Select> entity: %s", wolf_name)
             select_entities.append(WolfSelect(ism8, nbr))
 
     async_add_entities(select_entities)
@@ -55,8 +56,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 class WolfSelect(WolfEntity, SelectEntity):
     """Implementation of Wolf Select entity for mode selections"""
-
-    _attr_current_option = STATE_UNKNOWN
 
     @property
     def options(self):
@@ -72,13 +71,11 @@ class WolfSelect(WolfEntity, SelectEntity):
                 _options.append(str(opt))
         return _options
 
-    async def async_update(self) -> None:
-        """Return state"""
-        self._attr_current_option = str(self._ism8.read_sensor(self.dp_nbr))
-        if self._attr_current_option is None:
-            self._attr_current_option = STATE_UNKNOWN
-        self._state = self._attr_current_option
-        return
+    @property
+    def current_option(self):
+        """Return state of selection"""
+        self._state = str(self._ism8.read_sensor(self.dp_nbr))
+        return STATE_UNKNOWN if self._state is None else self._state
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
@@ -91,8 +88,6 @@ class WolfSelect(WolfEntity, SelectEntity):
 class WolfProgrammSelect(WolfEntity, SelectEntity):
     """Implementation of Wolf Select entity for program-selections"""
 
-    _attr_current_option = STATE_UNKNOWN
-
     @property
     def options(self):
         """Return all available options"""
@@ -104,8 +99,9 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
         """Return the name of this entity."""
         return self._name[:-2]
 
-    async def async_update(self) -> None:
-        """Return state"""
+    @property
+    def current_option(self):
+        """Return state of selection"""
         _prog = STATE_UNKNOWN
         if self._ism8.read_sensor(self.dp_nbr) == 1:
             _prog = "1"
@@ -113,9 +109,7 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
             _prog = "2"
         elif self._ism8.read_sensor(self.dp_nbr + 2) == 1:
             _prog = "3"
-        self._attr_current_option = _prog
-        self._state = _prog
-        return
+        return _prog
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
