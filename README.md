@@ -20,8 +20,14 @@ Kompatibel mit:
 4. Unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" wählen, nach Wolf suchen und installieren.
 
 ### Installation über HACS
-1. Mittlerweile ist die Integration im HACS Store auffindbar. Einfach nach Wolf suchen, anklicken und so downloaden.
-2. Nach dem Download neu starten(!). Danach kann die Integration wieder unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" installiert werden. 
+1. Mittlerweile ist die Integration über den HACS Store installierbar. Dazu muss oben rechts mit den drei Punkten ein "benutzerdefiniertes Repository" hinzugefügt werden. Hier wird der Link auf das Github-Repo einmalig eingetragen ( [https://github.com/marcschmiedchen/home-assistant-wolf_ism8] ). Danach bleibt es in der eigenen HACS Installation immer sichtbar.
+2. Danach kann man es auswählen und installieren. Dieser Vorgang lädt aber nur die Integration herunter, danach muss man sie im übernächsten Schritt noch selbst installieren.
+3. Alternativ zu (1) und (2) öffnet dieser Link das Repo auch direkt in HACS in eurer Home-Assistant-Instanz:
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=marcschmiedchen&repository=home-assistant-wolf_ism8&category=heating)
+
+4. Nach dem Download unbedingt neu starten(!).
+5. Danach kann die Integration dann endlich selbst unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" installiert werden.
 
 
 Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/nach der Installation. 
@@ -33,7 +39,10 @@ Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/na
 4. Es gibt einen Punkt "undokumentierte Daten" --> manchmal kommen Daten vom ISM8, die in der Doku (noch nicht) hinterlegt ist. Damit sie nicht verloren gehen oder Fehler auslösen, habe ich sie hierhin verschoben. Wenn jemand rausfindet was das ist, integriere ich sie gern.
 
 ## SCREENSHOTS
-<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s1.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s2.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s3.PNG"> <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s4.PNG">
+<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s1.PNG">
+<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s2.PNG"> 
+<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s3.PNG"> 
+<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s4.PNG">
 
 ## TODO
  - ggf. Autodiscover 
