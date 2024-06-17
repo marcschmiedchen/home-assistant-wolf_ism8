@@ -26,7 +26,6 @@ class WolfEntity(Entity):
         self._device = ism8.get_device(dp_nbr)
         self._name = ism8.get_name(dp_nbr)
         self._type = ism8.get_type(dp_nbr)
-        self._library_version = ism8.get_library_version()
         self._state = STATE_UNKNOWN
         self._is_writable = ism8.is_writable(dp_nbr)
 
