@@ -1,4 +1,12 @@
 # Changelog
+## 3.2 (2024-06-05)
+### Changed
+- changed data service type from "polling" to "push" via callback
+
+## 3.1 (2024-06-05)
+### Added
+- added support for date and time entries for CWL
+
 ## 3.0.2 (2024-04-05)
 ### Added
 - added support for HVACCONTRMODE-Sensor

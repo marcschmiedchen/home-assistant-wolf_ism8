@@ -1,11 +1,12 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
+
 from homeassistant.components.button import ButtonEntity
-from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
+from homeassistant.const import CONF_DEVICES
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
-from .const import DOMAIN
+from .const import DOMAIN, WOLF, WOLF_ISM8
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -42,16 +43,16 @@ class WolfButton(WolfEntity, ButtonEntity):
         self._ism8.send_dp_value(self.dp_nbr, 1)
 
 
-class WolfRequestDataButton(WolfEntity, ButtonEntity):
+class WolfRequestDataButton(ButtonEntity):
     """
-    Button to request all data-points from ISM8
+    Button to request all data-points from ISM8.
+    This entity is not connected to any WOLF datapoints, nor callback functionality,
+    so it should not inherit from class "WolfEntity"
     """
 
     def __init__(self, ism8: Ism8) -> None:
-        self._device = "Systembedienmodul"
-        self._name = "Datenanforderung"
         self._ism8 = ism8
-        self._state = STATE_UNKNOWN
+        self._library_version = ism8.get_library_version()
 
     @property
     def unique_id(self):
@@ -62,6 +63,21 @@ class WolfRequestDataButton(WolfEntity, ButtonEntity):
     def icon(self):
         """Return icon"""
         return "mdi:update"
+
+    @property
+    def name(self) -> str:
+        """Return the name of this entity."""
+        return "Datenanforderung"
+
+    @property
+    def device_info(self):
+        """Return device info."""
+        return {
+            "identifiers": {(DOMAIN, "Systembedienmodul")},
+            "name": "Systembedienmodul",
+            "manufacturer": WOLF,
+            "model": WOLF_ISM8,
+        }
 
     async def async_press(self) -> None:
         """Handle the button press."""

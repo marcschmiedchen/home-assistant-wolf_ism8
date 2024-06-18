@@ -41,6 +41,4 @@ What is particularly important here is that restarting helps with many problems 
 <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s4.PNG">
 
 ## TODO
-
- - make integration async (local push)
  - autodiscover 

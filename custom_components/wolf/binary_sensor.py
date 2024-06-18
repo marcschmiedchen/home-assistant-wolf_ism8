@@ -10,6 +10,8 @@ from .const import DOMAIN, SENSOR_TYPES
 from homeassistant.const import (
     CONF_DEVICES,
     STATE_UNKNOWN,
+    STATE_PROBLEM,
+    STATE_OK,
     STATE_ON,
     STATE_OFF,
 )
@@ -49,10 +51,17 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     @property
     def state(self):
         """Return the state of the device."""
-        if self._state is True:
-            return STATE_ON
-        if self._state is False:
-            return STATE_OFF
+        self._state = self._ism8.read_sensor(self.dp_nbr)
+        if self.device_class == BinarySensorDeviceClass.PROBLEM:
+            if self._state is True:
+                return STATE_PROBLEM
+            if self._state is False:
+                return STATE_OK
+        else:
+            if self._state is True:
+                return STATE_ON
+            if self._state is False:
+                return STATE_OFF
         return STATE_UNKNOWN
 
     @property

@@ -45,6 +45,4 @@ Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/na
 <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s4.PNG">
 
 ## TODO
-
- - Integration von Pull auf Push umstellen
  - ggf. Autodiscover 
