@@ -2,11 +2,14 @@
 Support for Wolf heating via ISM8 adapter
 """
 
+import logging
 from homeassistant.components.time import TimeEntity
 from homeassistant.const import CONF_DEVICES
 from .wolf_entity import WolfEntity
 from wolf_ism8 import Ism8
 from .const import DOMAIN, SENSOR_TYPES
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -36,4 +39,5 @@ class WolfTime(WolfEntity, TimeEntity):
 
     async def async_set_value(self, time) -> None:
         """Update the current value."""
+        _LOGGER.debug(f"send time {time} to ISM8")
         self._ism8.send_dp_value(self.dp_nbr, time)
