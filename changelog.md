@@ -1,4 +1,9 @@
 # Changelog
+## 3.2.1 (2024-06-23)
+### Fixed
+- small bug with naming convention for button "Datenanforderung"
+
+# Changelog
 ## 3.2 (2024-06-05)
 ### Changed
 - changed data service type from "polling" to "push" via callback

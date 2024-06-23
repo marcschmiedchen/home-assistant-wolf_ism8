@@ -54,7 +54,6 @@ class WolfEntity(Entity):
 
     @property
     def has_entity_name(self) -> bool:
-        """Return False, because integration is now fully asnyc"""
         return True
 
     @property
