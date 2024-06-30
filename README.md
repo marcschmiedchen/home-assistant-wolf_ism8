@@ -1,4 +1,5 @@
 # Wolf Climate Control ISM8 für Home Assistant
+![HASS Build](https://github.com/marcschmiedchen/home-assistant-wolf_ism8/workflows/hassfest/badge.svg)
 Eine Home Assistant Integration für das WOLF ISM8 Modul.
 
 Kompatibel mit:
