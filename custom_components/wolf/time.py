@@ -39,5 +39,5 @@ class WolfTime(WolfEntity, TimeEntity):
 
     async def async_set_value(self, time) -> None:
         """Update the current value."""
-        _LOGGER.debug(f"send time {time} to ISM8")
+        _LOGGER.debug(f"send dp {self.dp_nbr}: {time}")
         self._ism8.send_dp_value(self.dp_nbr, time)

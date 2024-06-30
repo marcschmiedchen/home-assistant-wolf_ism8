@@ -1,6 +1,7 @@
 """
 Support for Wolf heating via ISM8 adapter
 """
+
 from homeassistant.components.number import NumberEntity, NumberDeviceClass
 from homeassistant.const import CONF_DEVICES, UnitOfTemperature, PERCENTAGE
 from .wolf_entity import WolfEntity
