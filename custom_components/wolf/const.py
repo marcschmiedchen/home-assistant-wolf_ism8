@@ -1,5 +1,5 @@
 from typing import Final
-from homeassistant.backports.enum import StrEnum
+from enum import StrEnum
 
 DOMAIN: Final = "wolf"
 

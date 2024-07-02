@@ -1,4 +1,15 @@
 # Changelog
+## 3.2.3 (2024-07-03)
+### Fixed
+- fixed bug with time entity
+- switched to enum.StrEnum for compatibility
+
+# Changelog
+## 3.2.2 (2024-06-30)
+### Fixed
+- fixed bug with date entity
+
+# Changelog
 ## 3.2.1 (2024-06-23)
 ### Fixed
 - small bug with naming convention for button "Datenanforderung"
