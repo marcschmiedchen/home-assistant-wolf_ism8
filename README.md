@@ -4,6 +4,8 @@
 
 Eine Home Assistant Integration für das WOLF ISM8 Modul.
 
+[![HASS Build](https://github.com/marcschmiedchen/home-assistant-wolf_ism8/actions/workflows/main.yml/badge.svg)
+
 Kompatibel mit:
   - Heizgerät 1-4
   - direkter Heizkreis

@@ -42,10 +42,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await task
     if task.done():
         _server = task.result()
+        _lib_version = Ism8.get_version()
+        _port = _config[CONF_PORT]
         for soc in _server.sockets:
-            _LOGGER.debug(
-                "Listening for ISM8 on %s : %s", soc.getsockname(), _config[CONF_PORT]
-            )
+            _ip = soc.getsockname()
+            _LOGGER.debug(f"ISM-Lib {_lib_version} listening on {_ip}, {_port}")
 
     # Forward the setup to the different platforms.
     for platform in PLATFORMS:
