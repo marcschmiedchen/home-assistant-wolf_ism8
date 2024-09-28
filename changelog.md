@@ -1,4 +1,11 @@
-# Changelog
+## 3.2.5 (2024-09-14)
+### Fixed
+- fixed await-issue during init
+
+## 3.2.4 (2024-07-03)
+### Fixed
+- bumped library version
+
 ## 3.2.3 (2024-07-03)
 ### Fixed
 - fixed bug with time entity

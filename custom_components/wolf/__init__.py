@@ -48,10 +48,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
             _ip = soc.getsockname()
             _LOGGER.debug(f"ISM-Lib {_lib_version} listening on {_ip}, {_port}")
 
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     # Forward the setup to the different platforms.
-    for platform in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
-
+    # for platform in PLATFORMS:
+    # await hass.config_entries.async_forward_entry_setup(entry, platform)
     return True
