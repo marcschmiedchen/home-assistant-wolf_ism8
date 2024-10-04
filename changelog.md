@@ -1,3 +1,9 @@
+# Changelog
+## 3.3 (2024-10-04)
+### Fixed
+- entity state is not longer directly set, usind native_value instead.
+- this enables HA unit conversion and precision adjustment
+
 ## 3.2.5 (2024-09-14)
 ### Fixed
 - fixed await-issue during init
@@ -11,17 +17,14 @@
 - fixed bug with time entity
 - switched to enum.StrEnum for compatibility
 
-# Changelog
 ## 3.2.2 (2024-06-30)
 ### Fixed
 - fixed bug with date entity
 
-# Changelog
 ## 3.2.1 (2024-06-23)
 ### Fixed
 - small bug with naming convention for button "Datenanforderung"
 
-# Changelog
 ## 3.2 (2024-06-05)
 ### Changed
 - changed data service type from "polling" to "push" via callback
