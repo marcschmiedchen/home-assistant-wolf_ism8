@@ -7,14 +7,7 @@ from homeassistant.components.binary_sensor import BinarySensorEntity
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN, SENSOR_TYPES
-from homeassistant.const import (
-    CONF_DEVICES,
-    STATE_UNKNOWN,
-    STATE_PROBLEM,
-    STATE_OK,
-    STATE_ON,
-    STATE_OFF,
-)
+from homeassistant.const import CONF_DEVICES
 
 
 async def async_setup_entry(
@@ -49,25 +42,12 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     DPT_ENABLE, DPT_OPENCLOSE types"""
 
     @property
-    def state(self):
-        """Return the state of the device."""
-        self._state = self._ism8.read_sensor(self.dp_nbr)
-        if self.device_class == BinarySensorDeviceClass.PROBLEM:
-            if self._state is True:
-                return STATE_PROBLEM
-            if self._state is False:
-                return STATE_OK
-        else:
-            if self._state is True:
-                return STATE_ON
-            if self._state is False:
-                return STATE_OFF
-        return STATE_UNKNOWN
-
-    @property
     def is_on(self) -> str:
-        """Return true if the binary sensor is on."""
-        return bool(self._state)
+        """Return binary sensor state; invert logic for problem sensors."""
+        if self.device_class == BinarySensorDeviceClass.PROBLEM:
+            return bool(not self._state)
+        else:
+            return bool(self._state)
 
     @property
     def device_class(self):
