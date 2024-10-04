@@ -61,7 +61,7 @@ class WolfRequestDataButton(ButtonEntity):
 
     @property
     def has_entity_name(self) -> bool:
-        """Return False, because integration is now fully asnyc"""
+        """has unique name"""
         return True
 
     @property

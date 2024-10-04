@@ -61,7 +61,7 @@ class WolfSensor(WolfEntity, SensorEntity):
             return SensorDeviceClass.POWER
 
     @property
-    def unit_of_measurement(self) -> str:
+    def native_unit_of_measurement(self) -> str:
         if self._type == SENSOR_TYPES.DPT_VALUE_TEMP:
             return UnitOfTemperature.CELSIUS
         elif self._type == SENSOR_TYPES.DPT_VALUE_TEMPD:
