@@ -1,4 +1,10 @@
 # Changelog
+## 3.3.1 (2024-10-07)
+### Fixed
+- update of binary sensor would not come through
+### Added
+- support for unloading integration from GUI. Freeing network resources.
+
 ## 3.3 (2024-10-04)
 ### Fixed
 - entity state is not longer directly set, usind native_value instead.
