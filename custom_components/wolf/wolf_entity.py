@@ -45,6 +45,7 @@ class WolfEntity(Entity):
 
     async def async_will_remove_from_hass(self) -> None:
         """un-register callback for this datapoint when entity is removed."""
+        _LOGGER.debug(f"remove_from_hass (entity {self._name}) called")
         self._ism8.remove_callback(self.dp_nbr)
 
     @property

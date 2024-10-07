@@ -27,29 +27,38 @@ PLATFORMS = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """set up the custom component over the config entry"""
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = entry.data
     _config = entry.data
 
-    protocol: type[Ism8] = Ism8()
+    protocol = Ism8()
+    _LOGGER.debug(f"ISM-Lib {protocol.get_version()}")
     hass.data[DOMAIN]["protocol"] = protocol
     coro = hass.loop.create_server(
-        protocol.factory,
+        protocol,
         host=_config[CONF_HOST],
         port=_config[CONF_PORT],
         family=socket.AF_INET,
     )
-    task = hass.loop.create_task(coro)
-    await task
-    if task.done():
-        _server = task.result()
-        _lib_version = Ism8.get_version()
-        _port = _config[CONF_PORT]
+    _task = hass.loop.create_task(coro)
+    await _task
+    if _task.done():
+        _server = _task.result()
+        hass.data[DOMAIN]["servertask"] = _task
+        hass.data[DOMAIN]["server"] = _server
         for soc in _server.sockets:
             _ip = soc.getsockname()
-            _LOGGER.debug(f"ISM-Lib {_lib_version} listening on {_ip}, {_port}")
-
+            _LOGGER.debug(f"Listening on {_ip}")
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    # Forward the setup to the different platforms.
-    # for platform in PLATFORMS:
-    # await hass.config_entries.async_forward_entry_setup(entry, platform)
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
+    """Unload ISM8."""
+    _ism8 = hass.data[DOMAIN]["protocol"]
+    _task = hass.data[DOMAIN]["servertask"]
+    _server = hass.data[DOMAIN]["server"]
+    if _ism8.connected():
+        _LOGGER.info("Releasing ISM8 network connection")
+        _ism8._transport.close()
+        _server.close()
+        _task.cancel()
     return True
