@@ -2,12 +2,15 @@
 Support for Wolf heating via ISM8 adapter
 """
 
+import logging
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN, SENSOR_TYPES
 from homeassistant.const import CONF_DEVICES
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -42,12 +45,11 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     DPT_ENABLE, DPT_OPENCLOSE types"""
 
     @property
-    def is_on(self) -> str:
+    def is_on(self) -> bool:
         """Return binary sensor state; invert logic for problem sensors."""
-        if self.device_class == BinarySensorDeviceClass.PROBLEM:
-            return bool(not self._state)
-        else:
-            return bool(self._state)
+        self._state = self._ism8.read_sensor(self.dp_nbr)
+        _LOGGER.debug(f"binary value from ism: set DP {self.dp_nbr} to {self._state}")
+        return bool(self._state)
 
     @property
     def device_class(self):
