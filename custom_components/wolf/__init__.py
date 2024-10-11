@@ -24,18 +24,17 @@ PLATFORMS = [
 ]
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     """set up the custom component over the config entry"""
     hass.data.setdefault(DOMAIN, {})
-    _config = entry.data
 
     protocol = Ism8()
     _LOGGER.debug(f"ISM-Lib {protocol.get_version()}")
     hass.data[DOMAIN]["protocol"] = protocol
     coro = hass.loop.create_server(
-        protocol,
-        host=_config[CONF_HOST],
-        port=_config[CONF_PORT],
+        protocol.factory,
+        host=config_entry.data[CONF_HOST],
+        port=config_entry.data[CONF_PORT],
         family=socket.AF_INET,
     )
     _task = hass.loop.create_task(coro)
@@ -47,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
         for soc in _server.sockets:
             _ip = soc.getsockname()
             _LOGGER.debug(f"Listening on {_ip}")
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
     return True
 
 

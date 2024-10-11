@@ -15,12 +15,11 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """performs setup of the button entities"""
 
-    config = hass.data[DOMAIN][config_entry.entry_id]
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
 
     buttons = []
     for nbr in (193, 194):
-        if ism8.get_device(nbr) in config[CONF_DEVICES]:
+        if ism8.get_device(nbr) in config_entry.data[CONF_DEVICES]:
             buttons.append(WolfButton(ism8, nbr))
 
     buttons.append(WolfRequestDataButton(ism8))

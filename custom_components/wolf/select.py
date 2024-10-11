@@ -16,8 +16,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """
     performs setup of the <select> entities
     """
-
-    config = hass.data[DOMAIN][config_entry.entry_id]
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
 
     select_entities = []
@@ -26,7 +24,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         wolf_name = ism8.get_name(nbr)
         wolf_type = ism8.get_type(nbr)
 
-        if wolf_device not in config[CONF_DEVICES]:
+        if wolf_device not in config_entry.data[CONF_DEVICES]:
             continue
         if not ism8.is_writable(nbr):
             continue

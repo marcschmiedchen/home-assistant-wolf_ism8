@@ -22,13 +22,11 @@ async def async_setup_entry(
     performs setup of the binary sensors, needs a
     reference to an ism8-protocol implementation via hass.data
     """
-
-    config = hass.data[DOMAIN][config_entry.entry_id]
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
 
     sensors = []
     for nbr in ism8.get_all_sensors().keys():
-        if ism8.get_device(nbr) in config[CONF_DEVICES]:
+        if ism8.get_device(nbr) in config_entry.data[CONF_DEVICES]:
             if ism8.get_type(nbr) in (
                 SENSOR_TYPES.DPT_SWITCH,
                 SENSOR_TYPES.DPT_BOOL,
