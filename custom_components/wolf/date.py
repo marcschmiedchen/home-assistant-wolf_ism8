@@ -17,12 +17,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     performs setup of the writeable number entities, needs a
     reference to an ism8-protocol implementation via hass.data
     """
-    config = hass.data[DOMAIN][config_entry.entry_id]
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
 
     dateEntityList = []
     for nbr in ism8.get_all_sensors().keys():
-        if ism8.get_device(nbr) not in config[CONF_DEVICES]:
+        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
             continue
         if not ism8.is_writable(nbr):
             continue
