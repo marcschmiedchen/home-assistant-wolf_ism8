@@ -77,7 +77,14 @@ class WolfSensor(WolfEntity, SensorEntity):
             return "l/h"
         elif self._type == SENSOR_TYPES.DPT_FLOWRATE_M3:
             return UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
-        
+
     @property
-    def state_class(self)->str:
-        return SensorStateClass.MEASUREMENT
+    def state_class(self) -> str:
+        if self._type in (
+            SENSOR_TYPES.DPT_HVACMODE,
+            SENSOR_TYPES.DPT_DHWMODE,
+            SENSOR_TYPES.DPT_HVACCONTRMODE,
+        ):
+            return None
+        else:
+            return SensorStateClass.MEASUREMENT
