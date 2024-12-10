@@ -1,4 +1,8 @@
 # Changelog
+## 3.3.2 (2024-12-11)
+### Added
+- support for statistics
+
 ## 3.3.1 (2024-10-07)
 ### Fixed
 - update of binary sensor would not come through

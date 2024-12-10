@@ -44,6 +44,10 @@ class WolfButton(WolfEntity, ButtonEntity):
         """Handle the button press."""
         self._ism8.send_dp_value(self.dp_nbr, 1)
 
+    @property
+    def available(self):
+        return True
+
 
 class WolfRequestDataButton(ButtonEntity):
     """
@@ -91,3 +95,7 @@ class WolfRequestDataButton(ButtonEntity):
     async def async_press(self) -> None:
         """Handle the button press."""
         self._ism8.request_all_datapoints()
+
+    @property
+    def available(self):
+        return True

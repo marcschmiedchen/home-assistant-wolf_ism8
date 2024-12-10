@@ -4,6 +4,7 @@ Support for Wolf heating via ISM8 adapter
 
 import logging
 from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.device_registry import DeviceInfo
 from wolf_ism8 import Ism8
 from .const import DOMAIN, WOLF, WOLF_ISM8
 
@@ -70,12 +71,12 @@ class WolfEntity(Entity):
     @property
     def device_info(self):
         """Return device info."""
-        return {
-            "identifiers": {(DOMAIN, self._device)},
-            "name": self._device,
-            "manufacturer": WOLF,
-            "model": WOLF_ISM8,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._device)},
+            name=self._device,
+            manufacturer=WOLF,
+            model=WOLF_ISM8,
+        )
 
     @property
     def native_value(self):
@@ -84,3 +85,7 @@ class WolfEntity(Entity):
         self._state = round(value, 2) if isinstance(value, float) else value
         _LOGGER.debug(f"value from ism: set DP {self.dp_nbr} to {self._state}")
         return self._state
+
+    @property
+    def available(self):
+        return self._ism8.connected()

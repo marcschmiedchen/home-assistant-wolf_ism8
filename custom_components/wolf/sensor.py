@@ -12,6 +12,7 @@ from homeassistant.const import (
 )
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.components.sensor import SensorStateClass
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN, SENSOR_TYPES
@@ -76,3 +77,7 @@ class WolfSensor(WolfEntity, SensorEntity):
             return "l/h"
         elif self._type == SENSOR_TYPES.DPT_FLOWRATE_M3:
             return UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
+        
+    @property
+    def state_class(self)->str:
+        return SensorStateClass.MEASUREMENT
