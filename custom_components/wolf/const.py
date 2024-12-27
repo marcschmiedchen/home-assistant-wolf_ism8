@@ -30,6 +30,7 @@ class SENSOR_TYPES(StrEnum):
     DPT_DATE = "DPT_Date"
     DPT_FLOWRATE_M3 = "DPT_FlowRate_m3/h"
     DPT_HVACMODE = "DPT_HVACMode"
+    DPT_HVACMODE_CWL = "DPT_HVACMode_CWL"
     DPT_DHWMODE = "DPT_DHWMode"
     DPT_HVACCONTRMODE = "DPT_HVACContrMode"
     DPT_ENERGY = "DPT_ActiveEnergy"

@@ -33,12 +33,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         if ism8.get_type(nbr) not in (
             SENSOR_TYPES.DPT_HVACMODE,
+            SENSOR_TYPES.DPT_HVACMODE_CWL,
             SENSOR_TYPES.DPT_DHWMODE,
             SENSOR_TYPES.DPT_SWITCH,
         ):
             continue
 
         if ism8.first_fw_version(nbr) > ism8_fw:
+            _LOGGER.debug(f"DP {nbr} not supported by firmware")
             continue
 
         # check if datapoint is on of the "Program"-Triples.
@@ -73,10 +75,15 @@ class WolfSelect(WolfEntity, SelectEntity):
         return _options
 
     @property
+    def state(self) -> str | None:
+        """Return the entity state."""
+        return self.current_option
+
+    @property
     def current_option(self):
         """Return state of selection"""
-        self._state = str(self._ism8.read_sensor(self.dp_nbr))
-        return STATE_UNKNOWN if self._state is None else self._state
+        _prog = str(self._ism8.read_sensor(self.dp_nbr))
+        return STATE_UNKNOWN if _prog is None else _prog
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""

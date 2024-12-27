@@ -2,6 +2,7 @@
 Support for Wolf heating via ISM8 adapter
 """
 
+import logging
 from homeassistant.const import (
     CONF_DEVICES,
     UnitOfTemperature,
@@ -17,6 +18,8 @@ from homeassistant.components.sensor import SensorStateClass
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN, SENSOR_TYPES
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -51,6 +54,7 @@ async def async_setup_entry(
         ):
             continue
         if ism8.first_fw_version(nbr) > ism8_fw:
+            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
         sensor_entities.append(WolfSensor(ism8, nbr))
     async_add_entities(sensor_entities)

@@ -27,6 +27,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if not ism8.is_writable(nbr):
             continue
         if ism8.first_fw_version(nbr) > ism8_fw:
+            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
         if ism8.get_type(nbr) == SENSOR_TYPES.DPT_TIMEOFDAY:
             time_entities.append(WolfTime(ism8, nbr))
