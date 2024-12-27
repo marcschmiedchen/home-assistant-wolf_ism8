@@ -65,13 +65,8 @@ class WolfSelect(WolfEntity, SelectEntity):
     def options(self):
         """Return all available options"""
         _options = []
-        if self._type in (
-            SENSOR_TYPES.DPT_HVACMODE,
-            SENSOR_TYPES.DPT_DHWMODE,
-            SENSOR_TYPES.DPT_SWITCH,
-        ):
-            for opt in self._value_range:
-                _options.append(str(opt))
+        for opt in self._value_range:
+            _options.append(str(opt))
         return _options
 
     @property
@@ -91,6 +86,7 @@ class WolfSelect(WolfEntity, SelectEntity):
             option = int(option)
         _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
+        self._attr_current_option = option
 
 
 class WolfProgrammSelect(WolfEntity, SelectEntity):
