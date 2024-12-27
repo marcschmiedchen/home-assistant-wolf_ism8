@@ -23,19 +23,31 @@ async def async_setup_entry(
     reference to an ism8-protocol implementation via hass.data
     """
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
+    ism8_fw = hass.data[DOMAIN]["sw_version"]
 
-    sensors = []
+    binary_sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
-        if ism8.get_device(nbr) in config_entry.data[CONF_DEVICES]:
-            if ism8.get_type(nbr) in (
-                SENSOR_TYPES.DPT_SWITCH,
-                SENSOR_TYPES.DPT_BOOL,
-                SENSOR_TYPES.DPT_ENABLE,
-                SENSOR_TYPES.DPT_OPENCLOSE,
-            ):
-                if not ism8.is_writable(nbr):
-                    sensors.append(WolfBinarySensor(ism8, nbr))
-    async_add_entities(sensors)
+        # only add sensors which were enabled in the config
+        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
+            continue
+        # only add sensors which are binary
+        if ism8.get_type(nbr) not in (
+            SENSOR_TYPES.DPT_SWITCH,
+            SENSOR_TYPES.DPT_BOOL,
+            SENSOR_TYPES.DPT_ENABLE,
+            SENSOR_TYPES.DPT_OPENCLOSE,
+        ):
+            continue
+        # only add sensors which are not writable
+        if ism8.is_writable(nbr):
+            continue
+        # only add sensor if it's supported by the firmware already
+        if ism8.first_fw_version(nbr) > ism8_fw:
+            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
+            continue
+        binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
+
+    async_add_entities(binary_sensor_entities)
 
 
 class WolfBinarySensor(WolfEntity, BinarySensorEntity):
@@ -46,7 +58,7 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     def is_on(self) -> bool:
         """Return binary sensor state; invert logic for problem sensors."""
         self._state = self._ism8.read_sensor(self.dp_nbr)
-        _LOGGER.debug(f"binary value from ism: set DP {self.dp_nbr} to {self._state}")
+        # _LOGGER.debug(f"binary value from ism: set DP {self.dp_nbr} to {self._state}")
         return bool(self._state)
 
     @property

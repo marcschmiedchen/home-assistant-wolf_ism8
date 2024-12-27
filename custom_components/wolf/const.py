@@ -13,7 +13,7 @@ WOLF_DEFAULT_DEVICES: Final = ["Heizgeraet1", "Systembedienmodul"]
 
 
 class SENSOR_TYPES(StrEnum):
-    """Datapoint classes according to wolf_ism8 datapoint types"""
+    """Datapoint class according to wolf_ism8 datapoint types"""
 
     DPT_SWITCH = "DPT_Switch"
     DPT_BOOL = "DPT_Bool"
@@ -32,3 +32,5 @@ class SENSOR_TYPES(StrEnum):
     DPT_HVACMODE = "DPT_HVACMode"
     DPT_DHWMODE = "DPT_DHWMode"
     DPT_HVACCONTRMODE = "DPT_HVACContrMode"
+    DPT_ENERGY = "DPT_ActiveEnergy"
+    DPT_ENERGY_KWH = "DPT_ActiveEnergy_kWh"

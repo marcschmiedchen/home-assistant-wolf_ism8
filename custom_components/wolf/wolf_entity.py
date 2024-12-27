@@ -83,7 +83,7 @@ class WolfEntity(Entity):
         """Return the state of the device."""
         value = self._ism8.read_sensor(self.dp_nbr)
         self._state = round(value, 2) if isinstance(value, float) else value
-        _LOGGER.debug(f"value from ism: set DP {self.dp_nbr} to {self._state}")
+        # _LOGGER.debug(f"value from ism: set DP {self.dp_nbr} to {self._state}")
         return self._state
 
     @property

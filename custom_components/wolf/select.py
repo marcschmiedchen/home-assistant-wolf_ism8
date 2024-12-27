@@ -17,14 +17,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     performs setup of the <select> entities
     """
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
+    ism8_fw = hass.data[DOMAIN]["sw_version"]
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
-        wolf_device = ism8.get_device(nbr)
-        wolf_name = ism8.get_name(nbr)
-        wolf_type = ism8.get_type(nbr)
+        dp_name = ism8.get_name(nbr)
 
-        if wolf_device not in config_entry.data[CONF_DEVICES]:
+        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
             continue
         if not ism8.is_writable(nbr):
             continue
@@ -32,21 +31,26 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if nbr in (193, 194):
             continue
 
-        # check if datapoint is on of the "Program"-Triples.
-        # in this case, only the first entry is instantiated as a
-        # WolfSelect-Entity with custom range from 1..3, the other two
-        # datapoint-entries do not create a sensor instance
-        if wolf_name[-2:] in (" 1", " 2", " 3"):
-            if wolf_name[-2:] == " 1":
-                _LOGGER.debug("initialized <Programm> Entity: %s", wolf_name)
-                select_entities.append(WolfProgrammSelect(ism8, nbr))
-        elif wolf_type in (
-            SENSOR_TYPES.DPT_HVACCONTRMODE,
+        if ism8.get_type(nbr) not in (
             SENSOR_TYPES.DPT_HVACMODE,
             SENSOR_TYPES.DPT_DHWMODE,
             SENSOR_TYPES.DPT_SWITCH,
         ):
-            _LOGGER.debug("initialized <Select> entity: %s", wolf_name)
+            continue
+
+        if ism8.first_fw_version(nbr) > ism8_fw:
+            continue
+
+        # check if datapoint is on of the "Program"-Triples.
+        # in this case, only the first entry is instantiated as a
+        # WolfSelect-Entity with custom range from 1..3, the other two
+        # datapoint-entries do not create a sensor instance
+        if dp_name[-2:] in (" 1", " 2", " 3"):
+            if dp_name[-2:] == " 1":
+                _LOGGER.debug("initializing <Programm> Entity: %s", dp_name)
+                select_entities.append(WolfProgrammSelect(ism8, nbr))
+        else:
+            _LOGGER.debug("initializing <Select> entity: %s", dp_name)
             select_entities.append(WolfSelect(ism8, nbr))
 
     async_add_entities(select_entities)
