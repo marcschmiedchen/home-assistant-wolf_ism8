@@ -1,11 +1,11 @@
 # Changelog
-## 3.3.3 (2024-12-11)
+## 4.0 (2024-12-29)
 ### Added
 - added support for statistics
 - scraping web portal for information on firmware of ISM8
-- suppressing datapoints which are not supported in ISM8 FW-version
+- [breaking] suppressing datapoints which are not supported in ISM8 FW-version
 - added support for up to 4 heatpumps (Waermepumpe 1-4)
-- switched to latest wolf library with support for specific modes for CHA 
+- [breaking] switched to latest wolf library with support for specific modes for CHA 
 - added support for solar "active energy" (Gesamtertrag) sensor
 - link to ISM webportal now available in device-card
 
