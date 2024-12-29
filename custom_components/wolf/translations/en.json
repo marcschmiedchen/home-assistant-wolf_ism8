@@ -28,7 +28,7 @@
                     "Mischermodul2": "Mixing module 2",
                     "Mischermodul3": "Mixing module 3",
                     "Solarmodul":  "Solar module SM",
-                    "CWL_Wohnraumlueftung": "HVAC: CWL-300 / CWL-2",
+                    "CWL_Wohnraumlueftung": "Ventilation: CWL-300 / CWL-2",
                     "Waermepumpe": "Heat pump: BWL-1S, CHA",
                     "Bedienmodul_BM2": "Controller BM2",
                     "undok_Daten" : "undocumented data -- for developers"

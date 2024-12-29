@@ -2,16 +2,16 @@
 ![HASS Build](https://github.com/marcschmiedchen/home-assistant-wolf_ism8/workflows/hassfest/badge.svg)
 ![HASS Build](https://github.com/marcschmiedchen/home-assistant-wolf_ism8/workflows/hacs/badge.svg)
 
-Eine Home Assistant Integration für das WOLF ISM8 Modul.
+Eine Home Assistant Integration für das WOLF ISM8 Modul. Die Integration stellt bis zu ca. 300 Datenpunkte zur Verfügung, die das ISM8 Modul über das Netzwerk liefert. Einige davon können auch beschrieben werden.
 
-Kompatibel mit:
-  - Heizgerät 1-4
+Unterstützte Bereiche/Geräte:
+  - Heizgerät 1-4 (TOB, CGB-2, MGK-2, COB-2, TGB-2)
   - direkter Heizkreis
   - Mischerkreis 1-3
   - Kaskadenmodul
   - Solarmodul
-  - Comfort Wohnraumlüftung
-  - Wärmepumpe
+  - Comfort Wohnraumlüftung (CWL Excellent, CWL 2)
+  - Wärmepumpe 1-4 (BWL1S, CHA)
   - Systembedienmodul (BM2)
   
 ## INSTALLATION 
@@ -19,7 +19,7 @@ Kompatibel mit:
 ### Manuelle Version
 1. Download und entpacken der Dateien in den Ordner"custom_components" im Konfigurationsverzeichnis von Home Assistant (Heißt meistens ".homeassistant" in Core, oder auch "config" im Docker Container. Wenn es noch nicht existiert, einfach erzeugen.)
 2. Der "wolf"-Unterordner muss dort reinkopiert werden. 
-3. Neustart von Home Assistant. Zuverlässiger ist das von Unix aus, aus der GUI habe ich manchmal das Gefühl, dass anklicken von "Neustart" nicht ausreicht. 
+3. Neustart von Home Assistant.
 4. Unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" wählen, nach Wolf suchen und installieren.
 
 ### Installation über HACS
@@ -29,7 +29,7 @@ Kompatibel mit:
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=marcschmiedchen&repository=home-assistant-wolf_ism8&category=heating)
 
-4. Nach dem Download unbedingt neu starten(!).
+4. Nach dem Download unbedingt neu starten(!). 
 5. Danach kann die Integration dann endlich selbst unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" installiert werden.
 
 
