@@ -1,7 +1,10 @@
 # Changelog
 ## 3.3.2 (2024-12-11)
 ### Added
-- support for statistics
+- added support for statistics
+- added new datapoints from FW1.90
+- enabled new program settings (CHA related, beta-test)
+- ISM firmware-version, hardware-version and IP-adress are gathered. Direct config link in device manager
 
 ## 3.3.1 (2024-10-07)
 ### Fixed
