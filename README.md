@@ -43,9 +43,12 @@ Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/na
 
 ## SCREENSHOTS
 <img width="300" src="./screenshots/s1.PNG">
-<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s2.PNG"> 
-<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s3.PNG"> 
-<img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/blob/master/screenshots/s4.PNG">
+
+<img width="300" src="./screenshots/s2.PNG"> 
+
+<img width="300" src="./screenshots/s3.PNG"> 
+
+<img width="300" src="./screenshots/s4.PNG">
 
 ## TODO
  - ggf. Autodiscover 
