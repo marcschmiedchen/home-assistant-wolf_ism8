@@ -2,11 +2,14 @@
 Support for Wolf heating via ISM8 adapter
 """
 
+import logging
 from homeassistant.components.number import NumberEntity, NumberDeviceClass
 from homeassistant.const import CONF_DEVICES, UnitOfTemperature, PERCENTAGE
 from .wolf_entity import WolfEntity
 from wolf_ism8 import Ism8
 from .const import DOMAIN, SENSOR_TYPES
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -15,21 +18,27 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     reference to an ism8-protocol implementation via hass.data
     """
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
+    ism8_fw = hass.data[DOMAIN]["sw_version"]
 
-    numberEntityList = []
+    number_entities = []
     for nbr in ism8.get_all_sensors().keys():
         if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
             continue
         if not ism8.is_writable(nbr):
             continue
-        if ism8.get_type(nbr) in (
+        if ism8.get_type(nbr) not in (
             SENSOR_TYPES.DPT_VALUE_TEMP,
             SENSOR_TYPES.DPT_SCALING,
             SENSOR_TYPES.DPT_TEMPD,
         ):
-            numberEntityList.append(WolfInputNumber(ism8, nbr))
+            continue
+        if ism8.first_fw_version(nbr) > ism8_fw:
+            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
+            continue
 
-    async_add_entities(numberEntityList)
+        number_entities.append(WolfInputNumber(ism8, nbr))
+
+    async_add_entities(number_entities)
 
 
 class WolfInputNumber(WolfEntity, NumberEntity):

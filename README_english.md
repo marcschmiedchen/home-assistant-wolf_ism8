@@ -1,15 +1,15 @@
 # Wolf Climate Control ISM8 for Home Assistant
-An integration of WOLF's Heating ISM8 module into Home Assistant.
+An integration of WOLF's Heating ISM8 module into Home Assistant. The integration provides up to 300 datapoints which are delivered by the ISM8 via network. Some of the may be written to.
 
 Supported devices (in German):
-  - Heizgerät 1-4
-  - direkter Heizkreis
-  - Mischerkreis 1-3
-  - Kaskadenmodul
-  - Solarmodul
-  - Comfort Wohnraumlüftung
-  - Wärmepumpe
-  - Systembedienmodul (BM2)
+  - Heating Unit 1-4 (TOB, CGB-2, MGK-2, COB-2, TGB-2)
+  - Direct heating circuit
+  - Mixed heating circuit 1-3
+  - Cascading module
+  - Solar module SM
+  - Ventilation (CWL Excellent, CWL 2)
+  - Heatpump 1-4 (BWL1S, CHA)
+  - Controller (BM2)
   
 ## INSTALLATION 
 Current Versions use the GUI for Home assistant config-workflow for configuration.

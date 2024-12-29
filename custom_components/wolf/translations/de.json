@@ -23,15 +23,17 @@
                     "Mischerkreis1": "Mischerkreis 1",
                     "Mischerkreis2": "Mischerkreis 2",
                     "Mischerkreis3": "Mischerkreis 3",
-                    "Kaskadenmodul" : "Kaskadenmodul",
+                    "Kaskadenmodul": "Kaskadenmodul",
                     "Mischermodul1": "Mischermodul 1",
                     "Mischermodul2": "Mischermodul 2",
                     "Mischermodul3": "Mischermodul 3",
-                    "Solarmodul":  "Solarmodul SM",
+                    "Solarmodul": "Solarmodul SM",
                     "CWL_Wohnraumlueftung": "Wohnraumlüftung: CWL-300 / CWL-2",
-                    "Waermepumpe": "Wärmepumpe: BWL-1S, CHA",
-                    "Bedienmodul_BM2": "Bedienmodul BM2",
-                    "undok_Daten" : "undokumentierte Daten -- fuer Entwickler"
+                    "Waermepumpe": "Wärmepumpe 1: BWL-1S, CHA",
+                    "Waermepumpe2": "Wärmepumpe 2: BWL-1S, CHA",
+                    "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
+                    "Waermepumpe4": "Wärmepumpe 3: BWL-1S, CHA",
+                    "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
                 },
                 "description": "Wählen Sie zu installierende Geräte. Nicht vorhandene Geräte erzeugen unnnötige (tote) Sensor-Einträge.",
                 "title": "WOLF Komponenten auswählen"

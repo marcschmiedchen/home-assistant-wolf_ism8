@@ -4,6 +4,7 @@ Support for Wolf heating via ISM8 adapter
 
 import logging
 from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.device_registry import DeviceInfo
 from wolf_ism8 import Ism8
 from .const import DOMAIN, WOLF, WOLF_ISM8
 
@@ -69,18 +70,32 @@ class WolfEntity(Entity):
 
     @property
     def device_info(self):
-        """Return device info."""
-        return {
-            "identifiers": {(DOMAIN, self._device)},
-            "name": self._device,
-            "manufacturer": WOLF,
-            "model": WOLF_ISM8,
-        }
+        """Return device info. The detailed infos may have been scraped
+        from the ISM8-adapter during setup in __init_py."""
+        ip_address = self._ism8.get_remote_ip_adress()
+        if self._ism8.get_remote_ip_adress():
+            url = "http://" + ip_address
+        else:
+            url = None
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._device)},
+            name=self._device,
+            manufacturer=WOLF,
+            model=WOLF_ISM8,
+            configuration_url=url,
+            sw_version=self.hass.data[DOMAIN]["sw_version"],
+            hw_version=self.hass.data[DOMAIN]["hw_version"],
+            serial_number=self.hass.data[DOMAIN]["serno"],
+        )
 
     @property
     def native_value(self):
         """Return the state of the device."""
         value = self._ism8.read_sensor(self.dp_nbr)
         self._state = round(value, 2) if isinstance(value, float) else value
-        _LOGGER.debug(f"value from ism: set DP {self.dp_nbr} to {self._state}")
+        # _LOGGER.debug(f"value from ism: set DP {self.dp_nbr} to {self._state}")
         return self._state
+
+    @property
+    def available(self):
+        return self._ism8.connected()

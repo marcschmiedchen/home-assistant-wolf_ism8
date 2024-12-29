@@ -18,17 +18,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     reference to an ism8-protocol implementation via hass.data
     """
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
+    ism8_fw = hass.data[DOMAIN]["sw_version"]
 
-    timeEntityList = []
+    time_entities = []
     for nbr in ism8.get_all_sensors().keys():
         if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
             continue
+        if ism8.get_type(nbr) != SENSOR_TYPES.DPT_TIMEOFDAY:
+            continue
         if not ism8.is_writable(nbr):
             continue
-        if ism8.get_type(nbr) == SENSOR_TYPES.DPT_TIMEOFDAY:
-            timeEntityList.append(WolfTime(ism8, nbr))
+        if ism8.first_fw_version(nbr) > ism8_fw:
+            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
+            continue
+        time_entities.append(WolfTime(ism8, nbr))
 
-    async_add_entities(timeEntityList)
+    async_add_entities(time_entities)
 
 
 class WolfTime(WolfEntity, TimeEntity):

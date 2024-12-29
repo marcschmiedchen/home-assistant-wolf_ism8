@@ -17,14 +17,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     performs setup of the <select> entities
     """
     ism8: Ism8 = hass.data[DOMAIN]["protocol"]
+    ism8_fw = hass.data[DOMAIN]["sw_version"]
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
-        wolf_device = ism8.get_device(nbr)
-        wolf_name = ism8.get_name(nbr)
-        wolf_type = ism8.get_type(nbr)
+        dp_name = ism8.get_name(nbr)
 
-        if wolf_device not in config_entry.data[CONF_DEVICES]:
+        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
             continue
         if not ism8.is_writable(nbr):
             continue
@@ -32,21 +31,28 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if nbr in (193, 194):
             continue
 
+        if ism8.get_type(nbr) not in (
+            SENSOR_TYPES.DPT_HVACMODE,
+            SENSOR_TYPES.DPT_HVACMODE_CWL,
+            SENSOR_TYPES.DPT_DHWMODE,
+            SENSOR_TYPES.DPT_SWITCH,
+        ):
+            continue
+
+        if ism8.first_fw_version(nbr) > ism8_fw:
+            _LOGGER.debug(f"DP {nbr} not supported by firmware")
+            continue
+
         # check if datapoint is on of the "Program"-Triples.
         # in this case, only the first entry is instantiated as a
         # WolfSelect-Entity with custom range from 1..3, the other two
         # datapoint-entries do not create a sensor instance
-        if wolf_name[-2:] in (" 1", " 2", " 3"):
-            if wolf_name[-2:] == " 1":
-                _LOGGER.debug("initialized <Programm> Entity: %s", wolf_name)
+        if dp_name[-2:] in (" 1", " 2", " 3"):
+            if dp_name[-2:] == " 1":
+                _LOGGER.debug("initializing <Programm> Entity: %s", dp_name)
                 select_entities.append(WolfProgrammSelect(ism8, nbr))
-        elif wolf_type in (
-            SENSOR_TYPES.DPT_HVACCONTRMODE,
-            SENSOR_TYPES.DPT_HVACMODE,
-            SENSOR_TYPES.DPT_DHWMODE,
-            SENSOR_TYPES.DPT_SWITCH,
-        ):
-            _LOGGER.debug("initialized <Select> entity: %s", wolf_name)
+        else:
+            _LOGGER.debug("initializing <Select> entity: %s", dp_name)
             select_entities.append(WolfSelect(ism8, nbr))
 
     async_add_entities(select_entities)
@@ -59,27 +65,30 @@ class WolfSelect(WolfEntity, SelectEntity):
     def options(self):
         """Return all available options"""
         _options = []
-        if self._type in (
-            SENSOR_TYPES.DPT_HVACMODE,
-            SENSOR_TYPES.DPT_DHWMODE,
-            SENSOR_TYPES.DPT_SWITCH,
-        ):
-            for opt in self._value_range:
-                _options.append(str(opt))
+        for opt in self._value_range:
+            _options.append(str(opt))
         return _options
+
+    @property
+    def state(self) -> str | None:
+        """Return the entity state."""
+        return self.current_option
 
     @property
     def current_option(self):
         """Return state of selection"""
-        self._state = str(self._ism8.read_sensor(self.dp_nbr))
-        return STATE_UNKNOWN if self._state is None else self._state
+        _prog = str(self._ism8.read_sensor(self.dp_nbr))
+        # _LOGGER.debug(f"current_option from ISM: {_prog}")
+        return STATE_UNKNOWN if _prog is None else _prog
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         if self._type == SENSOR_TYPES.DPT_SWITCH:
             option = int(option)
-        _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
+        # _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
+        # self._attr_current_option = option
+        # self._state = option
 
 
 class WolfProgrammSelect(WolfEntity, SelectEntity):
@@ -121,7 +130,7 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        _LOGGER.debug(f"send dp {self.dp_nbr}: int {int(option) - 1}")
+        _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)
-        self._attr_current_option = option
-        self._state = option
+        # self._attr_current_option = option
+        # self._state = option
