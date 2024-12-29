@@ -7,6 +7,7 @@
 - added support for up to 4 heatpumps (Waermepumpe 1-4)
 - switched to latest wolf library with support for specific modes for CHA 
 - added support for solar "active energy" (Gesamtertrag) sensor
+- link to ISM webportal now available in device-card
 
 ## 3.3.1 (2024-10-07)
 ### Fixed

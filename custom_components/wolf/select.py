@@ -78,15 +78,17 @@ class WolfSelect(WolfEntity, SelectEntity):
     def current_option(self):
         """Return state of selection"""
         _prog = str(self._ism8.read_sensor(self.dp_nbr))
+        # _LOGGER.debug(f"current_option from ISM: {_prog}")
         return STATE_UNKNOWN if _prog is None else _prog
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
         if self._type == SENSOR_TYPES.DPT_SWITCH:
             option = int(option)
-        _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
+        # _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
-        self._attr_current_option = option
+        # self._attr_current_option = option
+        # self._state = option
 
 
 class WolfProgrammSelect(WolfEntity, SelectEntity):
@@ -128,7 +130,7 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        _LOGGER.debug(f"send dp {self.dp_nbr}: int {int(option) - 1}")
+        _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)
-        self._attr_current_option = option
-        self._state = option
+        # self._attr_current_option = option
+        # self._state = option

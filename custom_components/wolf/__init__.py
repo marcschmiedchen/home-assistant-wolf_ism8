@@ -53,10 +53,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> N
 
         # yield some time to get the ISM8 connect to the host
         i = 0
-        while i < 6 and not ism8.connected():
+        while i < 15 and not ism8.connected():
             i = i + 1
-            _LOGGER.debug("waiting 5s for ISM to connect...")
-            await asyncio.sleep(5)
+            _LOGGER.debug("waiting up to 30s for ISM8 to connect...")
+            await asyncio.sleep(2)
 
         if ism8.connected():
             # This tries to read the FW-version from the ISM8-Webportal.

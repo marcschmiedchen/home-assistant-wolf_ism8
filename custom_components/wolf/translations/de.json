@@ -33,7 +33,6 @@
                     "Waermepumpe2": "Wärmepumpe 2: BWL-1S, CHA",
                     "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
                     "Waermepumpe4": "Wärmepumpe 3: BWL-1S, CHA",
-                    "Bedienmodul_BM2": "Bedienmodul BM2",
                     "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
                 },
                 "description": "Wählen Sie zu installierende Geräte. Nicht vorhandene Geräte erzeugen unnnötige (tote) Sensor-Einträge.",

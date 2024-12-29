@@ -33,7 +33,6 @@
                     "Waermepumpe2": "Heat pump 2: BWL-1S, CHA",
                     "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
                     "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
-                    "Bedienmodul_BM2": "Controller BM2",
                     "undok_Daten": "undocumented data -- for developers"
                 },
                 "description": "Choose installed devices",

@@ -70,12 +70,22 @@ class WolfEntity(Entity):
 
     @property
     def device_info(self):
-        """Return device info."""
+        """Return device info. The detailed infos may have been scraped
+        from the ISM8-adapter during setup in __init_py."""
+        ip_address = self._ism8.get_remote_ip_adress()
+        if self._ism8.get_remote_ip_adress():
+            url = "http://" + ip_address
+        else:
+            url = None
         return DeviceInfo(
             identifiers={(DOMAIN, self._device)},
             name=self._device,
             manufacturer=WOLF,
             model=WOLF_ISM8,
+            configuration_url=url,
+            sw_version=self.hass.data[DOMAIN]["sw_version"],
+            hw_version=self.hass.data[DOMAIN]["hw_version"],
+            serial_number=self.hass.data[DOMAIN]["serno"],
         )
 
     @property
