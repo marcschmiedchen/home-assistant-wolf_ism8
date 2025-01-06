@@ -1,7 +1,7 @@
 {
     "config": {
         "abort": {
-            "already_configured": "[%key:common::config_flow::abort::already_configured_device%]"
+            "already_configured": "ISM8 was already set-up. Only 1 device supported."
         },
         "step": {
             "user": {

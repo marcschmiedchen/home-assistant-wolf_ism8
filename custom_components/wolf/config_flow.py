@@ -38,6 +38,7 @@ class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
+            self._async_abort_entries_match({CONF_HOST: user_input[CONF_HOST]})
             self.host = user_input[CONF_HOST]
             self.port = user_input[CONF_PORT]
 
@@ -52,8 +53,6 @@ class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
-            self._async_abort_entries_match({CONF_HOST: user_input[CONF_HOST]})
-            # Input is valid, set data.
             self.devices = []
             for _device in Ism8.get_all_devices():
                 if user_input[_device]:

@@ -10,7 +10,6 @@ import re
 from socket import AF_INET
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.device_registry import DeviceEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from wolf_ism8 import Ism8
 from .const import DOMAIN
@@ -70,14 +69,10 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         return True
 
 
-async def async_remove_config_entry_device(
-    hass: HomeAssistant, config: ConfigEntry, device_entry: DeviceEntry
-) -> bool:
+async def async_remove_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
     """Remove a config entry from a device."""
     logging.debug("Unloading ISM8")
-    unload_ok = await hass.config_entries.async_unload_platforms(
-        device_entry, PLATFORMS
-    )
+    unload_ok = await hass.config_entries.async_unload_platforms(config, PLATFORMS)
     if unload_ok:
         _ism8 = hass.data[DOMAIN]["protocol"]
         _task = hass.data[DOMAIN]["servertask"]
