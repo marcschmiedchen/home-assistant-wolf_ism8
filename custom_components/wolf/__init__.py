@@ -10,6 +10,7 @@ import re
 from socket import AF_INET
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.device_registry import DeviceEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from wolf_ism8 import Ism8
 from .const import DOMAIN
@@ -27,12 +28,13 @@ PLATFORMS = [
 ]
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """set up the custom component over the config entry"""
     hass.data.setdefault(DOMAIN, {})
 
     ism8 = Ism8()
     hass.data[DOMAIN]["protocol"] = ism8
+
     coro = hass.loop.create_server(
         ism8.factory,
         host=config_entry.data[CONF_HOST],
@@ -68,17 +70,24 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> N
         return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
-    """Unload ISM8."""
-    _ism8 = hass.data[DOMAIN]["protocol"]
-    _task = hass.data[DOMAIN]["servertask"]
-    _server = hass.data[DOMAIN]["server"]
-    if _ism8.connected():
-        _LOGGER.info("Releasing ISM8 network connection")
-        _ism8._transport.close()
-        _server.close()
-        _task.cancel()
-    return True
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, config: ConfigEntry, device_entry: DeviceEntry
+) -> bool:
+    """Remove a config entry from a device."""
+    logging.debug("Unloading ISM8")
+    unload_ok = await hass.config_entries.async_unload_platforms(
+        device_entry, PLATFORMS
+    )
+    if unload_ok:
+        _ism8 = hass.data[DOMAIN]["protocol"]
+        _task = hass.data[DOMAIN]["servertask"]
+        _server = hass.data[DOMAIN]["server"]
+        if _ism8.connected():
+            _LOGGER.info("Releasing ISM8 network connection")
+            _ism8._transport.close()
+            _server.close()
+            _task.cancel()
+    return unload_ok
 
 
 async def get_webportal_info(hass: HomeAssistant, remote_ip_address: str) -> None:

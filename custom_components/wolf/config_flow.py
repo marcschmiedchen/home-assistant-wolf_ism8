@@ -1,4 +1,5 @@
 """Config flow for Wolf SmartSet Service integration."""
+
 import voluptuous as vol
 from homeassistant import config_entries
 import homeassistant.helpers.config_validation as cv
@@ -51,6 +52,7 @@ class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
 
         if user_input is not None:
+            self._async_abort_entries_match({CONF_HOST: user_input[CONF_HOST]})
             # Input is valid, set data.
             self.devices = []
             for _device in Ism8.get_all_devices():
