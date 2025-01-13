@@ -4,10 +4,10 @@ Support for Wolf heating system ISM via ISM8 adapter
 
 import logging
 import asyncio
-import aiohttp
 import re
-
 from socket import AF_INET
+import aiohttp
+
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
@@ -54,7 +54,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
         # yield some time to get the ISM8 connect to the host
         i = 0
-        while i < 15 and not ism8.connected():
+        while i < 1 and not ism8.connected():
             i = i + 1
             _LOGGER.debug("waiting up to 30s for ISM8 to connect...")
             await asyncio.sleep(2)
@@ -69,19 +69,20 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         return True
 
 
-async def async_remove_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
-    """Remove a config entry from a device."""
-    logging.debug("Unloading ISM8")
+async def async_unload_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
+    """Unload wolf integration"""
+    _LOGGER.debug("Unloading ISM8")
     unload_ok = await hass.config_entries.async_unload_platforms(config, PLATFORMS)
-    if unload_ok:
-        _ism8 = hass.data[DOMAIN]["protocol"]
-        _task = hass.data[DOMAIN]["servertask"]
-        _server = hass.data[DOMAIN]["server"]
-        if _ism8.connected():
-            _LOGGER.info("Releasing ISM8 network connection")
-            _ism8._transport.close()
-            _server.close()
-            _task.cancel()
+    _server = hass.data[DOMAIN]["server"]
+    if _server is not None:
+        _LOGGER.info("Releasing ISM8 network connection")
+        _server.close()
+    hass.data[DOMAIN].pop("server")
+    hass.data[DOMAIN].pop("servertask")
+    hass.data[DOMAIN].pop("hw_version")
+    hass.data[DOMAIN].pop("sw_version")
+    hass.data[DOMAIN].pop("serno")
+    hass.data[DOMAIN].pop("protocol")
     return unload_ok
 
 

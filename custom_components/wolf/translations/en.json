@@ -1,7 +1,7 @@
 {
     "config": {
         "abort": {
-            "already_configured": "ISM8 was already set-up. Only 1 device supported."
+            "already_configured": "ISM8 was already set-up. Only 1 module per IP address."
         },
         "step": {
             "user": {

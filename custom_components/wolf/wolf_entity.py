@@ -45,9 +45,10 @@ class WolfEntity(Entity):
         self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr)
 
     async def async_will_remove_from_hass(self) -> None:
-        """un-register callback for this datapoint when entity is removed."""
+        """un-register callback and delete ISM8-reference when entity is removed."""
         _LOGGER.debug(f"remove_from_hass (entity {self._name}) called")
         self._ism8.remove_callback(self.dp_nbr)
+        self._ism8 = None
 
     @property
     def should_poll(self) -> bool:

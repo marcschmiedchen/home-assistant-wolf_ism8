@@ -130,7 +130,7 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
+        # _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)
         # self._attr_current_option = option
         # self._state = option
