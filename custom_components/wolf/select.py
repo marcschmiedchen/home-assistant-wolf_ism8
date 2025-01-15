@@ -49,10 +49,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         # datapoint-entries do not create a sensor instance
         if dp_name[-2:] in (" 1", " 2", " 3"):
             if dp_name[-2:] == " 1":
-                _LOGGER.debug("initializing <Programm> Entity: %s", dp_name)
+                # _LOGGER.debug("initializing <Programm> Entity: %s", dp_name)
                 select_entities.append(WolfProgrammSelect(ism8, nbr))
         else:
-            _LOGGER.debug("initializing <Select> entity: %s", dp_name)
+            # _LOGGER.debug("initializing <Select> entity: %s", dp_name)
             select_entities.append(WolfSelect(ism8, nbr))
 
     async_add_entities(select_entities)

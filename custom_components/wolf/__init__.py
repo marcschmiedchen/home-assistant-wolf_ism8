@@ -43,18 +43,16 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     _task = hass.loop.create_task(coro)
     await _task
     if _task.done():
-        _server = _task.result()
         hass.data[DOMAIN]["servertask"] = _task
-        hass.data[DOMAIN]["server"] = _server
-        hass.data[DOMAIN]["sw_version"] = "unknown"
-        hass.data[DOMAIN]["hw_version"] = "unknown"
-        hass.data[DOMAIN]["serno"] = "unknown"
-        for soc in _server.sockets:
-            _LOGGER.info(f"Listening for ISM8 on {soc.getsockname()}")
+        hass.data[DOMAIN]["server"] = _task.result()
+        hass.data[DOMAIN]["sw_version"] = None
+        hass.data[DOMAIN]["hw_version"] = None
+        hass.data[DOMAIN]["serno"] = None
+        _LOGGER.info("Waiting for ISM8 to connect")
 
         # yield some time to get the ISM8 connect to the host
         i = 0
-        while i < 1 and not ism8.connected():
+        while i < 15 and not ism8.connected():
             i = i + 1
             _LOGGER.debug("waiting up to 30s for ISM8 to connect...")
             await asyncio.sleep(2)
@@ -74,8 +72,11 @@ async def async_unload_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
     _LOGGER.debug("Unloading ISM8")
     unload_ok = await hass.config_entries.async_unload_platforms(config, PLATFORMS)
     _server = hass.data[DOMAIN]["server"]
+    _ism8 = hass.data[DOMAIN]["protocol"]
     if _server is not None:
         _LOGGER.info("Releasing ISM8 network connection")
+        if _ism8._transport is not None:
+            _ism8._transport.close()
         _server.close()
     hass.data[DOMAIN].pop("server")
     hass.data[DOMAIN].pop("servertask")
