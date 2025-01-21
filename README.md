@@ -48,6 +48,8 @@ Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/na
 
 <img width="300" src="./screenshots/s3.PNG"> 
 
+<img width="300" src="./screenshots/s5.PNG"> 
+
 <img width="300" src="./screenshots/s4.PNG">
 
 ## TODO
