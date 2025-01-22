@@ -4,10 +4,10 @@ Support for Wolf heating system ISM via ISM8 adapter
 
 import logging
 import asyncio
-import aiohttp
 import re
-
 from socket import AF_INET
+import aiohttp
+
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PORT, Platform
@@ -27,12 +27,13 @@ PLATFORMS = [
 ]
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """set up the custom component over the config entry"""
     hass.data.setdefault(DOMAIN, {})
 
     ism8 = Ism8()
     hass.data[DOMAIN]["protocol"] = ism8
+
     coro = hass.loop.create_server(
         ism8.factory,
         host=config_entry.data[CONF_HOST],
@@ -42,14 +43,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> N
     _task = hass.loop.create_task(coro)
     await _task
     if _task.done():
-        _server = _task.result()
         hass.data[DOMAIN]["servertask"] = _task
-        hass.data[DOMAIN]["server"] = _server
-        hass.data[DOMAIN]["sw_version"] = "unknown"
-        hass.data[DOMAIN]["hw_version"] = "unknown"
-        hass.data[DOMAIN]["serno"] = "unknown"
-        for soc in _server.sockets:
-            _LOGGER.info(f"Listening for ISM8 on {soc.getsockname()}")
+        hass.data[DOMAIN]["server"] = _task.result()
+        hass.data[DOMAIN]["sw_version"] = None
+        hass.data[DOMAIN]["hw_version"] = None
+        hass.data[DOMAIN]["serno"] = None
+        _LOGGER.info("Waiting for ISM8 to connect")
 
         # yield some time to get the ISM8 connect to the host
         i = 0
@@ -68,17 +67,24 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> N
         return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
-    """Unload ISM8."""
-    _ism8 = hass.data[DOMAIN]["protocol"]
-    _task = hass.data[DOMAIN]["servertask"]
+async def async_unload_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
+    """Unload wolf integration"""
+    _LOGGER.debug("Unloading ISM8")
+    unload_ok = await hass.config_entries.async_unload_platforms(config, PLATFORMS)
     _server = hass.data[DOMAIN]["server"]
-    if _ism8.connected():
+    _ism8 = hass.data[DOMAIN]["protocol"]
+    if _server is not None:
         _LOGGER.info("Releasing ISM8 network connection")
-        _ism8._transport.close()
+        if _ism8._transport is not None:
+            _ism8._transport.close()
         _server.close()
-        _task.cancel()
-    return True
+    hass.data[DOMAIN].pop("server")
+    hass.data[DOMAIN].pop("servertask")
+    hass.data[DOMAIN].pop("hw_version")
+    hass.data[DOMAIN].pop("sw_version")
+    hass.data[DOMAIN].pop("serno")
+    hass.data[DOMAIN].pop("protocol")
+    return unload_ok
 
 
 async def get_webportal_info(hass: HomeAssistant, remote_ip_address: str) -> None:

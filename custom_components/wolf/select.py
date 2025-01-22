@@ -49,10 +49,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         # datapoint-entries do not create a sensor instance
         if dp_name[-2:] in (" 1", " 2", " 3"):
             if dp_name[-2:] == " 1":
-                _LOGGER.debug("initializing <Programm> Entity: %s", dp_name)
+                # _LOGGER.debug("initializing <Programm> Entity: %s", dp_name)
                 select_entities.append(WolfProgrammSelect(ism8, nbr))
         else:
-            _LOGGER.debug("initializing <Select> entity: %s", dp_name)
+            # _LOGGER.debug("initializing <Select> entity: %s", dp_name)
             select_entities.append(WolfSelect(ism8, nbr))
 
     async_add_entities(select_entities)
@@ -130,7 +130,7 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
+        # _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)
         # self._attr_current_option = option
         # self._state = option

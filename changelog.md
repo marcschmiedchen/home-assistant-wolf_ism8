@@ -1,4 +1,10 @@
 # Changelog
+## 4.1 (2025-01-22)
+### Fixed
+- unloading integration / freeing network resources on unload (issue #71)
+- fixed re-entry into config leading to setup errors (issue #70)
+- switched to latest wolf library with more restrictive logging
+
 ## 4.0 (2024-12-29)
 ### Added
 - added support for statistics
