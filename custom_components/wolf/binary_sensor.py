@@ -42,7 +42,7 @@ async def async_setup_entry(
         if ism8.is_writable(nbr):
             continue
         # only add sensor if it's supported by the firmware already
-        if ism8.first_fw_version(nbr) > ism8_fw:
+        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
             _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
         binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))

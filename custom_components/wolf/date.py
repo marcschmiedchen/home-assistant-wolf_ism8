@@ -30,7 +30,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             continue
         if ism8.get_type(nbr) != SENSOR_TYPES.DPT_DATE:
             continue
-        if ism8.first_fw_version(nbr) > ism8_fw:
+        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
             _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
         date_entities.append(WolfDate(ism8, nbr))

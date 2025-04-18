@@ -52,9 +52,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
         # yield some time to get the ISM8 connect to the host
         i = 0
-        while i < 15 and not ism8.connected():
+        while i < 10 and not ism8.connected():
             i = i + 1
-            _LOGGER.debug("waiting up to 30s for ISM8 to connect...")
+            _LOGGER.debug("waiting up to 20s for ISM8 to connect...")
             await asyncio.sleep(2)
 
         if ism8.connected():

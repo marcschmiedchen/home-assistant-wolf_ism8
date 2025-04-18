@@ -32,7 +32,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             SENSOR_TYPES.DPT_TEMPD,
         ):
             continue
-        if ism8.first_fw_version(nbr) > ism8_fw:
+        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
             _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
 
