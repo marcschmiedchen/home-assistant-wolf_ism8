@@ -2,7 +2,7 @@
 ## 4.1.1 (2025-04-18)
 ### Fixed
 - fixed crash when ISM8 is not present
-- fixed too much logging in 
+- fixed too much logging in library
 
 ## 4.1 (2025-01-22)
 ### Fixed
