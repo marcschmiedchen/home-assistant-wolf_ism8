@@ -5,25 +5,28 @@ Support for Wolf heating via ISM8 adapter
 import logging
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
-from .const import DOMAIN, SENSOR_TYPES
-from homeassistant.const import CONF_DEVICES
+from .const import DOMAIN, SENSOR_TYPES, CONF_DEVICES
+from . import WolfData
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass,
-    config_entry,
+    hass: HomeAssistant,
+    config_entry: ConfigEntry[WolfData],
     async_add_entities,
 ):
     """
     performs setup of the binary sensors, needs a
-    reference to an ism8-protocol implementation via hass.data
+    reference to an ism8-protocol implementation via config_entry.runtime_data
     """
-    ism8: Ism8 = hass.data[DOMAIN]["protocol"]
-    ism8_fw = hass.data[DOMAIN]["sw_version"]
+    wolf_data = config_entry.runtime_data
+    ism8 = wolf_data.protocol
+    ism8_fw = wolf_data.sw_version
 
     binary_sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():

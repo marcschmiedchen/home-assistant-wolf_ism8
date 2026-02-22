@@ -5,19 +5,27 @@ Support for Wolf heating via ISM8 adapter
 import logging
 from homeassistant.components.select import SelectEntity
 from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
+from homeassistant.core import HomeAssistant
+from homeassistant.config_entries import ConfigEntry
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import DOMAIN, SENSOR_TYPES
+from . import WolfData
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry[WolfData],
+    async_add_entities,
+):
     """
     performs setup of the <select> entities
     """
-    ism8: Ism8 = hass.data[DOMAIN]["protocol"]
-    ism8_fw = hass.data[DOMAIN]["sw_version"]
+    wolf_data = config_entry.runtime_data
+    ism8 = wolf_data.protocol
+    ism8_fw = wolf_data.sw_version
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
