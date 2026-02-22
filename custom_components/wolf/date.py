@@ -8,7 +8,7 @@ from homeassistant.const import CONF_DEVICES
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from .wolf_entity import WolfEntity
-from .const import DOMAIN, SENSOR_TYPES
+from .const import SENSOR_TYPES
 from . import WolfData
 
 _LOGGER = logging.getLogger(__name__)

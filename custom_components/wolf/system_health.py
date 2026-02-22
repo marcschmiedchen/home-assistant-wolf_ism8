@@ -8,7 +8,7 @@ from .const import DOMAIN
 
 
 @callback
-def async_register_system_health(
+def async_register(
     hass: HomeAssistant, register: SystemHealthRegistration
 ) -> None:
     """Register system health callbacks."""
@@ -25,7 +25,7 @@ async def system_health_info(hass: HomeAssistant) -> dict[str, Any]:
             continue
             
         wolf_data = entry.runtime_data
-        status = "Connected" if wolf_data.protocol.connected() else "Disconnected"
-        data[f"Connection ({entry.title})"] = status
+        status_string = f"Connected to {wolf_data.ism8_ip_address}" if wolf_data.protocol.connected() else "Disconnected"
+        data["Connection"] = status_string
         
     return data

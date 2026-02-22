@@ -6,7 +6,7 @@ import logging
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.device_registry import DeviceInfo
 from wolf_ism8 import Ism8
-from .const import DOMAIN, WOLF, WOLF_ISM8
+from .const import DOMAIN
 
 from homeassistant.const import STATE_UNKNOWN
 

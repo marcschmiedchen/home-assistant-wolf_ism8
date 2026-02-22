@@ -15,6 +15,6 @@
     "requirements": [
         "wolf_ism8==3.4"
     ],
-    "version": "4.1.1",
+    "version": "4.1.2",
     "loggers": ["wolf_ism8", "custom_components.wolf_ism8"]
 }

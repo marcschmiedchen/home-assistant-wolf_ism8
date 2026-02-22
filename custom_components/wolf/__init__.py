@@ -14,7 +14,8 @@ from homeassistant.const import CONF_HOST, CONF_PORT, Platform
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from wolf_ism8 import Ism8
-from .const import DOMAIN, CONF_DEVICES, WOLF, WOLF_ISM8
+from .const import DOMAIN, WOLF, WOLF_ISM8
+from homeassistant.const import CONF_DEVICES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class WolfData:
     sw_version: str | None = None
     hw_version: str | None = None
     serno: str | None = None
-
+    ism8_ip_address: str = None
 
 PLATFORMS = [
     Platform.SENSOR,
@@ -66,6 +67,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry[WolfD
                 while not ism8.connected():
                     await asyncio.sleep(5)
                 _LOGGER.debug("ISM8 connected, fetching webportal info")
+                config_entry.runtime_data.ism8_ip_address = ism8.get_remote_ip_adress()
                 await get_webportal_info(hass, config_entry)
         except TimeoutError:
             _LOGGER.info("Timeout waiting for ISM8 to connect for info scraping")
@@ -100,10 +102,10 @@ async def get_webportal_info(hass: HomeAssistant, config_entry: ConfigEntry[Wolf
     version can be read, no uneccesary datapoints are initialized in Home Assistant.
     """
     wolf_data = config_entry.runtime_data
-    remote_ip_address = wolf_data.protocol.get_remote_ip_adress()
+    wolf_data.ism8_ip_address
     url = None
-    if remote_ip_address is not None:
-        url = "http://" + remote_ip_address
+    if wolf_data.ism8_ip_address is not None:
+        url = "http://" + wolf_data.ism8_ip_address
         try:
             _LOGGER.debug(f"trying to scrape FW-Version from {url}")
             session = async_get_clientsession(hass)
@@ -139,6 +141,6 @@ async def get_webportal_info(hass: HomeAssistant, config_entry: ConfigEntry[Wolf
             sw_version=wolf_data.sw_version,
             hw_version=wolf_data.hw_version,
             serial_number=wolf_data.serno,
-            configuration_url=url if remote_ip_address else None,
+            configuration_url=url if wolf_data.ism8_ip_address else None,
         )
     return

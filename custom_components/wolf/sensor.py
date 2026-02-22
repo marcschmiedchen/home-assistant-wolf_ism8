@@ -19,7 +19,7 @@ from .wolf_entity import WolfEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from . import WolfData
-from .const import SENSOR_TYPES, CONF_DEVICES
+from .const import SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
