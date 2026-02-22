@@ -3,14 +3,14 @@
 This list outlines deviations from Home Assistant best practices and suggestions for architectural improvements.
 
 ## Core & Architecture
-- [ ] **Modernize Entry Data:** Transition from `hass.data[DOMAIN]` to `config_entry.runtime_data` (introduced in HA 2024.1).
-- [ ] **set most device info during init, not in every object:**  Only keep device attachment in every sensor.
-- [ ] **set device info once when website scraping finishes**  Only keep device attachment in every sensor.
-- [ ] **Shared ClientSession:** Replace manual `aiohttp.ClientSession()` in `__init__.py` with `async_get_clientsession(hass)`.
-- [ ] **Connection Management:** Refactor the 20-second `asyncio.sleep` loop in `async_setup_entry`. Entities should handle availability dynamically.
+- [x] **Modernize Entry Data:** Transition from `hass.data[DOMAIN]` to `config_entry.runtime_data` (introduced in HA 2024.1).
+- [x] **Set device info during init:** set most device info once when website scraping finishes, instead of in every entity.
+- [x] **Shared ClientSession:** Replace manual `aiohttp.ClientSession()` in `__init__.py` with `async_get_clientsession(hass)`.
+- [x] **Connection Management:** Refactor the 20-second `asyncio.sleep` loop in `async_setup_entry`. Entities should handle availability dynamically.
 - [ ] **HTML Scraping:** Move firmware version scraping logic from `__init__.py` to a more appropriate location (ideally the `wolf_ism8` library or a dedicated helper).
 - [ ] **Diagnostics:** Implement `diagnostics.py` to provide redacted info for troubleshooting.
-- [ ] **System Health:** Implement `system_health.py` to show connection status in HA.
+- [x] **System Health:** Implement `system_health.py` to show connection status in HA.
+- [ ] **Performance:** set static data without the use of properties. Use the attr_ variables directly.
 
 ## Configuration & Flow
 - [ ] **Config Flow Validation:** Add validation to verify connection to host/port during the setup process.

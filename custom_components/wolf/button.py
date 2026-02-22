@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
-from .const import DOMAIN, WOLF, WOLF_ISM8
+from .const import DOMAIN
 from . import WolfData
 
 _LOGGER = logging.getLogger(__name__)

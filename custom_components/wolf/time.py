@@ -8,7 +8,6 @@ from homeassistant.const import CONF_DEVICES
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from .wolf_entity import WolfEntity
-from wolf_ism8 import Ism8
 from .const import DOMAIN, SENSOR_TYPES
 from . import WolfData
 

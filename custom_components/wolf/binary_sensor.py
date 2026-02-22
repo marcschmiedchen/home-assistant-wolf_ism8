@@ -7,9 +7,8 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
-from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
-from .const import DOMAIN, SENSOR_TYPES, CONF_DEVICES
+from .const import SENSOR_TYPES, CONF_DEVICES
 from . import WolfData
 
 _LOGGER = logging.getLogger(__name__)

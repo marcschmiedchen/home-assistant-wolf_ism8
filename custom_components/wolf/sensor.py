@@ -15,12 +15,11 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass
-from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from . import WolfData
-from .const import DOMAIN, SENSOR_TYPES, CONF_DEVICES
+from .const import SENSOR_TYPES, CONF_DEVICES
 
 _LOGGER = logging.getLogger(__name__)
 
