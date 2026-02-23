@@ -10,7 +10,7 @@ This list outlines deviations from Home Assistant best practices and suggestions
 - [ ] **HTML Scraping:** Move firmware version scraping logic from `__init__.py` to a more appropriate location (ideally the `wolf_ism8` library or a dedicated helper).
 - [ ] **Diagnostics:** Implement `diagnostics.py` to provide redacted info for troubleshooting.
 - [x] **System Health:** Implement `system_health.py` to show connection status in HA.
-- [ ] **Performance:** set static data without the use of properties. Use the attr_ variables directly.
+- [x] **Performance:** set static data without the use of properties. Use the attr_ variables directly.
 
 ## Configuration & Flow
 - [ ] **Config Flow Validation:** Add validation to verify connection to host/port during the setup process.

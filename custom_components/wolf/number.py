@@ -54,31 +54,22 @@ class WolfInputNumber(WolfEntity, NumberEntity):
     be written to and which expect number values
     """
 
-    @property
-    def device_class(self) -> str:
+    def __init__(self, ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
+
         if self._type in (SENSOR_TYPES.DPT_VALUE_TEMP, SENSOR_TYPES.DPT_TEMPD):
-            return NumberDeviceClass.TEMPERATURE
+            self._attr_device_class = NumberDeviceClass.TEMPERATURE
         elif self._type == SENSOR_TYPES.DPT_SCALING:
-            return NumberDeviceClass.POWER_FACTOR
+            self._attr_device_class = NumberDeviceClass.POWER_FACTOR
 
-    @property
-    def native_unit_of_measurement(self) -> str:
         if self._type in (SENSOR_TYPES.DPT_VALUE_TEMP, SENSOR_TYPES.DPT_TEMPD):
-            return UnitOfTemperature.CELSIUS
+            self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
         elif self._type == SENSOR_TYPES.DPT_SCALING:
-            return PERCENTAGE
+            self._attr_native_unit_of_measurement = PERCENTAGE
 
-    @property
-    def native_max_value(self):
-        return self._max_value
-
-    @property
-    def native_min_value(self):
-        return self._min_value
-
-    @property
-    def native_step(self):
-        return self._step_value
+        self._attr_native_max_value = self._max_value
+        self._attr_native_min_value = self._min_value
+        self._attr_native_step = self._step_value
 
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""

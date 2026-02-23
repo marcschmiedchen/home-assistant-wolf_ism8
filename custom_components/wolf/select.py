@@ -68,18 +68,9 @@ async def async_setup_entry(
 class WolfSelect(WolfEntity, SelectEntity):
     """Implementation of Wolf Select entity for mode selections"""
 
-    @property
-    def options(self):
-        """Return all available options"""
-        _options = []
-        for opt in self._value_range:
-            _options.append(str(opt))
-        return _options
-
-    @property
-    def state(self) -> str | None:
-        """Return the entity state."""
-        return self.current_option
+    def __init__(self, ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
+        self._attr_options = [str(opt) for opt in self._value_range]
 
     @property
     def current_option(self):
@@ -101,16 +92,12 @@ class WolfSelect(WolfEntity, SelectEntity):
 class WolfProgrammSelect(WolfEntity, SelectEntity):
     """Implementation of Wolf Select entity for program-selections"""
 
-    @property
-    def options(self):
-        """Return all available options"""
-        return ["1", "2", "3"]
+    _attr_options = ["1", "2", "3"]
 
-    # take away the last two chars from "zeitprogramm options-name
-    @property
-    def name(self) -> str:
-        """Return the name of this entity."""
-        return self._name[:-2]
+    def __init__(self, ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
+        # take away the last two chars from "zeitprogramm options-name
+        self._attr_name = self._name[:-2]
 
     @property
     def current_option(self):
@@ -123,11 +110,6 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
         elif self._ism8.read_sensor(self.dp_nbr + 2) == 1:
             _prog = "3"
         return _prog
-
-    @property
-    def state(self) -> str | None:
-        """Return the entity state."""
-        return self.current_option
 
     async def async_added_to_hass(self) -> None:
         """Register callbacks for all 3 datapoints which may affect this entity."""

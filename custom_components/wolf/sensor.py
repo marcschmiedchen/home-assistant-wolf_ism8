@@ -15,9 +15,10 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass
-from .wolf_entity import WolfEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from wolf_ism8 import Ism8
+from .wolf_entity import WolfEntity
 from . import WolfData
 from .const import SENSOR_TYPES
 
@@ -66,51 +67,46 @@ async def async_setup_entry(
 class WolfSensor(WolfEntity, SensorEntity):
     """Implementation of Wolf Heating System Sensors"""
 
-    @property
-    def device_class(self) -> str:
+    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
+
         if self._type in (SENSOR_TYPES.DPT_VALUE_TEMP, SENSOR_TYPES.DPT_VALUE_TEMPD):
-            return SensorDeviceClass.TEMPERATURE
+            self._attr_device_class = SensorDeviceClass.TEMPERATURE
         elif self._type == SENSOR_TYPES.DPT_VALUE_PRES:
-            return SensorDeviceClass.PRESSURE
+            self._attr_device_class = SensorDeviceClass.PRESSURE
         elif self._type == SENSOR_TYPES.DPT_SCALING:
-            return SensorDeviceClass.POWER_FACTOR
+            self._attr_device_class = SensorDeviceClass.POWER_FACTOR
         elif self._type == SENSOR_TYPES.DPT_POWER:
-            return SensorDeviceClass.POWER
+            self._attr_device_class = SensorDeviceClass.POWER
         elif self._type in (SENSOR_TYPES.DPT_ENERGY, SENSOR_TYPES.DPT_ENERGY_KWH):
-            return SensorDeviceClass.ENERGY
+            self._attr_device_class = SensorDeviceClass.ENERGY
 
-    @property
-    def native_unit_of_measurement(self) -> str:
         if self._type == SENSOR_TYPES.DPT_VALUE_TEMP:
-            return UnitOfTemperature.CELSIUS
+            self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
         elif self._type == SENSOR_TYPES.DPT_VALUE_TEMPD:
-            return UnitOfTemperature.KELVIN
+            self._attr_native_unit_of_measurement = UnitOfTemperature.KELVIN
         elif self._type == SENSOR_TYPES.DPT_VALUE_PRES:
-            return UnitOfPressure.PA
+            self._attr_native_unit_of_measurement = UnitOfPressure.PA
         elif self._type == SENSOR_TYPES.DPT_SCALING:
-            return PERCENTAGE
+            self._attr_native_unit_of_measurement = PERCENTAGE
         elif self._type == SENSOR_TYPES.DPT_POWER:
-            return UnitOfPower.KILO_WATT
+            self._attr_native_unit_of_measurement = UnitOfPower.KILO_WATT
         elif self._type == SENSOR_TYPES.DPT_VALUE_VOLUME_FLOW:
-            return "l/h"
+            self._attr_native_unit_of_measurement = "l/h"
         elif self._type == SENSOR_TYPES.DPT_FLOWRATE_M3:
-            return UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
+            self._attr_native_unit_of_measurement = UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
         elif self._type == SENSOR_TYPES.DPT_ENERGY:
-            return UnitOfEnergy.WATT_HOUR
+            self._attr_native_unit_of_measurement = UnitOfEnergy.WATT_HOUR
         elif self._type == SENSOR_TYPES.DPT_ENERGY_KWH:
-            return UnitOfEnergy.KILO_WATT_HOUR
+            self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
 
-    @property
-    def state_class(self) -> str:
-        if self._type in (
+        if self._type == SENSOR_TYPES.DPT_ENERGY:
+            self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        elif self._type == SENSOR_TYPES.DPT_ENERGY_KWH:
+            self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        elif self._type not in (
             SENSOR_TYPES.DPT_HVACMODE,
             SENSOR_TYPES.DPT_DHWMODE,
             SENSOR_TYPES.DPT_HVACCONTRMODE,
         ):
-            return None
-        elif self._type == SENSOR_TYPES.DPT_ENERGY:
-            return SensorStateClass.TOTAL_INCREASING
-        elif self._type == SENSOR_TYPES.DPT_ENERGY_KWH:
-            return SensorStateClass.TOTAL_INCREASING
-        else:
-            return SensorStateClass.MEASUREMENT
+            self._attr_state_class = SensorStateClass.MEASUREMENT

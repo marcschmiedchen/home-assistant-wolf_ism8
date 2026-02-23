@@ -48,6 +48,11 @@ class WolfTime(WolfEntity, TimeEntity):
     Time Entity for ISM8 datapoints which can be written to
     """
 
+    @property
+    def native_value(self):
+        """Return the state of the device."""
+        return self._ism8.read_sensor(self.dp_nbr)
+
     async def async_set_value(self, time) -> None:
         """Update the current value."""
         _LOGGER.debug(f"send dp {self.dp_nbr}: {time}")

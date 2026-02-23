@@ -7,10 +7,12 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_DEVICES
+from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import SENSOR_TYPES
 from . import WolfData
-from homeassistant.const import CONF_DEVICES
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -57,20 +59,13 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     """Binary sensor representation for DPT_SWITCH, DPT_BOOL,
     DPT_ENABLE, DPT_OPENCLOSE types"""
 
-    @property
-    def is_on(self) -> bool:
-        """Return binary sensor state; invert logic for problem sensors."""
-        self._state = self._ism8.read_sensor(self.dp_nbr)
-        # _LOGGER.debug(f"binary value from ism: set DP {self.dp_nbr} to {self._state}")
-        return bool(self._state)
+    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
 
-    @property
-    def device_class(self):
-        """Return the class of the device."""
         if self._name == "Stoerung":
-            return BinarySensorDeviceClass.PROBLEM
+            self._attr_device_class = BinarySensorDeviceClass.PROBLEM
         elif self._name in ["Status Brenner / Flamme", "Status E-Heizung"]:
-            return BinarySensorDeviceClass.HEAT
+            self._attr_device_class = BinarySensorDeviceClass.HEAT
         elif self._name in [
             "Status Heizkreispumpe",
             "Status Speicherladepumpe",
@@ -78,6 +73,9 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
             "Status Solarkreispumpe SKP1",
             "Status Zubringer-/Heizkreispumpe",
         ]:
-            return BinarySensorDeviceClass.RUNNING
-        else:
-            return None
+            self._attr_device_class = BinarySensorDeviceClass.RUNNING
+
+    @property
+    def is_on(self) -> bool:
+        """Return binary sensor state; invert logic for problem sensors."""
+        return bool(self._ism8.read_sensor(self.dp_nbr))

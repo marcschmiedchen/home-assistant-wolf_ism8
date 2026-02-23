@@ -20,6 +20,9 @@ class WolfEntity(Entity):
     attributes which are the same in all Wolf Sensors.
     """
 
+    _attr_should_poll = False
+    _attr_has_entity_name = True
+
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         _LOGGER.debug(f"setup wolf entity {dp_nbr}")
         self.dp_nbr = dp_nbr
@@ -27,8 +30,12 @@ class WolfEntity(Entity):
         self._device = ism8.get_device(dp_nbr)
         self._name = ism8.get_name(dp_nbr)
         self._type = ism8.get_type(dp_nbr)
-        self._state = STATE_UNKNOWN
         self._is_writable = ism8.is_writable(dp_nbr)
+        self._attr_unique_id = str(self.dp_nbr)
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._device)},
+        )
+        self._attr_name = self._name
 
         if self._is_writable:
             self._value_range = ism8.get_value_range(dp_nbr)
@@ -51,38 +58,10 @@ class WolfEntity(Entity):
         self._ism8 = None
 
     @property
-    def should_poll(self) -> bool:
-        """Return False, because integration is now fully asnyc"""
-        return False
-
-    @property
-    def has_entity_name(self) -> bool:
-        return True
-
-    @property
-    def name(self) -> str:
-        """Return the name of this entity."""
-        return self._name
-
-    @property
-    def unique_id(self):
-        """Return the unique_id of this sensor."""
-        return str(self.dp_nbr)
-
-    @property
-    def device_info(self):
-        """Return device info."""
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._device)},
-        )
-
-    @property
     def native_value(self):
         """Return the state of the device."""
         value = self._ism8.read_sensor(self.dp_nbr)
-        self._state = round(value, 2) if isinstance(value, float) else value
-        # _LOGGER.debug(f"value from ism: set DP {self.dp_nbr} to {self._state}")
-        return self._state
+        return round(value, 2) if isinstance(value, float) else value
 
     @property
     def available(self):
