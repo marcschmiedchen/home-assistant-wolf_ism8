@@ -7,6 +7,7 @@ from homeassistant.components.time import TimeEntity
 from homeassistant.const import CONF_DEVICES
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .wolf_entity import WolfEntity
 from .const import SENSOR_TYPES
 from . import WolfData
@@ -17,8 +18,8 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry[WolfData],
-    async_add_entities,
-):
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """
     performs setup of the writeable number entities, needs a
     reference to an ism8-protocol implementation via config_entry.runtime_data

@@ -1,4 +1,14 @@
 # Changelog
+## 4.1.2 (2026-02-18)
+### Fixed
+- modernized architecture - uses config_entry.runtime_data now
+- set device info once, at startup, instead of in every entity -> performance
+- use connection pooling with async_get_clientsession(hass) -> performance and stability
+- implemented system health check -> connection is shown under system/repairs
+- set static data without the use of properties. Use the attr_ variables directly. -> performance
+- Add missing type hints to function signatures.
+
+
 ## 4.1.1 (2025-04-18)
 ### Fixed
 - fixed crash when ISM8 is not present

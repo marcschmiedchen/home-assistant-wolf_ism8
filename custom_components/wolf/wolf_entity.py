@@ -58,11 +58,12 @@ class WolfEntity(Entity):
         self._ism8 = None
 
     @property
-    def native_value(self):
+    def native_value(self) -> float | int | str | None:
         """Return the state of the device."""
         value = self._ism8.read_sensor(self.dp_nbr)
         return round(value, 2) if isinstance(value, float) else value
 
     @property
-    def available(self):
+    def available(self) -> bool:
+        """Return True if entity is available."""
         return self._ism8.connected()

@@ -15,6 +15,7 @@ from homeassistant.const import (
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorStateClass
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from wolf_ism8 import Ism8
@@ -28,8 +29,8 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry[WolfData],
-    async_add_entities,
-):
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """
     performs setup of the analog sensors, expects a
     reference to an ism8-adapter via config_entry.runtime_data

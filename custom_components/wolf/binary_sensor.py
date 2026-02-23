@@ -8,6 +8,7 @@ from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from .const import SENSOR_TYPES
@@ -20,8 +21,8 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry[WolfData],
-    async_add_entities,
-):
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """
     performs setup of the binary sensors, needs a
     reference to an ism8-protocol implementation via config_entry.runtime_data

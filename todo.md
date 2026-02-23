@@ -12,22 +12,14 @@ This list outlines deviations from Home Assistant best practices and suggestions
 - [x] **System Health:** Implement `system_health.py` to show connection status in HA.
 - [x] **Performance:** set static data without the use of properties. Use the attr_ variables directly.
 
-## Configuration & Flow
-- [ ] **Config Flow Validation:** Add validation to verify connection to host/port during the setup process.
-- [ ] **Reconfiguration Support:** Implement `async_step_reconfigure` in `config_flow.py`.
-- [ ] **Options Flow:** Add an options flow to allow users to modify selected devices after initial setup.
-- [ ] **Dynamic Titles:** Use host or a user-provided name as the config entry title instead of the hardcoded "ISM8".
-
 ## Entities & Platforms
-- [ ] **Entity Descriptions:** Use `EntityDescription` (e.g., `SensorEntityDescription`, `BinarySensorEntityDescription`) across all platforms for cleaner property management.
-- [ ] **Unique IDs:** Improve `unique_id` to include a unique adapter identifier (e.g., serial number or host/port) to prevent collisions in multi-instance setups.
 - [ ] **Translations:** Add entity-level translation keys in `translations/*.json` to support localized entity names and states.
-- [ ] **Type Hints:** Add missing type hints to function signatures, particularly in `async_setup_entry` across platform files.
+- [x] **Type Hints:** Add missing type hints to function signatures, particularly in `async_setup_entry` across platform files.
 - [ ] **Hardcoded Logic:** Refactor `device_class` and `icon` logic that currently relies on string matching of entity names. Use fixed identifiers or `EntityDescription`.
 - [ ] **Hardcoded Units:** Replace hardcoded units (e.g., "l/h") with HA constants or standardized strings where applicable.
 - [ ] **Button IDs:** Refactor hardcoded DP numbers (193, 194) in `button.py` into constants.
 
 ## Quality & Maintenance
-- [ ] **Logging:** Replace any remaining `print()` statements with `_LOGGER`.
+- [x] **Logging:** Replace any remaining `print()` statements with `_LOGGER`.
 - [ ] **Testing:** Implement unit and integration tests (none currently exist).
-- [ ] **Cleanup:** Remove manual `pop` logic in `async_unload_entry` once `runtime_data` is implemented.
+- [x] **Cleanup:** Remove manual `pop` logic in `async_unload_entry` once `runtime_data` is implemented.
