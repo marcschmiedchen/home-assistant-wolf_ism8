@@ -1,10 +1,48 @@
-# Wolf Climate Control ISM8 für Home Assistant
+# Wolf Climate Control ISM8 for Home Assistant
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 ![HASS Build](https://github.com/marcschmiedchen/home-assistant-wolf_ism8/workflows/hassfest/badge.svg)
 ![HASS Build](https://github.com/marcschmiedchen/home-assistant-wolf_ism8/workflows/hacs/badge.svg)
 
+[English](#english) | [Deutsch](#deutsch)
+
+---
+
+<a name="english"></a>
+## English
+
+An integration of WOLF's Heating ISM8 module into Home Assistant. The integration provides up to 300 datapoints which are delivered by the ISM8 via network. Some of them may be written to.
+
+### Supported devices:
+  - Heating Unit 1-4 (TOB, CGB-2, MGK-2, COB-2, TGB-2)
+  - Direct heating circuit
+  - Mixed heating circuit 1-3
+  - Cascading module
+  - Solar module SM
+  - Ventilation (CWL Excellent, CWL 2)
+  - Heatpump 1-4 (BWL1S, CHA)
+  - Controller (BM2)
+
+### Installation via HACS (Recommended)
+1. In Home Assistant, go to HACS -> Integrations.
+2. Click the three dots in the top right and select "Custom repositories".
+3. Add `https://github.com/marcschmiedchen/home-assistant-wolf_ism8` and select category "Integration".
+4. Search for "Wolf Climate Control ISM8" and install.
+5. **Restart Home Assistant.**
+6. Go to Settings -> Devices & Services -> Add Integration -> Search for "Wolf".
+
+### Configuration
+1. **IP/Port:** Enter the IP address and port of your Home Assistant server that the integration should listen on (Default: `0.0.0.0` and `12004`). This must match the settings in your ISM8 web configuration.
+2. **Devices:** Select the devices installed in your HVAC system.
+
+---
+
+<a name="deutsch"></a>
+## Deutsch
+
 Eine Home Assistant Integration für das WOLF ISM8 Modul. Die Integration stellt bis zu ca. 300 Datenpunkte zur Verfügung, die das ISM8 Modul über das Netzwerk liefert. Einige davon können auch beschrieben werden.
 
-Unterstützte Bereiche/Geräte:
+### Unterstützte Bereiche/Geräte:
   - Heizgerät 1-4 (TOB, CGB-2, MGK-2, COB-2, TGB-2)
   - direkter Heizkreis
   - Mischerkreis 1-3
@@ -13,44 +51,30 @@ Unterstützte Bereiche/Geräte:
   - Comfort Wohnraumlüftung (CWL Excellent, CWL 2)
   - Wärmepumpe 1-4 (BWL1S, CHA)
   - Systembedienmodul (BM2)
-  
-## INSTALLATION 
-
-### Manuelle Version
-1. Download und entpacken der Dateien in den Ordner"custom_components" im Konfigurationsverzeichnis von Home Assistant (Heißt meistens ".homeassistant" in Core, oder auch "config" im Docker Container. Wenn es noch nicht existiert, einfach erzeugen.)
-2. Der "wolf"-Unterordner muss dort reinkopiert werden. 
-3. Neustart von Home Assistant.
-4. Unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" wählen, nach Wolf suchen und installieren.
 
 ### Installation über HACS
-1. Mittlerweile ist die Integration über den HACS Store installierbar. Dazu muss oben rechts mit den drei Punkten ein "benutzerdefiniertes Repository" hinzugefügt werden. Hier wird der Link auf das Github-Repo einmalig eingetragen ( [https://github.com/marcschmiedchen/home-assistant-wolf_ism8] ). Danach bleibt es in der eigenen HACS Installation immer sichtbar.
-2. Danach kann man es auswählen und installieren. Dieser Vorgang lädt aber nur die Integration herunter, danach muss man sie im übernächsten Schritt noch selbst installieren.
-3. Alternativ zu (1) und (2) öffnet dieser Link das Repo auch direkt in HACS in eurer Home-Assistant-Instanz:
+1. In Home Assistant zu HACS -> Integrationen navigieren.
+2. Oben rechts auf die drei Punkte klicken -> "Benutzerdefinierte Repositories".
+3. Link `https://github.com/marcschmiedchen/home-assistant-wolf_ism8` hinzufügen, Kategorie "Integration".
+4. Nach "Wolf Climate Control ISM8" suchen und installieren.
+5. **Home Assistant neu starten.**
+6. Unter Einstellungen -> Geräte & Dienste -> Integration hinzufügen nach "Wolf" suchen.
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=marcschmiedchen&repository=home-assistant-wolf_ism8&category=heating)
+### Konfiguration
+1. **IP/Port:** IP-Adresse und Port des HA-Servers angeben, auf dem die Integration lauscht (Standard: `0.0.0.0` und `12004`). Diese Werte müssen im ISM8 hinterlegt sein.
+2. **Geräte:** Wählen Sie alle vorhandenen Geräte Ihres Systems aus.
 
-4. Nach dem Download unbedingt neu starten(!). 
-5. Danach kann die Integration dann endlich selbst unter Einstellungen -> Geräte&Dienste -> "Integration zufügen" installiert werden.
+---
 
-
-Wichtig ist hier ganz besonders: Neustart hilft bei vielen Problemen während/nach der Installation. 
-
-### Weitere Schritte & Konfiguration
-1. (optional): Angabe der IP Adresse und des Ports, auf dem die Integration am Netzwerk lauscht. Das ist NICHT die Adresse des ISM8-Moduls, sondern die HA-Server IP-Adresse, die mit dem ISM8 kommunizieren soll. Die Standardeinstellung "0.0.0.0" lauscht auf allen verfügbaren Netzwerkkarten und sollte fast immer OK sein. 12004 ist der Standard-Port, mit dem das ISM8 geliefert wird, und das sollte eigentlich auch fast immer OK sein.
-2. Die IP-Adresse eurer HA-Instanz und die Portnummer muss im ISM8 hinterlegt sein. Achtung, das ISM8 muss neu booten, wenn man die Einstellungen ändert.
-3. Im letzten Schritt alle Geräte auswählen, die ihr besitzt oder angezeigt bekommen wollt. Wenn ihr mehr auswählt, ist das zwar nicht schlimm, aber es werden dann ungenutzte Entitäten in HA angelegt, die nie einen Wert bekommen. 
-4. Es gibt einen Punkt "undokumentierte Daten" --> manchmal kommen Daten vom ISM8, die in der Doku (noch nicht) hinterlegt ist. Damit sie nicht verloren gehen oder Fehler auslösen, habe ich sie hierhin verschoben. Wenn jemand rausfindet was das ist, integriere ich sie gern.
-
-## SCREENSHOTS
-<img width="300" src="./screenshots/s1.PNG">
-
-<img width="300" src="./screenshots/s2.PNG"> 
-
-<img width="300" src="./screenshots/s3.PNG"> 
-
-<img width="300" src="./screenshots/s5.PNG"> 
-
-<img width="300" src="./screenshots/s4.PNG">
+## Screenshots
+<p align="center">
+  <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/raw/master/screenshots/s1.PNG">
+  <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/raw/master/screenshots/s2.PNG">
+  <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/raw/master/screenshots/s3.PNG">
+  <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/raw/master/screenshots/s5.PNG">
+</p>
 
 ## TODO
- - ggf. Autodiscover 
+- Autodiscover
+- Diagnostics
+- Translations for entities

@@ -4,15 +4,15 @@ This list tracks the necessary steps to prepare the **Wolf Climate Control ISM8*
 
 ## Hard Requirements (HACS Guidelines)
 - [x] **Add LICENSE file:** A license file is mandatory for HACS. (e.g., MIT, Apache 2.0).
-- [ ] **GitHub Repository Settings:**
+- [ ] **GitHub Repository Settings (MANUAL ACTION REQUIRED):**
     - [ ] Add description to the GitHub repository.
     - [ ] Add topics: `home-assistant`, `hacs`, `integration`, `wolf-heating`, `ism8`.
 - [x] **Manifest Validation:**
     - [x] Fix trailing comma in `custom_components/wolf/manifest.json`.
-    - [ ] Ensure all required fields are present.
+    - [x] Ensure all required fields are present.
 - [x] **Minimum Home Assistant Version:**
     - [x] Add `"homeassistant": "2024.1.0"` (or later) to `hacs.json` as `runtime_data` is used.
-- [ ] **README.md:** Ensure the README clearly describes what the integration does and how to install it.
+- [x] **README.md:** Ensure the README clearly describes what the integration does and how to install it. (Now Bilingual)
 
 ## Quality & UX Improvements (Recommended)
 - [ ] **Translations:** Complete entity-level translation keys in `translations/*.json` (referenced in `todo.md`).
