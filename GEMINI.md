@@ -5,7 +5,6 @@ This project is a custom integration for Home Assistant. All code must adhere to
 * **Asynchronous Programming:** Always use `asyncio`. Avoid any blocking I/O. 
 * **Communication:** Use `aiohttp` for all HTTP requests. 
 * **Config Flow:** Configuration must happen via `config_flow.py`. Do not use `setup_platform` for manual YAML config.
-* **Entity Naming:** Use `unique_id` for all entities based on a serial number or unique API identifier.
 * **Typing:** Use Python type hints (PEP 484) everywhere. Use `HomeAssistant` and `ConfigEntry` types from `homeassistant.core` and `homeassistant.config_entries`.
 
 ## Project Structure
