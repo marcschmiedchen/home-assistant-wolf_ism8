@@ -3,14 +3,16 @@ Support for Wolf heating via ISM8 adapter
 """
 
 import logging
-from homeassistant.components.number import NumberEntity, NumberDeviceClass
-from homeassistant.const import CONF_DEVICES, UnitOfTemperature, PERCENTAGE
-from homeassistant.core import HomeAssistant
+
+from homeassistant.components.number import NumberDeviceClass, NumberEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_DEVICES, PERCENTAGE, UnitOfTemperature
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from .wolf_entity import WolfEntity
-from .const import SENSOR_TYPES
+
 from . import WolfData
+from .const import SENSOR_TYPES
+from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,9 +26,8 @@ async def async_setup_entry(
     performs setup of the writeable number entities, needs a
     reference to an ism8-protocol implementation via config_entry.runtime_data
     """
-    wolf_data = config_entry.runtime_data
-    ism8 = wolf_data.protocol
-    ism8_fw = wolf_data.sw_version
+    ism8 = config_entry.runtime_data.protocol
+    ism8_fw = config_entry.runtime_data.sw_version
 
     number_entities = []
     for nbr in ism8.get_all_sensors().keys():

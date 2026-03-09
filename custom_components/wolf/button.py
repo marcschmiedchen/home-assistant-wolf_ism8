@@ -3,14 +3,17 @@ Support for Wolf heating via ISM8 adapter
 """
 
 import logging
+
 from homeassistant.components.button import ButtonEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
 from homeassistant.core import HomeAssistant
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from .wolf_entity import WolfEntity
-from .const import DOMAIN
+
 from . import WolfData
+from .const import DOMAIN
+from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -22,8 +25,7 @@ async def async_setup_entry(
 ) -> None:
     """performs setup of the button entities"""
 
-    wolf_data = config_entry.runtime_data
-    ism8 = wolf_data.protocol
+    ism8 = config_entry.runtime_data.protocol
 
     buttons = []
     for nbr in (193, 194):
@@ -39,8 +41,6 @@ class WolfButton(WolfEntity, ButtonEntity):
     Button representation for ISM8 datapoints which can
     be triggered to start certain processes on ISM8
     """
-
-    _attr_available = True
 
     def __init__(self, ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
@@ -70,9 +70,10 @@ class WolfRequestDataButton(ButtonEntity):
         self._ism8 = ism8
         self._device = "Systembedienmodul"
         self._attr_name = "Datenanforderung"
-        self._attr_device_info = {
-            "identifiers": {(DOMAIN, self._device)},
-        }
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._device)},
+            name=self._device,
+        )
         _LOGGER.debug("setup wolf RequestDataButton")
 
     async def async_press(self) -> None:

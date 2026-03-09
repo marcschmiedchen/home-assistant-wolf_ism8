@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
 from homeassistant.components.select import SelectEntity
 from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
@@ -23,9 +19,9 @@ async def async_setup_entry(
     """
     performs setup of the <select> entities
     """
-    wolf_data = config_entry.runtime_data
-    ism8 = wolf_data.protocol
-    ism8_fw = wolf_data.sw_version
+
+    ism8 = config_entry.runtime_data.protocol
+    ism8_fw = config_entry.runtime_data.sw_version
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -57,7 +53,7 @@ async def async_setup_entry(
         # datapoint-entries do not create a sensor instance
         if dp_name[-2:] in (" 1", " 2", " 3"):
             if dp_name[-2:] == " 1":
-                # _LOGGER.debug("initializing <Programm> Entity: %s", dp_name)
+                # _LOGGER.debug("initializing <Program> Entity: %s", dp_name)
                 select_entities.append(WolfProgrammSelect(ism8, nbr))
         else:
             # _LOGGER.debug("initializing <Select> entity: %s", dp_name)
@@ -98,7 +94,7 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
     def __init__(self, ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
         # take away the last two chars from "zeitprogramm options-name
-        self._attr_name = self._name[:-2]
+        self._attr_name = ism8.get_name(dp_nbr)[:-2]
 
     @property
     def current_option(self):

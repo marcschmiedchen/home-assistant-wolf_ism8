@@ -8,8 +8,6 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from wolf_ism8 import Ism8
 from .const import DOMAIN
 
-from homeassistant.const import STATE_UNKNOWN
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -27,15 +25,16 @@ class WolfEntity(Entity):
         _LOGGER.debug(f"setup wolf entity {dp_nbr}")
         self.dp_nbr = dp_nbr
         self._ism8 = ism8
-        self._device = ism8.get_device(dp_nbr)
-        self._name = ism8.get_name(dp_nbr)
         self._type = ism8.get_type(dp_nbr)
+        self._device = ism8.get_device(dp_nbr)
+        self._attr_name = ism8.get_name(dp_nbr)
         self._is_writable = ism8.is_writable(dp_nbr)
+        self._attr_available = ism8.connected()
         self._attr_unique_id = str(self.dp_nbr)
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._device)},
+            name=self._device,
         )
-        self._attr_name = self._name
 
         if self._is_writable:
             self._value_range = ism8.get_value_range(dp_nbr)
@@ -53,7 +52,7 @@ class WolfEntity(Entity):
 
     async def async_will_remove_from_hass(self) -> None:
         """un-register callback and delete ISM8-reference when entity is removed."""
-        _LOGGER.debug(f"remove_from_hass (entity {self._name}) called")
+        _LOGGER.debug(f"remove_from_hass (entity {self._attr_name}) called")
         self._ism8.remove_callback(self.dp_nbr)
         self._ism8 = None
 
@@ -61,9 +60,4 @@ class WolfEntity(Entity):
     def native_value(self) -> float | int | str | None:
         """Return the state of the device."""
         value = self._ism8.read_sensor(self.dp_nbr)
-        return round(value, 2) if isinstance(value, float) else value
-
-    @property
-    def available(self) -> bool:
-        """Return True if entity is available."""
-        return self._ism8.connected()
+        return round(value, 4) if isinstance(value, float) else value

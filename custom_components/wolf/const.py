@@ -1,5 +1,5 @@
-from typing import Final
 from enum import StrEnum
+from typing import Final
 
 DOMAIN: Final = "wolf"
 

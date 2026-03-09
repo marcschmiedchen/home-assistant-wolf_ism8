@@ -1,17 +1,17 @@
 """Config flow for Wolf SmartSet Service integration."""
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
-import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_DEVICES, CONF_HOST, CONF_PORT
 from wolf_ism8 import Ism8
+
 from .const import (
-    DOMAIN,
     DEFAULT_HOST,
     DEFAULT_PORT,
+    DOMAIN,
     WOLF_DEFAULT_DEVICES,
 )
-
 
 WOLF_HOST_SCHEMA = {
     vol.Required(CONF_HOST, default=DEFAULT_HOST): cv.string,

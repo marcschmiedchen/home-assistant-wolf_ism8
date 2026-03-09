@@ -14,7 +14,6 @@ from .wolf_entity import WolfEntity
 from .const import SENSOR_TYPES
 from . import WolfData
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -27,9 +26,8 @@ async def async_setup_entry(
     performs setup of the binary sensors, needs a
     reference to an ism8-protocol implementation via config_entry.runtime_data
     """
-    wolf_data = config_entry.runtime_data
-    ism8 = wolf_data.protocol
-    ism8_fw = wolf_data.sw_version
+    ism8 = config_entry.runtime_data.protocol
+    ism8_fw = config_entry.runtime_data.sw_version
 
     binary_sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -52,7 +50,6 @@ async def async_setup_entry(
             _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
         binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
-
     async_add_entities(binary_sensor_entities)
 
 
@@ -63,11 +60,11 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
 
-        if self._name == "Stoerung":
+        if self._attr_name == "Stoerung":
             self._attr_device_class = BinarySensorDeviceClass.PROBLEM
-        elif self._name in ["Status Brenner / Flamme", "Status E-Heizung"]:
+        elif self._attr_name in ["Status Brenner / Flamme", "Status E-Heizung"]:
             self._attr_device_class = BinarySensorDeviceClass.HEAT
-        elif self._name in [
+        elif self._attr_name in [
             "Status Heizkreispumpe",
             "Status Speicherladepumpe",
             "Status Mischerkreispumpe",
@@ -76,7 +73,4 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
         ]:
             self._attr_device_class = BinarySensorDeviceClass.RUNNING
 
-    @property
-    def is_on(self) -> bool:
-        """Return binary sensor state; invert logic for problem sensors."""
-        return bool(self._ism8.read_sensor(self.dp_nbr))
+        self._attr_is_on = bool(self._ism8.read_sensor(self.dp_nbr))

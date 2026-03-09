@@ -1,12 +1,15 @@
 # Changelog
-## 4.1.2 (2026-02-18)
+## 4.1.2 (2026-03-03)
 ### Fixed
 - modernized architecture - uses config_entry.runtime_data now
 - set device info once, at startup, instead of in every entity -> performance
 - use connection pooling with async_get_clientsession(hass) -> performance and stability
 - implemented system health check -> connection is shown under system/repairs
-- set static data without the use of properties. Use the attr_ variables directly. -> performance
+- set static data without the use of properties. Use the attr_ variables directly. -> adhere to best practice & performance
 - Add missing type hints to function signatures.
+- replaced hardcoded l/h unit with UnitOfVolumeFlowRate.LITERS_PER_HOUR
+- added SensorDeviceClass.VOLUME_FLOW_RATE for Flow sensors; enables switch of units in GUI
+- bug: fixed SensorStateClass.TOTAL for Tagesertrag -> is not TOTAL_INCREASING
 
 
 ## 4.1.1 (2025-04-18)
@@ -26,7 +29,7 @@
 - scraping web portal for information on firmware of ISM8
 - [breaking] suppressing datapoints which are not supported in ISM8 FW-version
 - added support for up to 4 heatpumps (Waermepumpe 1-4)
-- [breaking] switched to latest wolf library with support for specific modes for CHA 
+- [breaking] switched to latest wolf library with support for specific modes for CHA
 - added support for solar "active energy" (Gesamtertrag) sensor
 - link to ISM webportal now available in device-card
 
@@ -38,7 +41,7 @@
 
 ## 3.3 (2024-10-04)
 ### Fixed
-- entity state is not longer directly set, usind native_value instead.
+- entity state is not longer directly set, using native_value instead.
 - this enables HA unit conversion and precision adjustment
 
 ## 3.2.5 (2024-09-14)
@@ -78,7 +81,7 @@
 ### Added
 - ignoring datapoints with unrealistic values (>1000°C, >1000m3/h)
 ### Fixed
-- fixed problem with "Programm" Selects
+- fixed problem with "Programme" Selects
 - several fixes in the wolf-api-library (on pypi: caching issues, conversion errors)
 
 ## 3.0 (2024-01-18)
@@ -91,7 +94,7 @@
 - **Breaking:**: renamed all devices to full name instead of abbreviation (feature request)
 ### Fixed
 - catch "invalid data" from ISM8 and ignore it
-- fixed update isses with select entities
+- fixed update issues with select entities
 
 
 ## 1.0.0 (2020)
