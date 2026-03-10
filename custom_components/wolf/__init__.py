@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating system ISM via ISM8 adapter
-"""
-
 import asyncio
 import logging
 import re
@@ -28,8 +24,8 @@ class WolfData:
     server: asyncio.AbstractServer
     sw_version: str | None = None
     hw_version: str | None = None
-    serno: str | None = None
-    ism8_ip_address: str = None
+    serial_number: str | None = None
+    ism8_ip_address: str | None = None
 
 
 PLATFORMS = [
@@ -96,7 +92,7 @@ async def async_setup_entry(
                     identifiers={(DOMAIN, config_entry.entry_id)},
                     sw_version=config_entry.runtime_data.sw_version,
                     hw_version=config_entry.runtime_data.hw_version,
-                    serial_number=config_entry.runtime_data.serno,
+                    serial_number=config_entry.runtime_data.serial_number,
                     configuration_url=f"http://{config_entry.runtime_data.ism8_ip_address}"
                     if config_entry.runtime_data.ism8_ip_address
                     else None,
@@ -127,15 +123,13 @@ async def async_unload_entry(
         wolf_data = config_entry.runtime_data
         _LOGGER.info("Releasing ISM8 network connection")
         wolf_data.server.close()
-        result = wolf_data.server.close_clients()
-        # Check if the result is a coroutine before awaiting it
-        if asyncio.iscoroutine(result):
-            await result
+        # close_clients returns None, not a coroutine
+        wolf_data.server.close_clients()
         await wolf_data.server.wait_closed()
     return unload_ok
 
 
-async def get_webportal_info(hass: HomeAssistant, wolf_data) -> None:
+async def get_webportal_info(hass: HomeAssistant, wolf_data: WolfData) -> None:
     """Gets some information from the ISM-webportal. Most important is the ISM8 firmware
     version, which restricts the datapoints available to the integration. When FW
     version can be read, no unnecessary datapoints are initialized in Home Assistant.
@@ -146,22 +140,14 @@ async def get_webportal_info(hass: HomeAssistant, wolf_data) -> None:
         session = async_get_clientsession(hass)
         async with session.get(url, timeout=10) as response:
             html = await response.text()
-
         match = re.search(r"FW-Version.*?(\d+\.\d+)", html)
         if match:
             wolf_data.sw_version = match.group(1)
-            _LOGGER.debug(f"extracted FW: {wolf_data.sw_version}")
-
         match = re.search(r"HW-Version.*?(\d+\.\d+)", html)
         if match:
             wolf_data.hw_version = match.group(1)
-            _LOGGER.debug(f"extracted HW: {wolf_data.hw_version}")
-
         match = re.search(r"<td>\s*(\w{12})\s*<\/td>", html)
         if match:
-            wolf_data.serno = match.group(1)
-            _LOGGER.debug(f"extracted serNo: {wolf_data.serno}")
+            wolf_data.serial_number = match.group(1)
     except Exception as e:
         _LOGGER.info("Could not gather info on ISM8: %s", e)
-
-    return

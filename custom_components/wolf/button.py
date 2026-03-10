@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
 
 from homeassistant.components.button import ButtonEntity

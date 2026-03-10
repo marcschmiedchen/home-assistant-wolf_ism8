@@ -10,6 +10,7 @@
 - replaced hardcoded l/h unit with UnitOfVolumeFlowRate.LITERS_PER_HOUR
 - added SensorDeviceClass.VOLUME_FLOW_RATE for Flow sensors; enables switch of units in GUI
 - bug: fixed SensorStateClass.TOTAL for Tagesertrag -> is not TOTAL_INCREASING
+- refactored naming conventions
 
 
 ## 4.1.1 (2025-04-18)

@@ -12,7 +12,7 @@ WOLF_ISM8: Final = "ISM8"
 WOLF_DEFAULT_DEVICES: Final = ["Heizgeraet1", "Systembedienmodul"]
 
 
-class SENSOR_TYPES(StrEnum):
+class SensorType(StrEnum):
     """Datapoint class according to wolf_ism8 datapoint types"""
 
     DPT_SWITCH = "DPT_Switch"

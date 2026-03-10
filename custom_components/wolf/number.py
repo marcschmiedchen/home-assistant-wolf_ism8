@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
 
 from homeassistant.components.number import NumberDeviceClass, NumberEntity
@@ -11,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WolfData
-from .const import SENSOR_TYPES
+from .const import SensorType
 from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -36,9 +32,9 @@ async def async_setup_entry(
         if not ism8.is_writable(nbr):
             continue
         if ism8.get_type(nbr) not in (
-            SENSOR_TYPES.DPT_VALUE_TEMP,
-            SENSOR_TYPES.DPT_SCALING,
-            SENSOR_TYPES.DPT_TEMPD,
+            SensorType.DPT_VALUE_TEMP,
+            SensorType.DPT_SCALING,
+            SensorType.DPT_TEMPD,
         ):
             continue
         if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
@@ -59,14 +55,14 @@ class WolfInputNumber(WolfEntity, NumberEntity):
     def __init__(self, ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
 
-        if self._type in (SENSOR_TYPES.DPT_VALUE_TEMP, SENSOR_TYPES.DPT_TEMPD):
+        if self._type in (SensorType.DPT_VALUE_TEMP, SensorType.DPT_TEMPD):
             self._attr_device_class = NumberDeviceClass.TEMPERATURE
-        elif self._type == SENSOR_TYPES.DPT_SCALING:
+        elif self._type == SensorType.DPT_SCALING:
             self._attr_device_class = NumberDeviceClass.POWER_FACTOR
 
-        if self._type in (SENSOR_TYPES.DPT_VALUE_TEMP, SENSOR_TYPES.DPT_TEMPD):
+        if self._type in (SensorType.DPT_VALUE_TEMP, SensorType.DPT_TEMPD):
             self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-        elif self._type == SENSOR_TYPES.DPT_SCALING:
+        elif self._type == SensorType.DPT_SCALING:
             self._attr_native_unit_of_measurement = PERCENTAGE
 
         self._attr_native_max_value = self._max_value

@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
 
 from homeassistant.components.date import DateEntity
@@ -11,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WolfData
-from .const import SENSOR_TYPES
+from .const import SensorType
 from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,7 +33,7 @@ async def async_setup_entry(
         # only add sensors which are writable
         if not ism8.is_writable(nbr):
             continue
-        if ism8.get_type(nbr) != SENSOR_TYPES.DPT_DATE:
+        if ism8.get_type(nbr) != SensorType.DPT_DATE:
             continue
         if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
             _LOGGER.debug(f"sensor {nbr} not supported by firmware")

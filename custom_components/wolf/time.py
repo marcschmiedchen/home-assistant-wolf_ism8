@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
 
 from homeassistant.components.time import TimeEntity
@@ -11,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import WolfData
-from .const import SENSOR_TYPES
+from .const import SensorType
 from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,7 +29,7 @@ async def async_setup_entry(
     for nbr in ism8.get_all_sensors().keys():
         if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
             continue
-        if ism8.get_type(nbr) != SENSOR_TYPES.DPT_TIMEOFDAY:
+        if ism8.get_type(nbr) != SensorType.DPT_TIMEOFDAY:
             continue
         if not ism8.is_writable(nbr):
             continue

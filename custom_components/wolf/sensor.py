@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
 from homeassistant.const import (
     CONF_DEVICES,
@@ -21,7 +17,7 @@ from homeassistant.config_entries import ConfigEntry
 from wolf_ism8 import Ism8
 from .wolf_entity import WolfEntity
 from . import WolfData
-from .const import SENSOR_TYPES
+from .const import SensorType
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -45,16 +41,16 @@ async def async_setup_entry(
         if ism8.is_writable(nbr):
             continue
         if ism8.get_type(nbr) not in (
-            SENSOR_TYPES.DPT_VALUE_TEMP,
-            SENSOR_TYPES.DPT_VALUE_TEMPD,
-            SENSOR_TYPES.DPT_VALUE_PRES,
-            SENSOR_TYPES.DPT_SCALING,
-            SENSOR_TYPES.DPT_POWER,
-            SENSOR_TYPES.DPT_VALUE_VOLUME_FLOW,
-            SENSOR_TYPES.DPT_FLOWRATE_M3,
-            SENSOR_TYPES.DPT_HVACCONTRMODE,
-            SENSOR_TYPES.DPT_ENERGY,
-            SENSOR_TYPES.DPT_ENERGY_KWH,
+            SensorType.DPT_VALUE_TEMP,
+            SensorType.DPT_VALUE_TEMPD,
+            SensorType.DPT_VALUE_PRES,
+            SensorType.DPT_SCALING,
+            SensorType.DPT_POWER,
+            SensorType.DPT_VALUE_VOLUME_FLOW,
+            SensorType.DPT_FLOWRATE_M3,
+            SensorType.DPT_HVACCONTRMODE,
+            SensorType.DPT_ENERGY,
+            SensorType.DPT_ENERGY_KWH,
         ):
             continue
         if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
@@ -70,43 +66,43 @@ class WolfSensor(WolfEntity, SensorEntity):
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
 
-        if self._type == SENSOR_TYPES.DPT_VALUE_TEMP:
+        if self._type == SensorType.DPT_VALUE_TEMP:
             self._attr_device_class = SensorDeviceClass.TEMPERATURE
             self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-        elif self._type == SENSOR_TYPES.DPT_VALUE_TEMPD:
+        elif self._type == SensorType.DPT_VALUE_TEMPD:
             self._attr_device_class = SensorDeviceClass.TEMPERATURE
             self._attr_native_unit_of_measurement = UnitOfTemperature.KELVIN
-        elif self._type == SENSOR_TYPES.DPT_VALUE_PRES:
+        elif self._type == SensorType.DPT_VALUE_PRES:
             self._attr_device_class = SensorDeviceClass.PRESSURE
             self._attr_native_unit_of_measurement = UnitOfPressure.PA
-        elif self._type == SENSOR_TYPES.DPT_SCALING:
+        elif self._type == SensorType.DPT_SCALING:
             self._attr_device_class = SensorDeviceClass.POWER_FACTOR
             self._attr_native_unit_of_measurement = PERCENTAGE
-        elif self._type == SENSOR_TYPES.DPT_POWER:
+        elif self._type == SensorType.DPT_POWER:
             self._attr_device_class = SensorDeviceClass.POWER
             self._attr_native_unit_of_measurement = UnitOfPower.KILO_WATT
-        elif self._type == SENSOR_TYPES.DPT_VALUE_VOLUME_FLOW:
+        elif self._type == SensorType.DPT_VALUE_VOLUME_FLOW:
             self._attr_device_class = SensorDeviceClass.VOLUME_FLOW_RATE
             self._attr_native_unit_of_measurement = UnitOfVolumeFlowRate.LITERS_PER_HOUR
-        elif self._type == SENSOR_TYPES.DPT_FLOWRATE_M3:
+        elif self._type == SensorType.DPT_FLOWRATE_M3:
             self._attr_device_class = SensorDeviceClass.VOLUME_FLOW_RATE
             self._attr_native_unit_of_measurement = (
                 UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
             )
-        elif self._type == SENSOR_TYPES.DPT_ENERGY:
+        elif self._type == SensorType.DPT_ENERGY:
             self._attr_device_class = SensorDeviceClass.ENERGY
             self._attr_native_unit_of_measurement = UnitOfEnergy.WATT_HOUR
-        elif self._type == SENSOR_TYPES.DPT_ENERGY_KWH:
+        elif self._type == SensorType.DPT_ENERGY_KWH:
             self._attr_device_class = SensorDeviceClass.ENERGY
             self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
 
-        if self._type == SENSOR_TYPES.DPT_ENERGY:
+        if self._type == SensorType.DPT_ENERGY:
             self._attr_state_class = SensorStateClass.TOTAL
-        elif self._type == SENSOR_TYPES.DPT_ENERGY_KWH:
+        elif self._type == SensorType.DPT_ENERGY_KWH:
             self._attr_state_class = SensorStateClass.TOTAL_INCREASING
         elif self._type not in (
-            SENSOR_TYPES.DPT_HVACMODE,
-            SENSOR_TYPES.DPT_DHWMODE,
-            SENSOR_TYPES.DPT_HVACCONTRMODE,
+            SensorType.DPT_HVACMODE,
+            SensorType.DPT_DHWMODE,
+            SensorType.DPT_HVACCONTRMODE,
         ):
             self._attr_state_class = SensorStateClass.MEASUREMENT

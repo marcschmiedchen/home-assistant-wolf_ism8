@@ -1,7 +1,3 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -29,7 +25,6 @@ class WolfEntity(Entity):
         self._device = ism8.get_device(dp_nbr)
         self._attr_name = ism8.get_name(dp_nbr)
         self._is_writable = ism8.is_writable(dp_nbr)
-        self._attr_available = ism8.connected()
         self._attr_unique_id = str(self.dp_nbr)
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._device)},
@@ -61,3 +56,8 @@ class WolfEntity(Entity):
         """Return the state of the device."""
         value = self._ism8.read_sensor(self.dp_nbr)
         return round(value, 4) if isinstance(value, float) else value
+
+    @property
+    def available(self) -> bool:
+        """Return the availability"""
+        return self._ism8.connected()

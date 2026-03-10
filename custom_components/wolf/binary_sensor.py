@@ -1,18 +1,18 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
-from homeassistant.components.binary_sensor import BinarySensorDeviceClass
-from homeassistant.components.binary_sensor import BinarySensorEntity
-from homeassistant.core import HomeAssistant
+
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
+    BinarySensorEntity,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from wolf_ism8 import Ism8
-from .wolf_entity import WolfEntity
-from .const import SENSOR_TYPES
+
 from . import WolfData
+from .const import SensorType
+from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -36,10 +36,10 @@ async def async_setup_entry(
             continue
         # only add sensors which are binary
         if ism8.get_type(nbr) not in (
-            SENSOR_TYPES.DPT_SWITCH,
-            SENSOR_TYPES.DPT_BOOL,
-            SENSOR_TYPES.DPT_ENABLE,
-            SENSOR_TYPES.DPT_OPENCLOSE,
+            SensorType.DPT_SWITCH,
+            SensorType.DPT_BOOL,
+            SensorType.DPT_ENABLE,
+            SensorType.DPT_OPENCLOSE,
         ):
             continue
         # only add sensors which are not writable
@@ -73,4 +73,7 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
         ]:
             self._attr_device_class = BinarySensorDeviceClass.RUNNING
 
-        self._attr_is_on = bool(self._ism8.read_sensor(self.dp_nbr))
+    @property
+    def is_on(self) -> bool:
+        """Return the state of the device."""
+        return bool(self._ism8.read_sensor(self.dp_nbr))

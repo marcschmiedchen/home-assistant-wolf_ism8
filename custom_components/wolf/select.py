@@ -5,7 +5,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .wolf_entity import WolfEntity
-from .const import SENSOR_TYPES
+from .const import SensorType
 from . import WolfData
 
 _LOGGER = logging.getLogger(__name__)
@@ -36,10 +36,10 @@ async def async_setup_entry(
             continue
 
         if ism8.get_type(nbr) not in (
-            SENSOR_TYPES.DPT_HVACMODE,
-            SENSOR_TYPES.DPT_HVACMODE_CWL,
-            SENSOR_TYPES.DPT_DHWMODE,
-            SENSOR_TYPES.DPT_SWITCH,
+            SensorType.DPT_HVACMODE,
+            SensorType.DPT_HVACMODE_CWL,
+            SensorType.DPT_DHWMODE,
+            SensorType.DPT_SWITCH,
         ):
             continue
 
@@ -54,7 +54,7 @@ async def async_setup_entry(
         if dp_name[-2:] in (" 1", " 2", " 3"):
             if dp_name[-2:] == " 1":
                 # _LOGGER.debug("initializing <Program> Entity: %s", dp_name)
-                select_entities.append(WolfProgrammSelect(ism8, nbr))
+                select_entities.append(WolfProgramSelect(ism8, nbr))
         else:
             # _LOGGER.debug("initializing <Select> entity: %s", dp_name)
             select_entities.append(WolfSelect(ism8, nbr))
@@ -70,7 +70,7 @@ class WolfSelect(WolfEntity, SelectEntity):
         self._attr_options = [str(opt) for opt in self._value_range]
 
     @property
-    def current_option(self):
+    def current_option(self) -> str | None:
         """Return state of selection"""
         _prog = str(self._ism8.read_sensor(self.dp_nbr))
         # _LOGGER.debug(f"current_option from ISM: {_prog}")
@@ -78,7 +78,7 @@ class WolfSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        if self._type == SENSOR_TYPES.DPT_SWITCH:
+        if self._type == SensorType.DPT_SWITCH:
             option = int(option)
         # _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
@@ -86,7 +86,7 @@ class WolfSelect(WolfEntity, SelectEntity):
         # self._state = option
 
 
-class WolfProgrammSelect(WolfEntity, SelectEntity):
+class WolfProgramSelect(WolfEntity, SelectEntity):
     """Implementation of Wolf Select entity for program-selections"""
 
     _attr_options = ["1", "2", "3"]
@@ -97,7 +97,7 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
         self._attr_name = ism8.get_name(dp_nbr)[:-2]
 
     @property
-    def current_option(self):
+    def current_option(self) -> str | None:
         """Return state of selection"""
         _prog = STATE_UNKNOWN
         if self._ism8.read_sensor(self.dp_nbr) == 1:
@@ -118,5 +118,3 @@ class WolfProgrammSelect(WolfEntity, SelectEntity):
         """Change the selected option."""
         # _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)
-        # self._attr_current_option = option
-        # self._state = option

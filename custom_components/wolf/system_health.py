@@ -29,7 +29,7 @@ async def system_health_info(hass: HomeAssistant) -> dict[str, Any]:
             data["Connection"] = status_string
             data["SW Version"] = wolf_data.sw_version
             data["HW Version"] = wolf_data.hw_version
-            data["Serial Number"] = wolf_data.serno
+            data["Serial Number"] = wolf_data.serial_number
         else:
             data["Connection"] = "Disconnected"
     return data
