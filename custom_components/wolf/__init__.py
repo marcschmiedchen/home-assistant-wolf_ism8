@@ -127,7 +127,6 @@ async def async_update_device_info(
     datapoints available to the integration. When the FW-version could be read,
     no unnecessary datapoints are initialized in Home Assistant.
     """
-    _LOGGER.debug("ISM8 connected, fetching webportal info from %s", ip_address)
 
     if ip_address is None:
         return
