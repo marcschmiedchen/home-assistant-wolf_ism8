@@ -1,0 +1,27 @@
+[tool.ruff]
+# Home Assistant Core uses 88 characters (default for Black/Ruff)
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "T20",  # flake8-print
+]
+ignore = []
+
+[tool.ruff.lint.isort]
+force-single-line = true
+known-first-party = ["custom_components.wolf"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

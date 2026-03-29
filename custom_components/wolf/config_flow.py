@@ -1,17 +1,17 @@
 """Config flow for Wolf SmartSet Service integration."""
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
-import homeassistant.helpers.config_validation as cv
-from homeassistant.const import CONF_DEVICES, CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from wolf_ism8 import Ism8
-from .const import (
-    DOMAIN,
-    DEFAULT_HOST,
-    DEFAULT_PORT,
-    WOLF_DEFAULT_DEVICES,
-)
 
+from .const import DEFAULT_HOST
+from .const import DEFAULT_PORT
+from .const import DOMAIN
+from .const import WOLF_DEFAULT_DEVICES
 
 WOLF_HOST_SCHEMA = {
     vol.Required(CONF_HOST, default=DEFAULT_HOST): cv.string,
@@ -24,10 +24,10 @@ for _device in Ism8.get_all_devices():
     WOLF_DEVICE_SCHEMA[vol.Optional(_device, default=device_is_default)] = cv.boolean
 
 
-class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """wolf custom config flow"""
+class WolfConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """wolf config flow"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize with empty host and port."""
         self.host = None
         self.port = None
@@ -64,7 +64,7 @@ class WolfCustomConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_DEVICES: self.devices,
             }
 
-            return self.async_create_entry(title="ISM8", data=data)
+            return self.async_create_entry(title="WOLF ISM8 Adapter", data=data)
 
         return self.async_show_form(
             step_id="device", data_schema=vol.Schema(WOLF_DEVICE_SCHEMA), errors=errors

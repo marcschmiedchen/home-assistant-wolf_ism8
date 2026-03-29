@@ -1,20 +1,34 @@
-"""
-Support for Wolf heating system ISM via ISM8 adapter
-"""
-
-import logging
 import asyncio
+import logging
 import re
+from dataclasses import dataclass
 from socket import AF_INET
-import aiohttp
 
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PORT, Platform
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.core import callback
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from wolf_ism8 import Ism8
+
 from .const import DOMAIN
+from .const import WOLF
+from .const import WOLF_ISM8
 
 _LOGGER = logging.getLogger(__name__)
+
+
+@dataclass
+class WolfData:
+    """Data for the Wolf integration."""
+
+    protocol: Ism8
+    server: asyncio.Server
+
 
 PLATFORMS = [
     Platform.SENSOR,
@@ -27,96 +41,121 @@ PLATFORMS = [
 ]
 
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """set up the custom component over the config entry"""
-    hass.data.setdefault(DOMAIN, {})
-
+async def async_setup_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry[WolfData]
+) -> bool:
+    """set up the integration"""
     ism8 = Ism8()
-    hass.data[DOMAIN]["protocol"] = ism8
 
-    coro = hass.loop.create_server(
+    server = await hass.loop.create_server(
         ism8.factory,
         host=config_entry.data[CONF_HOST],
         port=config_entry.data[CONF_PORT],
         family=AF_INET,
     )
-    _task = hass.loop.create_task(coro)
-    await _task
-    if _task.done():
-        hass.data[DOMAIN]["servertask"] = _task
-        hass.data[DOMAIN]["server"] = _task.result()
-        hass.data[DOMAIN]["sw_version"] = None
-        hass.data[DOMAIN]["hw_version"] = None
-        hass.data[DOMAIN]["serno"] = None
-        _LOGGER.info("Waiting for ISM8 to connect")
 
-        # yield some time to get the ISM8 connect to the host
-        i = 0
-        while i < 10 and not ism8.connected():
-            i = i + 1
-            _LOGGER.debug("waiting up to 20s for ISM8 to connect...")
-            await asyncio.sleep(2)
+    config_entry.runtime_data = WolfData(protocol=ism8, server=server)
 
-        if ism8.connected():
-            # This tries to read the FW-version from the ISM8-Webportal.
-            # If this fails, only FW1.00 functionality gets enabled in HA.
-            await get_webportal_info(hass, ism8.get_remote_ip_adress())
+    device_registry = dr.async_get(hass)
+    # Create the main ISM8 adapter device as connector for the other devices
+    device_registry.async_get_or_create(
+        config_entry_id=config_entry.entry_id,
+        identifiers={(DOMAIN, config_entry.entry_id)},
+        name="ISM8 Adapter",
+        manufacturer=WOLF,
+        model=WOLF_ISM8,
+    )
 
-        # now setup the entities, regardless of connection
-        await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
-        return True
+    @callback
+    def on_connection(ip_address: str) -> None:
+        """Handle connection to ISM8."""
+        _LOGGER.debug("ISM8 connection to %s, starting info scraping", ip_address)
+        config_entry.async_create_background_task(
+            hass,
+            async_update_device_info(hass, config_entry, ip_address),
+            "wolf-update-device-info",
+        )
+
+    ism8.register_connection_callback(on_connection)
+
+    # now loop over the configured devices and create them
+    for device_name in config_entry.data[CONF_DEVICES]:
+        device_registry.async_get_or_create(
+            config_entry_id=config_entry.entry_id,
+            identifiers={(DOMAIN, device_name)},
+            name=device_name,
+            via_device=(DOMAIN, config_entry.entry_id),
+        )
+    # register the unloading callback
+    config_entry.async_on_unload(lambda: async_close_server(server))
+
+    # now setup the entities, regardless of connection
+    await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
+    return True
 
 
-async def async_unload_entry(hass: HomeAssistant, config: ConfigEntry) -> bool:
+async def async_unload_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry[WolfData]
+) -> bool:
     """Unload wolf integration"""
     _LOGGER.debug("Unloading ISM8")
-    unload_ok = await hass.config_entries.async_unload_platforms(config, PLATFORMS)
-    _server = hass.data[DOMAIN]["server"]
-    _ism8 = hass.data[DOMAIN]["protocol"]
-    if _server is not None:
-        _LOGGER.info("Releasing ISM8 network connection")
-        if _ism8._transport is not None:
-            _ism8._transport.close()
-        _server.close()
-    hass.data[DOMAIN].pop("server")
-    hass.data[DOMAIN].pop("servertask")
-    hass.data[DOMAIN].pop("hw_version")
-    hass.data[DOMAIN].pop("sw_version")
-    hass.data[DOMAIN].pop("serno")
-    hass.data[DOMAIN].pop("protocol")
-    return unload_ok
+    return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
 
 
-async def get_webportal_info(hass: HomeAssistant, remote_ip_address: str) -> None:
+async def get_webportal_info(
+    hass: HomeAssistant, ip_address: str | None
+) -> tuple[str | None, str | None, str | None]:
     """Gets some information from the ISM-webportal. Most important is the ISM8 firmware
     version, which restricts the datapoints available to the integration. When FW
-    version can be read, no uneccesary datapoints are initialized in Home Assistant.
+    version can be read, no unnecessary datapoints are initialized in Home Assistant.
     """
-    if remote_ip_address is not None:
-        url = "http://" + remote_ip_address
-        try:
-            _LOGGER.debug(f"trying to scrape FW-Version from {url}")
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    html = str(await response.text())
 
-            match = re.search(r"FW-Version.*?(\d+\.\d+)", html)
-            if match:
-                hass.data[DOMAIN]["sw_version"] = match.group(1)
-                _LOGGER.debug(f"extracted FW: {hass.data[DOMAIN]['sw_version']}")
 
-            match = re.search(r"HW-Version.*?(\d+\.\d+)", html)
-            if match:
-                hass.data[DOMAIN]["hw_version"] = match.group(1)
-                _LOGGER.debug(f"extracted HW: {hass.data[DOMAIN]['hw_version']}")
+# HA will call this when unloading
+async def async_close_server(server) -> None:
+    _LOGGER.info("Releasing ISM8 network connection")
+    server.close()
+    server.close_clients()
+    await server.wait_closed()
 
-            match = re.search(r"<td>\s*(\w{12})\s*<\/td>", html)
-            if match:
-                hass.data[DOMAIN]["serno"] = match.group(1)
-                _LOGGER.debug(f"extracted serNo: {hass.data[DOMAIN]['serno']}")
 
-        except aiohttp.ClientConnectorError as e:
-            print("Could not gather info on ISM8.")
-            print("Error code: ", e.errno)
-            _LOGGER.info("Could not get ISM-IP-address to extract FW-Info.")
-    return
+async def async_update_device_info(
+    hass: HomeAssistant, config_entry: ConfigEntry[WolfData], ip_address: str
+):
+    """Update device information once connected: fetches some information from the
+    ISM8-webportal. Most important is the ISM8 firmware version, which restricts the
+    datapoints available to the integration. When the FW-version could be read,
+    no unnecessary datapoints are initialized in Home Assistant.
+    """
+    _LOGGER.debug("ISM8 connected, fetching webportal info from %s", ip_address)
+
+    if ip_address is None:
+        return
+    else:
+        url = "http://" + ip_address
+
+    try:
+        session = async_get_clientsession(hass)
+        async with session.get(url, timeout=10) as response:
+            html = await response.text()
+        match = re.search(r"FW-Version.*?(\d+\.\d+)", html)
+        if match:
+            sw_ver = match.group(1)
+        match = re.search(r"HW-Version.*?(\d+\.\d+)", html)
+        if match:
+            hw_ver = match.group(1)
+        match = re.search(r"<td>\s*(\w{12})\s*<\/td>", html)
+        if match:
+            ser_nbr = match.group(1)
+        # Update the parent device with scraped info
+        dr.async_get(hass).async_get_or_create(
+            config_entry_id=config_entry.entry_id,
+            identifiers={(DOMAIN, config_entry.entry_id)},
+            sw_version=sw_ver,
+            hw_version=hw_ver,
+            serial_number=ser_nbr,
+            configuration_url=f"http://{ip_address}",
+        )
+
+    except Exception as err:
+        _LOGGER.error("Unexpected error updating ISM8 device info: %s", err)

@@ -1,21 +1,26 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
+
 from homeassistant.components.button import ButtonEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
-from wolf_ism8 import Ism8
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from .const import DOMAIN
 from .wolf_entity import WolfEntity
-from .const import DOMAIN, WOLF, WOLF_ISM8
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """performs setup of the button entities"""
 
-    ism8: Ism8 = hass.data[DOMAIN]["protocol"]
+    ism8 = config_entry.runtime_data.protocol
 
     buttons = []
     for nbr in (193, 194):
@@ -32,21 +37,17 @@ class WolfButton(WolfEntity, ButtonEntity):
     be triggered to start certain processes on ISM8
     """
 
-    @property
-    def icon(self):
-        """Return icon"""
-        if self.dp_nbr == 194:
-            return "mdi:hot-tub"
-        else:
-            return "mdi:gesture-tap-button"
+    def __init__(self, ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
+        match self.dp_nbr:
+            case 194:
+                self._attr_icon = "mdi:hot-tub"
+            case _:
+                self._attr_icon = "mdi:gesture-tap-button"
 
     async def async_press(self) -> None:
         """Handle the button press."""
         self._ism8.send_dp_value(self.dp_nbr, 1)
-
-    @property
-    def available(self):
-        return True
 
 
 class WolfRequestDataButton(ButtonEntity):
@@ -56,46 +57,21 @@ class WolfRequestDataButton(ButtonEntity):
     so it should not inherit from class "WolfEntity"
     """
 
-    def __init__(self, ism8: Ism8) -> None:
+    _attr_has_entity_name = True
+    _attr_unique_id = "999"
+    _attr_icon = "mdi:update"
+    _attr_available = True
+
+    def __init__(self, ism8) -> None:
         self._ism8 = ism8
         self._device = "Systembedienmodul"
-        self._name = "Datenanforderung"
+        self._attr_name = "Datenanforderung"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self._device)},
+            name=self._device,
+        )
         _LOGGER.debug("setup wolf RequestDataButton")
-
-    @property
-    def has_entity_name(self) -> bool:
-        """has unique name"""
-        return True
-
-    @property
-    def unique_id(self):
-        """Return the unique_id of this sensor."""
-        return "999"
-
-    @property
-    def icon(self):
-        """Return icon"""
-        return "mdi:update"
-
-    @property
-    def name(self) -> str:
-        """Return the name of this entity."""
-        return self._name
-
-    @property
-    def device_info(self):
-        """Return device info."""
-        return {
-            "identifiers": {(DOMAIN, self._device)},
-            "name": self._device,
-            "manufacturer": WOLF,
-            "model": WOLF_ISM8,
-        }
 
     async def async_press(self) -> None:
         """Handle the button press."""
         self._ism8.request_all_datapoints()
-
-    @property
-    def available(self):
-        return True

@@ -1,24 +1,30 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
-from homeassistant.components.number import NumberEntity, NumberDeviceClass
-from homeassistant.const import CONF_DEVICES, UnitOfTemperature, PERCENTAGE
+
+from homeassistant.components.number import NumberDeviceClass
+from homeassistant.components.number import NumberEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import PERCENTAGE
+from homeassistant.const import UnitOfTemperature
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from .const import SensorType
 from .wolf_entity import WolfEntity
-from wolf_ism8 import Ism8
-from .const import DOMAIN, SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """
     performs setup of the writeable number entities, needs a
-    reference to an ism8-protocol implementation via hass.data
+    reference to an ism8-protocol implementation via config_entry.runtime_data
     """
-    ism8: Ism8 = hass.data[DOMAIN]["protocol"]
-    ism8_fw = hass.data[DOMAIN]["sw_version"]
+    ism8 = config_entry.runtime_data.protocol
 
     number_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -27,13 +33,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if not ism8.is_writable(nbr):
             continue
         if ism8.get_type(nbr) not in (
-            SENSOR_TYPES.DPT_VALUE_TEMP,
-            SENSOR_TYPES.DPT_SCALING,
-            SENSOR_TYPES.DPT_TEMPD,
+            SensorType.DPT_VALUE_TEMP,
+            SensorType.DPT_SCALING,
+            SensorType.DPT_TEMPD,
         ):
-            continue
-        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
-            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
 
         number_entities.append(WolfInputNumber(ism8, nbr))
@@ -47,31 +50,20 @@ class WolfInputNumber(WolfEntity, NumberEntity):
     be written to and which expect number values
     """
 
-    @property
-    def device_class(self) -> str:
-        if self._type in (SENSOR_TYPES.DPT_VALUE_TEMP, SENSOR_TYPES.DPT_TEMPD):
-            return NumberDeviceClass.TEMPERATURE
-        elif self._type == SENSOR_TYPES.DPT_SCALING:
-            return NumberDeviceClass.POWER_FACTOR
+    def __init__(self, ism8, dp_nbr: int) -> None:
+        super().__init__(ism8, dp_nbr)
 
-    @property
-    def native_unit_of_measurement(self) -> str:
-        if self._type in (SENSOR_TYPES.DPT_VALUE_TEMP, SENSOR_TYPES.DPT_TEMPD):
-            return UnitOfTemperature.CELSIUS
-        elif self._type == SENSOR_TYPES.DPT_SCALING:
-            return PERCENTAGE
+        match self._type:
+            case SensorType.DPT_VALUE_TEMP | SensorType.DPT_TEMPD:
+                self._attr_device_class = NumberDeviceClass.TEMPERATURE
+                self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+            case SensorType.DPT_SCALING:
+                self._attr_device_class = NumberDeviceClass.POWER_FACTOR
+                self._attr_native_unit_of_measurement = PERCENTAGE
 
-    @property
-    def native_max_value(self):
-        return self._max_value
-
-    @property
-    def native_min_value(self):
-        return self._min_value
-
-    @property
-    def native_step(self):
-        return self._step_value
+        self._attr_native_max_value = self._max_value
+        self._attr_native_min_value = self._min_value
+        self._attr_native_step = self._step_value
 
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""

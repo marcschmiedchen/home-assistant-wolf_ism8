@@ -1,24 +1,27 @@
-"""
-Support for Wolf heating via ISM8 adapter
-"""
-
 import logging
+
 from homeassistant.components.date import DateEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+from .const import SensorType
 from .wolf_entity import WolfEntity
-from wolf_ism8 import Ism8
-from .const import DOMAIN, SENSOR_TYPES
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """
-    performs setup of the writeable number entities, needs a
-    reference to an ism8-protocol implementation via hass.data
+    performs setup of the data entities, needs a
+    reference to an ism8-protocol implementation via config_entry.runtime_data
     """
-    ism8: Ism8 = hass.data[DOMAIN]["protocol"]
-    ism8_fw = hass.data[DOMAIN]["sw_version"]
+    ism8 = config_entry.runtime_data.protocol
 
     date_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -28,10 +31,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         # only add sensors which are writable
         if not ism8.is_writable(nbr):
             continue
-        if ism8.get_type(nbr) != SENSOR_TYPES.DPT_DATE:
-            continue
-        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
-            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
+        if ism8.get_type(nbr) != SensorType.DPT_DATE:
             continue
         date_entities.append(WolfDate(ism8, nbr))
 
@@ -42,6 +42,11 @@ class WolfDate(WolfEntity, DateEntity):
     """
     Date Entity for ISM8 datapoints which can be written to
     """
+
+    @property
+    def native_value(self):
+        """Return the state of the device."""
+        return self._ism8.read_sensor(self.dp_nbr)
 
     async def async_set_value(self, date) -> None:
         """Update the current value."""
