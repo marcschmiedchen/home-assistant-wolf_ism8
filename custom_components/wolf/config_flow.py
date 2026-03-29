@@ -3,15 +3,15 @@
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.const import CONF_DEVICES, CONF_HOST, CONF_PORT
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import CONF_HOST
+from homeassistant.const import CONF_PORT
 from wolf_ism8 import Ism8
 
-from .const import (
-    DEFAULT_HOST,
-    DEFAULT_PORT,
-    DOMAIN,
-    WOLF_DEFAULT_DEVICES,
-)
+from .const import DEFAULT_HOST
+from .const import DEFAULT_PORT
+from .const import DOMAIN
+from .const import WOLF_DEFAULT_DEVICES
 
 WOLF_HOST_SCHEMA = {
     vol.Required(CONF_HOST, default=DEFAULT_HOST): cv.string,

@@ -3,7 +3,8 @@
 from typing import Any
 
 from homeassistant.components.system_health import SystemHealthRegistration
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
+from homeassistant.core import callback
 
 from .const import DOMAIN
 
@@ -25,11 +26,14 @@ async def system_health_info(hass: HomeAssistant) -> dict[str, Any]:
 
         wolf_data = entry.runtime_data
         if wolf_data.protocol.connected():
-            status_string = f"Connected to {wolf_data.ism8_ip_address}"
-            data["Connection"] = status_string
-            data["SW Version"] = wolf_data.sw_version
-            data["HW Version"] = wolf_data.hw_version
-            data["Serial Number"] = wolf_data.serial_number
+            ip_address = wolf_data.protocol.get_remote_ip_adress()
+            data["Connection"] = f"Connected to {ip_address}"
+            if hasattr(wolf_data, "sw_version"):
+                data["SW Version"] = wolf_data.sw_version
+            if hasattr(wolf_data, "hw_version"):
+                data["HW Version"] = wolf_data.hw_version
+            if hasattr(wolf_data, "serial_number"):
+                data["Serial Number"] = wolf_data.serial_number
         else:
             data["Connection"] = "Disconnected"
     return data

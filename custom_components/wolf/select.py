@@ -1,19 +1,21 @@
 import logging
+
 from homeassistant.components.select import SelectEntity
-from homeassistant.const import CONF_DEVICES, STATE_UNKNOWN
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import STATE_UNKNOWN
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from .wolf_entity import WolfEntity
+
 from .const import SensorType
-from . import WolfData
+from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry[WolfData],
+    config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """
@@ -21,7 +23,6 @@ async def async_setup_entry(
     """
 
     ism8 = config_entry.runtime_data.protocol
-    ism8_fw = config_entry.runtime_data.sw_version
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -43,21 +44,17 @@ async def async_setup_entry(
         ):
             continue
 
-        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
-            _LOGGER.debug(f"DP {nbr} not supported by firmware")
-            continue
-
         # check if datapoint is on of the "Program"-Triples.
         # in this case, only the first entry is instantiated as a
         # WolfSelect-Entity with custom range from 1..3, the other two
         # datapoint-entries do not create a sensor instance
-        if dp_name[-2:] in (" 1", " 2", " 3"):
-            if dp_name[-2:] == " 1":
-                # _LOGGER.debug("initializing <Program> Entity: %s", dp_name)
+        match dp_name[-2:]:
+            case " 1":
                 select_entities.append(WolfProgramSelect(ism8, nbr))
-        else:
-            # _LOGGER.debug("initializing <Select> entity: %s", dp_name)
-            select_entities.append(WolfSelect(ism8, nbr))
+            case " 2" | " 3":
+                pass
+            case _:
+                select_entities.append(WolfSelect(ism8, nbr))
 
     async_add_entities(select_entities)
 
@@ -73,7 +70,7 @@ class WolfSelect(WolfEntity, SelectEntity):
     def current_option(self) -> str | None:
         """Return state of selection"""
         _prog = str(self._ism8.read_sensor(self.dp_nbr))
-        # _LOGGER.debug(f"current_option from ISM: {_prog}")
+        _LOGGER.debug(f"current_option from ISM: {_prog}")
         return STATE_UNKNOWN if _prog is None else _prog
 
     async def async_select_option(self, option: str) -> None:
@@ -82,8 +79,7 @@ class WolfSelect(WolfEntity, SelectEntity):
             option = int(option)
         # _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
-        # self._attr_current_option = option
-        # self._state = option
+        self._attr_current_option = option
 
 
 class WolfProgramSelect(WolfEntity, SelectEntity):
@@ -99,14 +95,13 @@ class WolfProgramSelect(WolfEntity, SelectEntity):
     @property
     def current_option(self) -> str | None:
         """Return state of selection"""
-        _prog = STATE_UNKNOWN
         if self._ism8.read_sensor(self.dp_nbr) == 1:
-            _prog = "1"
-        elif self._ism8.read_sensor(self.dp_nbr + 1) == 1:
-            _prog = "2"
-        elif self._ism8.read_sensor(self.dp_nbr + 2) == 1:
-            _prog = "3"
-        return _prog
+            return "1"
+        if self._ism8.read_sensor(self.dp_nbr + 1) == 1:
+            return "2"
+        if self._ism8.read_sensor(self.dp_nbr + 2) == 1:
+            return "3"
+        return STATE_UNKNOWN
 
     async def async_added_to_hass(self) -> None:
         """Register callbacks for all 3 datapoints which may affect this entity."""

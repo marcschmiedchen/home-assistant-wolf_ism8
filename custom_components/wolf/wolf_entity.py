@@ -1,7 +1,9 @@
 import logging
-from homeassistant.helpers.entity import Entity
+
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
+
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -54,8 +56,7 @@ class WolfEntity(Entity):
     @property
     def native_value(self) -> float | int | str | None:
         """Return the state of the device."""
-        value = self._ism8.read_sensor(self.dp_nbr)
-        return round(value, 4) if isinstance(value, float) else value
+        return self._ism8.read_sensor(self.dp_nbr)
 
     @property
     def available(self) -> bool:

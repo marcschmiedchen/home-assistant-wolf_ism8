@@ -11,7 +11,9 @@
 - added SensorDeviceClass.VOLUME_FLOW_RATE for Flow sensors; enables switch of units in GUI
 - bug: fixed SensorStateClass.TOTAL for Tagesertrag -> is not TOTAL_INCREASING
 - refactored naming conventions
-
+- refactored if/elif into case statements
+- swichted to new library version with better handling for data errors
+- implemented callback from the library as soon as connection established -> performance
 
 ## 4.1.1 (2025-04-18)
 ### Fixed

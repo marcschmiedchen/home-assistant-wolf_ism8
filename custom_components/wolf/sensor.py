@@ -1,30 +1,29 @@
 import logging
-from homeassistant.const import (
-    CONF_DEVICES,
-    UnitOfTemperature,
-    UnitOfPressure,
-    UnitOfPower,
-    UnitOfEnergy,
-    UnitOfVolumeFlowRate,
-    PERCENTAGE,
-)
-from homeassistant.components.sensor import SensorEntity
+
 from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorStateClass
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import PERCENTAGE
+from homeassistant.const import UnitOfEnergy
+from homeassistant.const import UnitOfPower
+from homeassistant.const import UnitOfPressure
+from homeassistant.const import UnitOfTemperature
+from homeassistant.const import UnitOfVolumeFlowRate
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from wolf_ism8 import Ism8
-from .wolf_entity import WolfEntity
-from . import WolfData
+
 from .const import SensorType
+from .wolf_entity import WolfEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry[WolfData],
+    config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """
@@ -32,7 +31,6 @@ async def async_setup_entry(
     reference to an ism8-adapter via config_entry.runtime_data
     """
     ism8 = config_entry.runtime_data.protocol
-    ism8_fw = config_entry.runtime_data.sw_version
 
     sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -53,9 +51,7 @@ async def async_setup_entry(
             SensorType.DPT_ENERGY_KWH,
         ):
             continue
-        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
-            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
-            continue
+
         sensor_entities.append(WolfSensor(ism8, nbr))
     async_add_entities(sensor_entities)
 
@@ -66,43 +62,46 @@ class WolfSensor(WolfEntity, SensorEntity):
     def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
 
-        if self._type == SensorType.DPT_VALUE_TEMP:
-            self._attr_device_class = SensorDeviceClass.TEMPERATURE
-            self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-        elif self._type == SensorType.DPT_VALUE_TEMPD:
-            self._attr_device_class = SensorDeviceClass.TEMPERATURE
-            self._attr_native_unit_of_measurement = UnitOfTemperature.KELVIN
-        elif self._type == SensorType.DPT_VALUE_PRES:
-            self._attr_device_class = SensorDeviceClass.PRESSURE
-            self._attr_native_unit_of_measurement = UnitOfPressure.PA
-        elif self._type == SensorType.DPT_SCALING:
-            self._attr_device_class = SensorDeviceClass.POWER_FACTOR
-            self._attr_native_unit_of_measurement = PERCENTAGE
-        elif self._type == SensorType.DPT_POWER:
-            self._attr_device_class = SensorDeviceClass.POWER
-            self._attr_native_unit_of_measurement = UnitOfPower.KILO_WATT
-        elif self._type == SensorType.DPT_VALUE_VOLUME_FLOW:
-            self._attr_device_class = SensorDeviceClass.VOLUME_FLOW_RATE
-            self._attr_native_unit_of_measurement = UnitOfVolumeFlowRate.LITERS_PER_HOUR
-        elif self._type == SensorType.DPT_FLOWRATE_M3:
-            self._attr_device_class = SensorDeviceClass.VOLUME_FLOW_RATE
-            self._attr_native_unit_of_measurement = (
-                UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
-            )
-        elif self._type == SensorType.DPT_ENERGY:
-            self._attr_device_class = SensorDeviceClass.ENERGY
-            self._attr_native_unit_of_measurement = UnitOfEnergy.WATT_HOUR
-        elif self._type == SensorType.DPT_ENERGY_KWH:
-            self._attr_device_class = SensorDeviceClass.ENERGY
-            self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
-
-        if self._type == SensorType.DPT_ENERGY:
-            self._attr_state_class = SensorStateClass.TOTAL
-        elif self._type == SensorType.DPT_ENERGY_KWH:
-            self._attr_state_class = SensorStateClass.TOTAL_INCREASING
-        elif self._type not in (
-            SensorType.DPT_HVACMODE,
-            SensorType.DPT_DHWMODE,
-            SensorType.DPT_HVACCONTRMODE,
-        ):
-            self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_suggested_display_precision = 2
+        match self._type:
+            case SensorType.DPT_VALUE_TEMP:
+                self._attr_device_class = SensorDeviceClass.TEMPERATURE
+                self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+            case SensorType.DPT_VALUE_TEMPD:
+                self._attr_device_class = SensorDeviceClass.TEMPERATURE
+                self._attr_native_unit_of_measurement = UnitOfTemperature.KELVIN
+            case SensorType.DPT_VALUE_PRES:
+                self._attr_device_class = SensorDeviceClass.PRESSURE
+                self._attr_native_unit_of_measurement = UnitOfPressure.PA
+            case SensorType.DPT_SCALING:
+                self._attr_device_class = SensorDeviceClass.POWER_FACTOR
+                self._attr_native_unit_of_measurement = PERCENTAGE
+            case SensorType.DPT_POWER:
+                self._attr_device_class = SensorDeviceClass.POWER
+                self._attr_native_unit_of_measurement = UnitOfPower.KILO_WATT
+            case SensorType.DPT_VALUE_VOLUME_FLOW:
+                self._attr_device_class = SensorDeviceClass.VOLUME_FLOW_RATE
+                self._attr_native_unit_of_measurement = (
+                    UnitOfVolumeFlowRate.LITERS_PER_HOUR
+                )
+                self._attr_suggested_display_precision = 0
+            case SensorType.DPT_FLOWRATE_M3:
+                self._attr_device_class = SensorDeviceClass.VOLUME_FLOW_RATE
+                self._attr_native_unit_of_measurement = (
+                    UnitOfVolumeFlowRate.CUBIC_METERS_PER_HOUR
+                )
+                self._attr_suggested_display_precision = 0
+            case SensorType.DPT_ENERGY:
+                self._attr_device_class = SensorDeviceClass.ENERGY
+                self._attr_native_unit_of_measurement = UnitOfEnergy.WATT_HOUR
+                self._attr_state_class = SensorStateClass.TOTAL
+                self._attr_suggested_display_precision = 0
+            case SensorType.DPT_ENERGY_KWH:
+                self._attr_device_class = SensorDeviceClass.ENERGY
+                self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+                self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+            case SensorType.DPT_HVACCONTRMODE:
+                self._attr_device_class = SensorDeviceClass.ENUM
+                self._attr_state_class = None
+                self._attr_suggested_display_precision = None

@@ -1,12 +1,14 @@
 import logging
 
-from homeassistant.components.number import NumberDeviceClass, NumberEntity
+from homeassistant.components.number import NumberDeviceClass
+from homeassistant.components.number import NumberEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_DEVICES, PERCENTAGE, UnitOfTemperature
+from homeassistant.const import CONF_DEVICES
+from homeassistant.const import PERCENTAGE
+from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import WolfData
 from .const import SensorType
 from .wolf_entity import WolfEntity
 
@@ -15,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry[WolfData],
+    config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """
@@ -23,7 +25,6 @@ async def async_setup_entry(
     reference to an ism8-protocol implementation via config_entry.runtime_data
     """
     ism8 = config_entry.runtime_data.protocol
-    ism8_fw = config_entry.runtime_data.sw_version
 
     number_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -36,9 +37,6 @@ async def async_setup_entry(
             SensorType.DPT_SCALING,
             SensorType.DPT_TEMPD,
         ):
-            continue
-        if (ism8_fw is not None) and ism8.first_fw_version(nbr) > ism8_fw:
-            _LOGGER.debug(f"sensor {nbr} not supported by firmware")
             continue
 
         number_entities.append(WolfInputNumber(ism8, nbr))
@@ -55,15 +53,13 @@ class WolfInputNumber(WolfEntity, NumberEntity):
     def __init__(self, ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
 
-        if self._type in (SensorType.DPT_VALUE_TEMP, SensorType.DPT_TEMPD):
-            self._attr_device_class = NumberDeviceClass.TEMPERATURE
-        elif self._type == SensorType.DPT_SCALING:
-            self._attr_device_class = NumberDeviceClass.POWER_FACTOR
-
-        if self._type in (SensorType.DPT_VALUE_TEMP, SensorType.DPT_TEMPD):
-            self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-        elif self._type == SensorType.DPT_SCALING:
-            self._attr_native_unit_of_measurement = PERCENTAGE
+        match self._type:
+            case SensorType.DPT_VALUE_TEMP | SensorType.DPT_TEMPD:
+                self._attr_device_class = NumberDeviceClass.TEMPERATURE
+                self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+            case SensorType.DPT_SCALING:
+                self._attr_device_class = NumberDeviceClass.POWER_FACTOR
+                self._attr_native_unit_of_measurement = PERCENTAGE
 
         self._attr_native_max_value = self._max_value
         self._attr_native_min_value = self._min_value

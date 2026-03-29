@@ -7,7 +7,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from . import WolfData
 from .const import DOMAIN
 from .wolf_entity import WolfEntity
 
@@ -16,7 +15,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    config_entry: ConfigEntry[WolfData],
+    config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """performs setup of the button entities"""
@@ -40,10 +39,11 @@ class WolfButton(WolfEntity, ButtonEntity):
 
     def __init__(self, ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        if self.dp_nbr == 194:
-            self._attr_icon = "mdi:hot-tub"
-        else:
-            self._attr_icon = "mdi:gesture-tap-button"
+        match self.dp_nbr:
+            case 194:
+                self._attr_icon = "mdi:hot-tub"
+            case _:
+                self._attr_icon = "mdi:gesture-tap-button"
 
     async def async_press(self) -> None:
         """Handle the button press."""

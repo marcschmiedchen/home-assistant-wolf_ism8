@@ -32,7 +32,7 @@ An integration of WOLF's Heating ISM8 module into Home Assistant. The integratio
 6. Go to Settings -> Devices & Services -> Add Integration -> Search for "Wolf".
 
 ### Configuration
-1. **IP/Port:** Enter the IP address and port of your Home Assistant server that the integration should listen on (Default: `0.0.0.0` and `12004`). This must match the settings in your ISM8 web configuration.
+1. **IP/Port:** Enter the IP address and port of your Home Assistant server that the integration should listen on (Default: `0.0.0.0` (listens on all addresses) and `12004`). This must match the settings in your ISM8 web configuration.
 2. **Devices:** Select the devices installed in your HVAC system.
 
 ---
@@ -61,8 +61,8 @@ Eine Home Assistant Integration für das WOLF ISM8 Modul. Die Integration stellt
 6. Unter Einstellungen -> Geräte & Dienste -> Integration hinzufügen nach "Wolf" suchen.
 
 ### Konfiguration
-1. **IP/Port:** IP-Adresse und Port des HA-Servers angeben, auf dem die Integration lauscht (Standard: `0.0.0.0` und `12004`). Diese Werte müssen im ISM8 hinterlegt sein.
-2. **Geräte:** Wählen Sie alle vorhandenen Geräte Ihres Systems aus.
+1. **IP/Port:** IP-Adresse und Port des HA-Servers angeben, auf dem die Integration lauscht (Standard: `0.0.0.0` (wartet auf allen verfügbaren IP adressen) und `12004`). Diese Werte müssen im ISM8 hinterlegt sein.
+2. **Geräte:** Wählen alle vorhandenen Geräte des Heizungssystems Systems aus. Andere Geräte werden dann nicht angelegt.
 
 ---
 
@@ -73,8 +73,3 @@ Eine Home Assistant Integration für das WOLF ISM8 Modul. Die Integration stellt
   <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/raw/master/screenshots/s3.PNG">
   <img width="300" src="https://github.com/marcschmiedchen/home-assistant-wolf_ism8/raw/master/screenshots/s5.PNG">
 </p>
-
-## TODO
-- Autodiscover
-- Diagnostics
-- Translations for entities
