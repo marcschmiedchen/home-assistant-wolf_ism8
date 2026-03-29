@@ -1,5 +1,5 @@
 # Changelog
-## 4.1.2 (2026-03-03)
+## 4.2-beta (2026-03-03)
 ### Fixed
 - modernized architecture - uses config_entry.runtime_data now
 - set device info once, at startup, instead of in every entity -> performance
