@@ -52,3 +52,4 @@ class WolfDate(WolfEntity, DateEntity):
         """Update the current value."""
         _LOGGER.debug(f"send dp {self.dp_nbr}: {date}")
         self._ism8.send_dp_value(self.dp_nbr, date)
+        self.async_write_ha_state()

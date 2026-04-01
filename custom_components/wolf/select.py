@@ -32,10 +32,6 @@ async def async_setup_entry(
             continue
         if not ism8.is_writable(nbr):
             continue
-        # those are DPT_SWITCH, but trigger (button-)entities
-        if nbr in (193, 194):
-            continue
-
         if ism8.get_type(nbr) not in (
             SensorType.DPT_HVACMODE,
             SensorType.DPT_HVACMODE_CWL,
@@ -43,8 +39,14 @@ async def async_setup_entry(
             SensorType.DPT_SWITCH,
         ):
             continue
+        # only the Zeitprogramm are select entities. Others are switches or buttons
+        if (
+            ism8.get_type(nbr) == SensorType.DPT_SWITCH
+            and dp_name[0:12] != "Zeitprogramm"
+        ):
+            continue
 
-        # check if datapoint is on of the "Program"-Triples.
+        # check if datapoint is on of the "Zeitprogramm"-Triples.
         # in this case, only the first entry is instantiated as a
         # WolfSelect-Entity with custom range from 1..3, the other two
         # datapoint-entries do not create a sensor instance
@@ -64,7 +66,10 @@ class WolfSelect(WolfEntity, SelectEntity):
 
     def __init__(self, ism8, dp_nbr: int) -> None:
         super().__init__(ism8, dp_nbr)
-        self._attr_options = [str(opt) for opt in self._value_range]
+        if ism8.get_type(dp_nbr) == SensorType.DPT_SWITCH:
+            self._attr_options = ["True", "False"]
+        else:
+            self._attr_options = [str(opt) for opt in self._value_range]
 
     @property
     def current_option(self) -> str | None:
@@ -75,11 +80,9 @@ class WolfSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        if self._type == SensorType.DPT_SWITCH:
-            option = int(option)
-        # _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
+        _LOGGER.debug(f"send dp {self.dp_nbr}: {type(option)} {option}")
         self._ism8.send_dp_value(self.dp_nbr, option)
-        self._attr_current_option = option
+        self.async_write_ha_state()
 
 
 class WolfProgramSelect(WolfEntity, SelectEntity):

@@ -50,3 +50,4 @@ class WolfTime(WolfEntity, TimeEntity):
         """Update the current value."""
         _LOGGER.debug(f"send dp {self.dp_nbr}: {time}")
         self._ism8.send_dp_value(self.dp_nbr, time)
+        self.async_write_ha_state()
