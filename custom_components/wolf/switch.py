@@ -28,13 +28,15 @@ async def async_setup_entry(
             continue
         if not ism8.is_writable(nbr):
             continue
+        if ism8.get_type(nbr) != SensorType.DPT_SWITCH:
+            continue
         # those are DPT_SWITCH, but trigger (button-)entities
         if nbr in (193, 194):
+            _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")
             continue
         # those are DPT_SWITCH, but are select entities, not on/off switches
-        if ism8.get_name(nbr)[:12] == "Zeitprogramm":
-            continue
-        if ism8.get_type(nbr) != SensorType.DPT_SWITCH:
+        if ism8.get_name(nbr)[-1] in ("1", "2", "3"):
+            _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")
             continue
         select_entities.append(WolfSwitch(ism8, nbr))
 

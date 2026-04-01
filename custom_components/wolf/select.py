@@ -32,31 +32,25 @@ async def async_setup_entry(
             continue
         if not ism8.is_writable(nbr):
             continue
-        if ism8.get_type(nbr) not in (
+        if ism8.get_type(nbr) == SensorType.DPT_SWITCH and dp_name[-1] in (
+            "1",
+            "2",
+            "3",
+        ):
+            _LOGGER.debug(f"set {ism8.get_name(nbr)} as select")
+            # only the DPT_SWITCH type "Zeitprogramm1/2/"3" are select entities.
+            # then, only the first entry is instantiated as a
+            # WolfSelect-Entity with custom range from 1..3, the other two
+            # datapoint-entries do not create a sensor instance
+            if dp_name[-1] == "1":
+                select_entities.append(WolfProgramSelect(ism8, nbr))
+        # everything else are normal "selects"
+        elif ism8.get_type(nbr) in (
             SensorType.DPT_HVACMODE,
             SensorType.DPT_HVACMODE_CWL,
             SensorType.DPT_DHWMODE,
-            SensorType.DPT_SWITCH,
         ):
-            continue
-        # only the Zeitprogramm are select entities. Others are switches or buttons
-        if (
-            ism8.get_type(nbr) == SensorType.DPT_SWITCH
-            and dp_name[0:12] != "Zeitprogramm"
-        ):
-            continue
-
-        # check if datapoint is on of the "Zeitprogramm"-Triples.
-        # in this case, only the first entry is instantiated as a
-        # WolfSelect-Entity with custom range from 1..3, the other two
-        # datapoint-entries do not create a sensor instance
-        match dp_name[-2:]:
-            case " 1":
-                select_entities.append(WolfProgramSelect(ism8, nbr))
-            case " 2" | " 3":
-                pass
-            case _:
-                select_entities.append(WolfSelect(ism8, nbr))
+            select_entities.append(WolfSelect(ism8, nbr))
 
     async_add_entities(select_entities)
 
