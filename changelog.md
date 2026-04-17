@@ -14,7 +14,7 @@
 - bug: fixed SensorStateClass.TOTAL for Tagesertrag -> is not TOTAL_INCREASING
 - refactored naming conventions
 - refactored if/elif into case statements
-- swichted to new library version with better handling for data errors
+- switched to new library version with better handling for data errors
 - implemented callback from the library as soon as connection established -> performance
 - fixed front end-display-issues for select entities
 
