@@ -31,12 +31,13 @@ class WolfData:
 
 
 PLATFORMS = [
-    Platform.SENSOR,
-    Platform.SELECT,
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
-    Platform.NUMBER,
     Platform.DATE,
+    Platform.NUMBER,
+    Platform.SELECT,
+    Platform.SENSOR,
+    Platform.SWITCH,
     Platform.TIME,
 ]
 

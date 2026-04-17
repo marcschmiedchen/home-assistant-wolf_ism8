@@ -68,3 +68,4 @@ class WolfInputNumber(WolfEntity, NumberEntity):
     async def async_set_native_value(self, value: float) -> None:
         """Update the current value."""
         self._ism8.send_dp_value(self.dp_nbr, value)
+        self.async_write_ha_state()
