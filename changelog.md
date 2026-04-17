@@ -1,19 +1,22 @@
 # Changelog
 ## 4.2-beta (2026-03-03)
+### Added
+- implemented system health check -> connection is shown under system/repairs
+- Add missing type hints to function signatures.
+- added SensorDeviceClass.VOLUME_FLOW_RATE for Flow sensors; enables switch of units in GUI
+- implemented switch entities for some datapoints
 ### Fixed
 - modernized architecture - uses config_entry.runtime_data now
 - set device info once, at startup, instead of in every entity -> performance
 - use connection pooling with async_get_clientsession(hass) -> performance and stability
-- implemented system health check -> connection is shown under system/repairs
 - set static data without the use of properties. Use the attr_ variables directly. -> adhere to best practice & performance
-- Add missing type hints to function signatures.
 - replaced hardcoded l/h unit with UnitOfVolumeFlowRate.LITERS_PER_HOUR
-- added SensorDeviceClass.VOLUME_FLOW_RATE for Flow sensors; enables switch of units in GUI
 - bug: fixed SensorStateClass.TOTAL for Tagesertrag -> is not TOTAL_INCREASING
 - refactored naming conventions
 - refactored if/elif into case statements
 - swichted to new library version with better handling for data errors
 - implemented callback from the library as soon as connection established -> performance
+- fixed front end-display-issues for select entities
 
 ## 4.1.1 (2025-04-18)
 ### Fixed
