@@ -1,5 +1,9 @@
 # Changelog
-## 4.2-beta (2026-03-03)
+## 4.3 (2026-03-03)
+### Added
+- added options list for non-writable data type HVACContr_Mode
+
+## 4.2 (2026-03-03)
 ### Added
 - implemented system health check -> connection is shown under system/repairs
 - Add missing type hints to function signatures.

@@ -59,7 +59,7 @@ async def async_setup_entry(
 class WolfSensor(WolfEntity, SensorEntity):
     """Implementation of Wolf Heating System Sensors"""
 
-    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:
+    def __init__(self, ism8: Ism8, dp_nbr: int) -> None:  # noqa: C901
         super().__init__(ism8, dp_nbr)
 
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -104,4 +104,4 @@ class WolfSensor(WolfEntity, SensorEntity):
             case SensorType.DPT_HVACCONTRMODE:
                 self._attr_device_class = SensorDeviceClass.ENUM
                 self._attr_state_class = None
-                self._attr_suggested_display_precision = None
+                self._attr_options = [str(opt) for opt in self._value_range]

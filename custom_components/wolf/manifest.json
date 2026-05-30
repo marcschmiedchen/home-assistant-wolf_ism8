@@ -14,7 +14,7 @@
     "issue_tracker": "https://github.com/marcschmiedchen/home-assistant-wolf_ism8/issues",
     "loggers": ["wolf_ism8", "custom_components.wolf"],
     "requirements": [
-        "wolf_ism8==4.0"
+        "wolf_ism8==4.01"
     ],
-    "version": "4.2"
+    "version": "4.3"
 }
