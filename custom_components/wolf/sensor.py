@@ -49,6 +49,8 @@ async def async_setup_entry(
             SensorType.DPT_HVACCONTRMODE,
             SensorType.DPT_ENERGY,
             SensorType.DPT_ENERGY_KWH,
+            SensorType.DPT_VALUE_1_UCOUNT,
+            SensorType.DPT_VALUE_2_UCOUNT,
         ):
             continue
 
@@ -101,6 +103,10 @@ class WolfSensor(WolfEntity, SensorEntity):
                 self._attr_device_class = SensorDeviceClass.ENERGY
                 self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
                 self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+            case SensorType.DPT_VALUE_1_UCOUNT | SensorType.DPT_VALUE_2_UCOUNT:
+                # codes / counters without unit, no long-term statistics
+                self._attr_state_class = None
+                self._attr_suggested_display_precision = 0
             case SensorType.DPT_HVACCONTRMODE:
                 self._attr_device_class = SensorDeviceClass.ENUM
                 self._attr_state_class = None

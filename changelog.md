@@ -1,4 +1,8 @@
 # Changelog
+## Unreleased
+### Added
+- sensors for datapoints of type `DPT_Value_1_Ucount` / `DPT_Value_2_Ucount` (DP 372 last fault code, BM-2 datapoints 251, 355-361), without long-term statistics (#94)
+
 ## 4.3 (2026-03-03)
 ### Added
 - added options list for non-writable data type HVACContr_Mode
