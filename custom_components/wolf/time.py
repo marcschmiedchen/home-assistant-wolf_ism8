@@ -33,6 +33,7 @@ async def async_setup_entry(
         if not ism8.is_writable(nbr):
             continue
         if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         time_entities.append(WolfTime(ism8, nbr))
 

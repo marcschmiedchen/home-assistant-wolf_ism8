@@ -40,6 +40,7 @@ async def async_setup_entry(
             _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")
             continue
         if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         select_entities.append(WolfSwitch(ism8, nbr))
 

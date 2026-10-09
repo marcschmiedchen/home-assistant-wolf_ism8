@@ -43,6 +43,7 @@ async def async_setup_entry(
         if ism8.is_writable(nbr):
             continue
         if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
     async_add_entities(binary_sensor_entities)

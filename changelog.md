@@ -1,4 +1,8 @@
 # Changelog
+## 4.5 (2026-10-09)
+### Added
+- FW version filtering: entities only created for datapoints supported by ISM8 firmware. FW version scraped on first connection, persisted to config entry data, survives reboot and offline startup. Entry reloads when FW version changes (#97).
+
 ## 4.4 (2026-10-10)
 ### Added
 - sensors for datapoints of type `DPT_Value_1_Ucount` / `DPT_Value_2_Ucount` (DP 372 last fault code, BM-2 datapoints 251, 355-361), without long-term statistics (#94)

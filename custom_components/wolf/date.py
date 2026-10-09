@@ -35,6 +35,7 @@ async def async_setup_entry(
         if ism8.get_type(nbr) != SensorType.DPT_DATE:
             continue
         if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         date_entities.append(WolfDate(ism8, nbr))
 

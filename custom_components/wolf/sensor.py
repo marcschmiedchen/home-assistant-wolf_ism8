@@ -55,6 +55,7 @@ async def async_setup_entry(
         ):
             continue
         if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
 
         sensor_entities.append(WolfSensor(ism8, nbr))

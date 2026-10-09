@@ -34,6 +34,7 @@ async def async_setup_entry(
         if not ism8.is_writable(nbr):
             continue
         if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         if ism8.get_type(nbr) == SensorType.DPT_SWITCH and dp_name[-1] in (
             "1",

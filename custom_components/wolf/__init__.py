@@ -156,13 +156,11 @@ async def async_update_device_info(
 
         # Persist FW version so next boot knows it without connection
         if sw_ver and sw_ver != config_entry.runtime_data.fw_version:
+            _LOGGER.info("detected FW change on ISM8. New sensors on next start/boot.")
             hass.config_entries.async_update_entry(
                 config_entry,
                 data={**config_entry.data, CONF_FW_VERSION: sw_ver},
             )
-            # Reload so platforms re-filter entities with correct FW.
-            # async_reload recreates runtime_data from updated config_entry.data.
-            await hass.config_entries.async_reload(config_entry.entry_id)
 
     except Exception as err:
         _LOGGER.error("Unexpected error updating ISM8 device info: %s", err)
