@@ -31,6 +31,7 @@ async def async_setup_entry(
     reference to an ism8-adapter via config_entry.runtime_data
     """
     ism8 = config_entry.runtime_data.protocol
+    fw_version = config_entry.runtime_data.fw_version
 
     sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -52,6 +53,8 @@ async def async_setup_entry(
             SensorType.DPT_VALUE_1_UCOUNT,
             SensorType.DPT_VALUE_2_UCOUNT,
         ):
+            continue
+        if ism8.first_fw_version(nbr) > fw_version:
             continue
 
         sensor_entities.append(WolfSensor(ism8, nbr))

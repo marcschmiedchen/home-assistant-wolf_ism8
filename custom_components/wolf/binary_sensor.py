@@ -24,6 +24,7 @@ async def async_setup_entry(
     reference to an ism8-protocol implementation via config_entry.runtime_data
     """
     ism8 = config_entry.runtime_data.protocol
+    fw_version = config_entry.runtime_data.fw_version
 
     binary_sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -40,6 +41,8 @@ async def async_setup_entry(
             continue
         # only add sensors which are not writable
         if ism8.is_writable(nbr):
+            continue
+        if ism8.first_fw_version(nbr) > fw_version:
             continue
         binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
     async_add_entities(binary_sensor_entities)

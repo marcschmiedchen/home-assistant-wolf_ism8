@@ -23,6 +23,7 @@ async def async_setup_entry(
     """
 
     ism8 = config_entry.runtime_data.protocol
+    fw_version = config_entry.runtime_data.fw_version
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -31,6 +32,8 @@ async def async_setup_entry(
         if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
             continue
         if not ism8.is_writable(nbr):
+            continue
+        if ism8.first_fw_version(nbr) > fw_version:
             continue
         if ism8.get_type(nbr) == SensorType.DPT_SWITCH and dp_name[-1] in (
             "1",
