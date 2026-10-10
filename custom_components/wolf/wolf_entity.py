@@ -33,7 +33,9 @@ class WolfEntity(Entity):
             name=self._device,
         )
 
-        if self._is_writable or (self._type == "DPT_HVACContrMode"):
+        if self._is_writable or (
+            self._type in ("DPT_HVACContrMode", "DPT_HeatGenType")
+        ):
             self._value_range = ism8.get_value_range(dp_nbr)
             _LOGGER.debug(f"range = {self._value_range}")
             # if allowed range is a number, calculate min and max
