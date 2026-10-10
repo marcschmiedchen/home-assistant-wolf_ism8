@@ -25,15 +25,13 @@ An integration of WOLF's Heating ISM8 module into Home Assistant. The integratio
 
 ### Installation via HACS (Recommended)
 1. In Home Assistant, go to HACS -> Integrations.
-2. Click the three dots in the top right and select "Custom repositories".
-3. Add `https://github.com/marcschmiedchen/home-assistant-wolf_ism8` and select category "Integration".
-4. Search for "Wolf Climate Control ISM8" and install.
-5. **Restart Home Assistant.**
-6. Go to Settings -> Devices & Services -> Add Integration -> Search for "Wolf".
+2. Search for "Wolf Climate Control ISM8" and install.
+3. **Restart Home Assistant.**
+4. Go to Settings -> Devices & Services -> Add Integration -> Search for "Wolf".
 
 ### Configuration
 1. **IP/Port:** Enter the IP address and port of your Home Assistant server that the integration should listen on (Default: `0.0.0.0` (listens on all addresses) and `12004`). This must match the settings in your ISM8 web configuration.
-2. **Devices:** Select the devices installed in your HVAC system.
+2. **Devices:** Select your own devices — tick only the ones actually installed. Others won't be created.
 
 ---
 
@@ -54,15 +52,13 @@ Eine Home Assistant Integration für das WOLF ISM8 Modul. Die Integration stellt
 
 ### Installation über HACS
 1. In Home Assistant zu HACS -> Integrationen navigieren.
-2. Oben rechts auf die drei Punkte klicken -> "Benutzerdefinierte Repositories".
-3. Link `https://github.com/marcschmiedchen/home-assistant-wolf_ism8` hinzufügen, Kategorie "Integration".
-4. Nach "Wolf Climate Control ISM8" suchen und installieren.
-5. **Home Assistant neu starten.**
-6. Unter Einstellungen -> Geräte & Dienste -> Integration hinzufügen nach "Wolf" suchen.
+2. Nach "Wolf Climate Control ISM8" suchen und installieren.
+3. **Home Assistant neu starten.**
+4. Unter Einstellungen -> Geräte & Dienste -> Integration hinzufügen nach "Wolf" suchen.
 
 ### Konfiguration
 1. **IP/Port:** IP-Adresse und Port des HA-Servers angeben, auf dem die Integration lauscht (Standard: `0.0.0.0` (wartet auf allen verfügbaren IP adressen) und `12004`). Diese Werte müssen im ISM8 hinterlegt sein.
-2. **Geräte:** Wählen alle vorhandenen Geräte des Heizungssystems Systems aus. Andere Geräte werden dann nicht angelegt.
+2. **Geräte:** Eigene Geräte auswählen — nur die tatsächlich installierten Geräte anhaken. Andere Geräte werden dann nicht angelegt.
 
 ---
 
