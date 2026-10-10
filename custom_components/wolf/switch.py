@@ -21,6 +21,7 @@ async def async_setup_entry(
     """performs setup of the <select> entities"""
 
     ism8 = config_entry.runtime_data.protocol
+    fw_version = config_entry.runtime_data.fw_version
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -37,6 +38,9 @@ async def async_setup_entry(
         # those are DPT_SWITCH, but are select entities, not on/off switches
         if ism8.get_name(nbr)[-1] in ("1", "2", "3"):
             _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")
+            continue
+        if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         select_entities.append(WolfSwitch(ism8, nbr))
 

@@ -2,6 +2,7 @@ from enum import StrEnum
 from typing import Final
 
 DOMAIN: Final = "wolf"
+CONF_FW_VERSION: Final = "fw_version"
 
 DEFAULT_HOST: Final = "0.0.0.0"
 DEFAULT_PORT: Final = 12004

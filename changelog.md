@@ -7,10 +7,14 @@
   they report in the `erkannt` attribute; the state stays the raw bitfield
 - the BM-2 is named in the device selection of the config flow; it had been
   showing as the raw key `Bedienmodul_BM2`
+- FW version filtering: entities only created for datapoints supported by ISM8 firmware. 
+- FW version scraped on first connection, persisted to config entry data, survives reboot and offline startup. 
+- Entry reloads when FW version changes.
 ### Fixed
 - typo in device selection: "Wärmepumpe 4" was labelled "Wärmepumpe 3"
 - requirement pin was spelled `wolf_ism8==4.01`, which PEP 440 normalizes to 4.1;
   it now reads `wolf_ism8==4.3`, the version that carries the decoders
+- replaced deprecated `via_device` parameter with `via_device_id` in device registry calls
 
 ## 4.4 (2026-10-10)
 ### Added

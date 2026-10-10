@@ -15,6 +15,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from wolf_ism8 import Ism8
 
+from .const import CONF_FW_VERSION
 from .const import DOMAIN
 from .const import WOLF
 from .const import WOLF_ISM8
@@ -28,6 +29,7 @@ class WolfData:
 
     protocol: Ism8
     server: asyncio.Server
+    fw_version: str = "1.00"
 
 
 PLATFORMS = [
@@ -55,11 +57,15 @@ async def async_setup_entry(
         family=AF_INET,
     )
 
-    config_entry.runtime_data = WolfData(protocol=ism8, server=server)
+    config_entry.runtime_data = WolfData(
+        protocol=ism8,
+        server=server,
+        fw_version=config_entry.data.get(CONF_FW_VERSION) or "1.00",
+    )
 
     device_registry = dr.async_get(hass)
     # Create the main ISM8 adapter device as connector for the other devices
-    device_registry.async_get_or_create(
+    parent_device = device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
         identifiers={(DOMAIN, config_entry.entry_id)},
         name="ISM8 Adapter",
@@ -85,7 +91,7 @@ async def async_setup_entry(
             config_entry_id=config_entry.entry_id,
             identifiers={(DOMAIN, device_name)},
             name=device_name,
-            via_device=(DOMAIN, config_entry.entry_id),
+            via_device_id=parent_device.id,
         )
     # register the unloading callback
     config_entry.async_on_unload(lambda: async_close_server(server))
@@ -103,15 +109,6 @@ async def async_unload_entry(
     return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
 
 
-async def get_webportal_info(
-    hass: HomeAssistant, ip_address: str | None
-) -> tuple[str | None, str | None, str | None]:
-    """Gets some information from the ISM-webportal. Most important is the ISM8 firmware
-    version, which restricts the datapoints available to the integration. When FW
-    version can be read, no unnecessary datapoints are initialized in Home Assistant.
-    """
-
-
 # HA will call this when unloading
 async def async_close_server(server) -> None:
     _LOGGER.info("Releasing ISM8 network connection")
@@ -124,7 +121,7 @@ async def async_update_device_info(
     hass: HomeAssistant, config_entry: ConfigEntry[WolfData], ip_address: str
 ):
     """Update device information once connected: fetches some information from the
-    ISM8-webportal. Most important is the ISM8 firmware version, which restricts the
+    ISM8-webportal. Most important is the ISM8 firmware version, which may restrict
     datapoints available to the integration. When the FW-version could be read,
     no unnecessary datapoints are initialized in Home Assistant.
     """
@@ -156,6 +153,14 @@ async def async_update_device_info(
             serial_number=ser_nbr,
             configuration_url=f"http://{ip_address}",
         )
+
+        # Persist FW version so next boot knows it without connection
+        if sw_ver and sw_ver != config_entry.runtime_data.fw_version:
+            _LOGGER.info("detected FW change on ISM8. New sensors on next start/boot.")
+            hass.config_entries.async_update_entry(
+                config_entry,
+                data={**config_entry.data, CONF_FW_VERSION: sw_ver},
+            )
 
     except Exception as err:
         _LOGGER.error("Unexpected error updating ISM8 device info: %s", err)

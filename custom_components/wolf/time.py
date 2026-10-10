@@ -22,6 +22,7 @@ async def async_setup_entry(
     reference to an ism8-protocol implementation via config_entry.runtime_data
     """
     ism8 = config_entry.runtime_data.protocol
+    fw_version = config_entry.runtime_data.fw_version
 
     time_entities = []
     for nbr in ism8.get_all_sensors().keys():
@@ -30,6 +31,9 @@ async def async_setup_entry(
         if ism8.get_type(nbr) != SensorType.DPT_TIMEOFDAY:
             continue
         if not ism8.is_writable(nbr):
+            continue
+        if ism8.first_fw_version(nbr) > fw_version:
+            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         time_entities.append(WolfTime(ism8, nbr))
 
