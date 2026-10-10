@@ -2,6 +2,8 @@
 ## 4.5 (2026-10-09)
 ### Added
 - FW version filtering: entities only created for datapoints supported by ISM8 firmware. FW version scraped on first connection, persisted to config entry data, survives reboot and offline startup. Entry reloads when FW version changes (#97).
+### Fixed
+- replaced deprecated `via_device` parameter with `via_device_id` in device registry calls
 
 ## 4.4 (2026-10-10)
 ### Added

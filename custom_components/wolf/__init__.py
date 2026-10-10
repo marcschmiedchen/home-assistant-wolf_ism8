@@ -65,7 +65,7 @@ async def async_setup_entry(
 
     device_registry = dr.async_get(hass)
     # Create the main ISM8 adapter device as connector for the other devices
-    device_registry.async_get_or_create(
+    parent_device = device_registry.async_get_or_create(
         config_entry_id=config_entry.entry_id,
         identifiers={(DOMAIN, config_entry.entry_id)},
         name="ISM8 Adapter",
@@ -91,7 +91,7 @@ async def async_setup_entry(
             config_entry_id=config_entry.entry_id,
             identifiers={(DOMAIN, device_name)},
             name=device_name,
-            via_device=(DOMAIN, config_entry.entry_id),
+            via_device_id=parent_device.id,
         )
     # register the unloading callback
     config_entry.async_on_unload(lambda: async_close_server(server))
