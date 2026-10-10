@@ -12,6 +12,7 @@ from homeassistant.const import UnitOfPressure
 from homeassistant.const import UnitOfTemperature
 from homeassistant.const import UnitOfVolumeFlowRate
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from wolf_ism8 import Ism8
 
@@ -51,6 +52,7 @@ async def async_setup_entry(
             SensorType.DPT_ENERGY_KWH,
             SensorType.DPT_VALUE_1_UCOUNT,
             SensorType.DPT_VALUE_2_UCOUNT,
+            SensorType.DPT_HEATGENTYPE,
         ):
             continue
 
@@ -107,7 +109,28 @@ class WolfSensor(WolfEntity, SensorEntity):
                 # codes / counters without unit, no long-term statistics
                 self._attr_state_class = None
                 self._attr_suggested_display_precision = 0
+                if ism8.is_bitfield(dp_nbr):
+                    # which appliances / circuits the BM-2 reports are present.
+                    # The state stays the raw bitfield, the decoded names are
+                    # offered as an attribute, since they are a list.
+                    self._attr_entity_category = EntityCategory.DIAGNOSTIC
             case SensorType.DPT_HVACCONTRMODE:
                 self._attr_device_class = SensorDeviceClass.ENUM
                 self._attr_state_class = None
                 self._attr_options = [str(opt) for opt in self._value_range]
+            case SensorType.DPT_HEATGENTYPE:
+                # appliance type behind a heat generator, decoded by the library
+                self._attr_device_class = SensorDeviceClass.ENUM
+                self._attr_state_class = None
+                self._attr_entity_category = EntityCategory.DIAGNOSTIC
+                self._attr_options = [str(opt) for opt in self._value_range]
+
+    @property
+    def extra_state_attributes(self) -> dict[str, list[str]] | None:
+        """Names of the components a BM-2 bitfield datapoint reports as present."""
+        if not self._ism8.is_bitfield(self.dp_nbr):
+            return None
+        value = self._ism8.read_sensor(self.dp_nbr)
+        if value is None:
+            return None
+        return {"erkannt": list(self._ism8.decode_bitfield(self.dp_nbr, value))}

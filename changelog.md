@@ -1,4 +1,16 @@
 # Changelog
+## 4.5 (2026-10-10)
+### Added
+- BM-2 appliance type (DP 357/359/360/361) is shown as an enum sensor with the
+  appliance name (CHA, CGB-2, TOB, ...) instead of a raw code
+- BM-2 detection bitfields (DP 251/355/356/358) list the appliances and circuits
+  they report in the `erkannt` attribute; the state stays the raw bitfield
+- the BM-2 is named in the device selection of the config flow; it had been
+  showing as the raw key `Bedienmodul_BM2`
+### Fixed
+- typo in device selection: "Wärmepumpe 4" was labelled "Wärmepumpe 3"
+- requirement pin spelled `wolf_ism8==4.01`, which PEP 440 normalizes to 4.1
+
 ## 4.4 (2026-10-10)
 ### Added
 - sensors for datapoints of type `DPT_Value_1_Ucount` / `DPT_Value_2_Ucount` (DP 372 last fault code, BM-2 datapoints 251, 355-361), without long-term statistics (#94)

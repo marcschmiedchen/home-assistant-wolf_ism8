@@ -33,6 +33,7 @@ class SensorType(StrEnum):
     DPT_HVACMODE_CWL = "DPT_HVACMode_CWL"
     DPT_DHWMODE = "DPT_DHWMode"
     DPT_HVACCONTRMODE = "DPT_HVACContrMode"
+    DPT_HEATGENTYPE = "DPT_HeatGenType"
     DPT_ENERGY = "DPT_ActiveEnergy"
     DPT_ENERGY_KWH = "DPT_ActiveEnergy_kWh"
     DPT_VALUE_1_UCOUNT = "DPT_Value_1_Ucount"
