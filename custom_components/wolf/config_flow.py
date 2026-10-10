@@ -69,3 +69,55 @@ class WolfConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="device", data_schema=vol.Schema(WOLF_DEVICE_SCHEMA), errors=errors
         )
+
+    async def async_step_reconfigure(self, user_input=None):
+        """Change host and port of an entry that is already set up."""
+        errors: dict[str, str] = {}
+        reconfigure_entry = self._get_reconfigure_entry()
+
+        if user_input is not None:
+            self.host = user_input[CONF_HOST]
+            self.port = user_input[CONF_PORT]
+
+            return await self.async_step_reconfigure_device()
+
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=self.add_suggested_values_to_schema(
+                vol.Schema(WOLF_HOST_SCHEMA), reconfigure_entry.data
+            ),
+            errors=errors,
+        )
+
+    async def async_step_reconfigure_device(self, user_input=None):
+        """Change the device selection of an entry that is already set up.
+
+        Devices that are deselected here lose their entities on the reload that
+        follows, see async_setup_entry.
+        """
+        errors: dict[str, str] = {}
+        reconfigure_entry = self._get_reconfigure_entry()
+
+        if user_input is not None:
+            devices = [
+                _device for _device in Ism8.get_all_devices() if user_input.get(_device)
+            ]
+
+            return self.async_update_reload_and_abort(
+                reconfigure_entry,
+                data_updates={
+                    CONF_HOST: self.host,
+                    CONF_PORT: self.port,
+                    CONF_DEVICES: devices,
+                },
+            )
+
+        configured = reconfigure_entry.data[CONF_DEVICES]
+        return self.async_show_form(
+            step_id="reconfigure_device",
+            data_schema=self.add_suggested_values_to_schema(
+                vol.Schema(WOLF_DEVICE_SCHEMA),
+                {_device: _device in configured for _device in Ism8.get_all_devices()},
+            ),
+            errors=errors,
+        )

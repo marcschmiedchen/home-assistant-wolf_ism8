@@ -1,7 +1,8 @@
 {
     "config": {
         "abort": {
-            "already_configured": "ISM8 was already set-up. Only 1 module per IP address."
+            "already_configured": "ISM8 was already set-up. Only 1 module per IP address.",
+            "reconfigure_successful": "Configuration changed."
         },
         "step": {
             "user": {
@@ -38,6 +39,41 @@
                 },
                 "description": "Choose installed devices",
                 "title": "Select WOLF devices"
+            },
+            "reconfigure": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                },
+                "description": "IP address and port Home Assistant listens on for ISM8 messages. \nBoth are configured in the ISM8i web interface.",
+                "title": "WOLF ISM8 Adapter"
+            },
+            "reconfigure_device": {
+                "data": {
+                    "Heizgeraet1": "Heating unit 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Heizgeraet2": "Heating unit 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Heizgeraet3": "Heating unit 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Heizgeraet4": "Heating unit 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                    "Systembedienmodul": "System controller",
+                    "Direkter_Heizkreis_WW": "Direct Heating/WarmWater",
+                    "Mischerkreis1": "Mixed heating circuit 1",
+                    "Mischerkreis2": "Mixed heating circuit 2",
+                    "Mischerkreis3": "Mixed heating circuit 3",
+                    "Kaskadenmodul": "Cascading module",
+                    "Mischermodul1": "Mixing module 1",
+                    "Mischermodul2": "Mixing module 2",
+                    "Mischermodul3": "Mixing module 3",
+                    "Solarmodul": "Solar module SM",
+                    "CWL_Wohnraumlueftung": "Ventilation: CWL-300 / CWL-2",
+                    "Waermepumpe": "Heat pump 1: BWL-1S, CHA",
+                    "Waermepumpe2": "Heat pump 2: BWL-1S, CHA",
+                    "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
+                    "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
+                    "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
+                    "undok_Daten": "undocumented data -- for developers"
+                },
+                "description": "Change the selection. Deselected devices are removed together with their entities, newly selected ones are added.",
+                "title": "Select WOLF components"
             }
         }
     }
