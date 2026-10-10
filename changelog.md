@@ -9,7 +9,8 @@
   showing as the raw key `Bedienmodul_BM2`
 ### Fixed
 - typo in device selection: "Wärmepumpe 4" was labelled "Wärmepumpe 3"
-- requirement pin spelled `wolf_ism8==4.01`, which PEP 440 normalizes to 4.1
+- requirement pin was spelled `wolf_ism8==4.01`, which PEP 440 normalizes to 4.1;
+  it now reads `wolf_ism8==4.3`, the version that carries the decoders
 
 ## 4.4 (2026-10-10)
 ### Added
