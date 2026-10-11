@@ -2,13 +2,13 @@ import logging
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_DEVICES
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import SensorType
 from .wolf_entity import WolfEntity
+from .wolf_entity import wolf_datapoint_matches_platform
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -21,15 +21,16 @@ async def async_setup_entry(
     """performs setup of the <select> entities"""
 
     ism8 = config_entry.runtime_data.protocol
-    fw_version = config_entry.runtime_data.fw_version
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
-        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
-            continue
-        if not ism8.is_writable(nbr):
-            continue
-        if ism8.get_type(nbr) != SensorType.DPT_SWITCH:
+        # check if this sensor should be added to THIS platform
+        if not wolf_datapoint_matches_platform(
+            nbr,
+            config_entry=config_entry,
+            platforms=(SensorType.DPT_SWITCH,),
+            writable=True,
+        ):
             continue
         # those are DPT_SWITCH, but trigger (button-)entities
         if nbr in (193, 194):
@@ -38,9 +39,6 @@ async def async_setup_entry(
         # those are DPT_SWITCH, but are select entities, not on/off switches
         if ism8.get_name(nbr)[-1] in ("1", "2", "3"):
             _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")
-            continue
-        if ism8.first_fw_version(nbr) > fw_version:
-            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         select_entities.append(WolfSwitch(ism8, nbr))
 

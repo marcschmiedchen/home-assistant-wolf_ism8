@@ -1,10 +1,7 @@
-import logging
-
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorStateClass
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_DEVICES
 from homeassistant.const import PERCENTAGE
 from homeassistant.const import UnitOfEnergy
 from homeassistant.const import UnitOfPower
@@ -18,8 +15,7 @@ from wolf_ism8 import Ism8
 
 from .const import SensorType
 from .wolf_entity import WolfEntity
-
-_LOGGER = logging.getLogger(__name__)
+from .wolf_entity import wolf_datapoint_matches_platform
 
 
 async def async_setup_entry(
@@ -32,32 +28,30 @@ async def async_setup_entry(
     reference to an ism8-adapter via config_entry.runtime_data
     """
     ism8 = config_entry.runtime_data.protocol
-    fw_version = config_entry.runtime_data.fw_version
 
     sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
-        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
-            continue
-        if ism8.is_writable(nbr):
-            continue
-        if ism8.get_type(nbr) not in (
-            SensorType.DPT_VALUE_TEMP,
-            SensorType.DPT_VALUE_TEMPD,
-            SensorType.DPT_VALUE_PRES,
-            SensorType.DPT_SCALING,
-            SensorType.DPT_POWER,
-            SensorType.DPT_VALUE_VOLUME_FLOW,
-            SensorType.DPT_FLOWRATE_M3,
-            SensorType.DPT_HVACCONTRMODE,
-            SensorType.DPT_ENERGY,
-            SensorType.DPT_ENERGY_KWH,
-            SensorType.DPT_VALUE_1_UCOUNT,
-            SensorType.DPT_VALUE_2_UCOUNT,
-            SensorType.DPT_HEATGENTYPE,
+        # check if this sensor should be added to THIS platform
+        if not wolf_datapoint_matches_platform(
+            nbr,
+            config_entry=config_entry,
+            platforms=(
+                SensorType.DPT_VALUE_TEMP,
+                SensorType.DPT_VALUE_TEMPD,
+                SensorType.DPT_VALUE_PRES,
+                SensorType.DPT_SCALING,
+                SensorType.DPT_POWER,
+                SensorType.DPT_VALUE_VOLUME_FLOW,
+                SensorType.DPT_FLOWRATE_M3,
+                SensorType.DPT_HVACCONTRMODE,
+                SensorType.DPT_ENERGY,
+                SensorType.DPT_ENERGY_KWH,
+                SensorType.DPT_VALUE_1_UCOUNT,
+                SensorType.DPT_VALUE_2_UCOUNT,
+                SensorType.DPT_HEATGENTYPE,
+            ),
+            writable=False,
         ):
-            continue
-        if ism8.first_fw_version(nbr) > fw_version:
-            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
 
         sensor_entities.append(WolfSensor(ism8, nbr))

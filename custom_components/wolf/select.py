@@ -2,13 +2,13 @@ import logging
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_DEVICES
 from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import SensorType
 from .wolf_entity import WolfEntity
+from .wolf_entity import wolf_datapoint_matches_platform
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -23,18 +23,23 @@ async def async_setup_entry(
     """
 
     ism8 = config_entry.runtime_data.protocol
-    fw_version = config_entry.runtime_data.fw_version
 
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
         dp_name = ism8.get_name(nbr)
 
-        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
-            continue
-        if not ism8.is_writable(nbr):
-            continue
-        if ism8.first_fw_version(nbr) > fw_version:
-            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
+        # check if this sensor should be added to THIS platform
+        if not wolf_datapoint_matches_platform(
+            nbr,
+            config_entry=config_entry,
+            platforms=(
+                SensorType.DPT_SWITCH,
+                SensorType.DPT_HVACMODE,
+                SensorType.DPT_HVACMODE_CWL,
+                SensorType.DPT_DHWMODE,
+            ),
+            writable=True,
+        ):
             continue
         if ism8.get_type(nbr) == SensorType.DPT_SWITCH and dp_name[-1] in (
             "1",

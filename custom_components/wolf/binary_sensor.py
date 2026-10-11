@@ -1,17 +1,13 @@
-import logging
-
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_DEVICES
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from wolf_ism8 import Ism8
 
 from .const import SensorType
 from .wolf_entity import WolfEntity
-
-_LOGGER = logging.getLogger(__name__)
+from .wolf_entity import wolf_datapoint_matches_platform
 
 
 async def async_setup_entry(
@@ -24,26 +20,21 @@ async def async_setup_entry(
     reference to an ism8-protocol implementation via config_entry.runtime_data
     """
     ism8 = config_entry.runtime_data.protocol
-    fw_version = config_entry.runtime_data.fw_version
 
     binary_sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
-        # only add sensors which were enabled in the config
-        if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
-            continue
-        # only add sensors which are binary
-        if ism8.get_type(nbr) not in (
-            SensorType.DPT_SWITCH,
-            SensorType.DPT_BOOL,
-            SensorType.DPT_ENABLE,
-            SensorType.DPT_OPENCLOSE,
+        # check if this sensor should be added to THIS platform
+        if not wolf_datapoint_matches_platform(
+            nbr,
+            config_entry=config_entry,
+            platforms=(
+                SensorType.DPT_SWITCH,
+                SensorType.DPT_BOOL,
+                SensorType.DPT_ENABLE,
+                SensorType.DPT_OPENCLOSE,
+            ),
+            writable=False,
         ):
-            continue
-        # only add sensors which are not writable
-        if ism8.is_writable(nbr):
-            continue
-        if ism8.first_fw_version(nbr) > fw_version:
-            _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
             continue
         binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
     async_add_entities(binary_sensor_entities)

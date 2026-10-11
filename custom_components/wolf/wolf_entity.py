@@ -1,12 +1,40 @@
 import logging
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_DEVICES
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
 
 from .const import DOMAIN
+from .const import SensorType
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def wolf_datapoint_matches_platform(
+    nbr: int,
+    config_entry: ConfigEntry,
+    platforms: tuple[SensorType, ...],
+    writable: bool,
+) -> bool:
+    """Helper function to check whether datapoint `nbr`
+    passes the platform filters: Device must be selected in the config entry,
+    `writable` keeps only r/o or writable datapoints , `platforms` restricts the DPT,
+    datapoints the firmware may not support may be dropped.
+    """
+    ism8 = config_entry.runtime_data.protocol
+    fw_version = config_entry.runtime_data.fw_version
+    if ism8.get_device(nbr) not in config_entry.data[CONF_DEVICES]:
+        return False
+    if ism8.is_writable(nbr) != writable:
+        return False
+    if ism8.get_type(nbr) not in platforms:
+        return False
+    if ism8.first_fw_version(nbr) > fw_version:
+        _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
+        return False
+    return True
 
 
 class WolfEntity(Entity):
