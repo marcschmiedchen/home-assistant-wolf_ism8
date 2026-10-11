@@ -2,7 +2,6 @@ import asyncio
 import logging
 import re
 from dataclasses import dataclass
-from socket import AF_INET
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
@@ -86,7 +85,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -
         ism8.factory,
         host=entry.data[CONF_HOST],
         port=entry.data[CONF_PORT],
-        family=AF_INET,
     )
 
     entry.runtime_data = WolfData(
