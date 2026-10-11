@@ -44,87 +44,86 @@ PLATFORMS = [
 ]
 
 
-async def async_setup_entry(
-    hass: HomeAssistant, config_entry: ConfigEntry[WolfData]
-) -> bool:
-    """set up the integration"""
-    ism8 = Ism8()
-
-    server = await hass.loop.create_server(
-        ism8.factory,
-        host=config_entry.data[CONF_HOST],
-        port=config_entry.data[CONF_PORT],
-        family=AF_INET,
-    )
-
-    config_entry.runtime_data = WolfData(
-        protocol=ism8,
-        server=server,
-        fw_version=config_entry.data.get(CONF_FW_VERSION) or "1.00",
-    )
-
-    device_registry = dr.async_get(hass)
-    # Create the main ISM8 adapter device as connector for the other devices
-    parent_device = device_registry.async_get_or_create(
-        config_entry_id=config_entry.entry_id,
-        identifiers={(DOMAIN, config_entry.entry_id)},
+def _add_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -> None:
+    """Create the ISM8 adapter device and each selected child device."""
+    parent_device = registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, entry.entry_id)},
         name="ISM8 Adapter",
         manufacturer=WOLF,
         model=WOLF_ISM8,
     )
 
-    @callback
-    def on_connection(ip_address: str) -> None:
-        """Handle connection to ISM8."""
-        _LOGGER.debug("ISM8 connection to %s, starting info scraping", ip_address)
-        config_entry.async_create_background_task(
-            hass,
-            async_update_device_info(hass, config_entry, ip_address),
-            "wolf-update-device-info",
-        )
-
-    ism8.register_connection_callback(on_connection)
-
-    # now loop over the configured devices and create them
-    for device_name in config_entry.data[CONF_DEVICES]:
-        device_registry.async_get_or_create(
-            config_entry_id=config_entry.entry_id,
+    for device_name in entry.data[CONF_DEVICES]:
+        registry.async_get_or_create(
+            config_entry_id=entry.entry_id,
             identifiers={(DOMAIN, device_name)},
             name=device_name,
             via_device_id=parent_device.id,
         )
 
-    # drop devices that are no longer selected, so a reconfigure does not leave
-    # their entities behind as permanently unavailable leftovers. Removing the
-    # device takes its entities with it. The ISM8 adapter itself is identified by
-    # the entry id and always stays.
-    selected = {config_entry.entry_id, *config_entry.data[CONF_DEVICES]}
-    for device in dr.async_entries_for_config_entry(
-        device_registry, config_entry.entry_id
-    ):
-        ours = {
+
+def _remove_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -> None:
+    """Remove devices a reconfigure deselected, so their entities don't linger.
+    The adapter is identified by the entry id and stays.
+    """
+    keep = {entry.entry_id, *entry.data[CONF_DEVICES]}
+    for device in dr.async_entries_for_config_entry(registry, entry.entry_id):
+        # identifiers this integration registered under its own domain
+        owned = {
             identifier for domain, identifier in device.identifiers if domain == DOMAIN
         }
-        # only touch devices this integration named itself, and only those whose
-        # name has disappeared from the selection
-        if not ours or ours & selected:
+        if not owned or owned & keep:
             continue
         _LOGGER.debug("removing deselected device %s", device.name)
-        device_registry.async_remove_device(device.id)
+        registry.async_remove_device(device.id)
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -> bool:
+    """set up the integration"""
+    ism8 = Ism8()
+
+    server = await hass.loop.create_server(
+        ism8.factory,
+        host=entry.data[CONF_HOST],
+        port=entry.data[CONF_PORT],
+        family=AF_INET,
+    )
+
+    entry.runtime_data = WolfData(
+        protocol=ism8,
+        server=server,
+        fw_version=entry.data.get(CONF_FW_VERSION) or "1.00",
+    )
+
+    registry = dr.async_get(hass)
+    _add_devices(registry, entry)
+    _remove_devices(registry, entry)
+
+    @callback
+    def on_connection(ip_address: str) -> None:
+        """Handle connection to ISM8."""
+        _LOGGER.debug("ISM8 connection to %s, starting info scraping", ip_address)
+        entry.async_create_background_task(
+            hass,
+            async_update_device_info(hass, entry, ip_address),
+            "wolf-update-device-info",
+        )
+
+    ism8.register_connection_callback(on_connection)
+
     # register the unloading callback
-    config_entry.async_on_unload(lambda: async_close_server(server))
+    entry.async_on_unload(lambda: async_close_server(server))
 
     # now setup the entities, regardless of connection
-    await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
-async def async_unload_entry(
-    hass: HomeAssistant, config_entry: ConfigEntry[WolfData]
-) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -> bool:
     """Unload wolf integration"""
     _LOGGER.debug("Unloading ISM8")
-    return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
 # HA will call this when unloading
@@ -136,7 +135,7 @@ async def async_close_server(server) -> None:
 
 
 async def async_update_device_info(
-    hass: HomeAssistant, config_entry: ConfigEntry[WolfData], ip_address: str
+    hass: HomeAssistant, entry: ConfigEntry[WolfData], ip_address: str
 ):
     """Update device information once connected: fetches some information from the
     ISM8-webportal. Most important is the ISM8 firmware version, which may restrict
@@ -146,38 +145,38 @@ async def async_update_device_info(
 
     if ip_address is None:
         return
-    else:
-        url = "http://" + ip_address
+    url = f"http://{ip_address}"
 
+    sw_version = hw_version = serial_number = None
     try:
         session = async_get_clientsession(hass)
         async with session.get(url, timeout=10) as response:
             html = await response.text()
         match = re.search(r"FW-Version.*?(\d+\.\d+)", html)
         if match:
-            sw_ver = match.group(1)
+            sw_version = match.group(1)
         match = re.search(r"HW-Version.*?(\d+\.\d+)", html)
         if match:
-            hw_ver = match.group(1)
+            hw_version = match.group(1)
         match = re.search(r"<td>\s*(\w{12})\s*<\/td>", html)
         if match:
-            ser_nbr = match.group(1)
+            serial_number = match.group(1)
         # Update the parent device with scraped info
         dr.async_get(hass).async_get_or_create(
-            config_entry_id=config_entry.entry_id,
-            identifiers={(DOMAIN, config_entry.entry_id)},
-            sw_version=sw_ver,
-            hw_version=hw_ver,
-            serial_number=ser_nbr,
+            config_entry_id=entry.entry_id,
+            identifiers={(DOMAIN, entry.entry_id)},
+            sw_version=sw_version,
+            hw_version=hw_version,
+            serial_number=serial_number,
             configuration_url=f"http://{ip_address}",
         )
 
         # Persist FW version so next boot knows it without connection
-        if sw_ver and sw_ver != config_entry.runtime_data.fw_version:
+        if sw_version and sw_version != entry.runtime_data.fw_version:
             _LOGGER.info("detected FW change on ISM8. New sensors on next start/boot.")
             hass.config_entries.async_update_entry(
-                config_entry,
-                data={**config_entry.data, CONF_FW_VERSION: sw_ver},
+                entry,
+                data={**entry.data, CONF_FW_VERSION: sw_version},
             )
 
     except Exception as err:
