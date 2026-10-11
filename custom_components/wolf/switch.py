@@ -8,7 +8,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import SensorType
 from .wolf_entity import WolfEntity
-from .wolf_entity import wolf_datapoint_matches_platform
+from .wolf_entity import wolf_datapoint_filter
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ async def async_setup_entry(
     select_entities = []
     for nbr in ism8.get_all_sensors().keys():
         # check if this sensor should be added to THIS platform
-        if not wolf_datapoint_matches_platform(
+        if not wolf_datapoint_filter(
             nbr,
             config_entry=config_entry,
             platforms=(SensorType.DPT_SWITCH,),

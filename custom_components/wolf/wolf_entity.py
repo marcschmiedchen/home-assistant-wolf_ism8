@@ -12,7 +12,7 @@ from .const import SensorType
 _LOGGER = logging.getLogger(__name__)
 
 
-def wolf_datapoint_matches_platform(
+def wolf_datapoint_filter(
     nbr: int,
     config_entry: ConfigEntry,
     platforms: tuple[SensorType, ...],

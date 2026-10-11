@@ -15,7 +15,7 @@ from wolf_ism8 import Ism8
 
 from .const import SensorType
 from .wolf_entity import WolfEntity
-from .wolf_entity import wolf_datapoint_matches_platform
+from .wolf_entity import wolf_datapoint_filter
 
 
 async def async_setup_entry(
@@ -32,7 +32,7 @@ async def async_setup_entry(
     sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
         # check if this sensor should be added to THIS platform
-        if not wolf_datapoint_matches_platform(
+        if not wolf_datapoint_filter(
             nbr,
             config_entry=config_entry,
             platforms=(
