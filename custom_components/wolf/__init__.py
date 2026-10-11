@@ -49,7 +49,7 @@ def _add_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -> N
     parent_device = registry.async_get_or_create(
         config_entry_id=entry.entry_id,
         identifiers={(DOMAIN, entry.entry_id)},
-        name="ISM8 Adapter",
+        name=WOLF_ISM8,
         manufacturer=WOLF,
         model=WOLF_ISM8,
     )
@@ -64,16 +64,15 @@ def _add_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -> N
 
 
 def _remove_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -> None:
-    """Remove devices a reconfigure deselected, so their entities don't linger.
-    The adapter is identified by the entry id and stays.
-    """
-    keep = {entry.entry_id, *entry.data[CONF_DEVICES]}
+    """Remove old or deselected devices, so their entities don't linger."""
+
+    selected = set(entry.data[CONF_DEVICES])
     for device in dr.async_entries_for_config_entry(registry, entry.entry_id):
-        # identifiers this integration registered under its own domain
-        owned = {
-            identifier for domain, identifier in device.identifiers if domain == DOMAIN
-        }
-        if not owned or owned & keep:
+        # The ISM8 adapter itself is top-level. All others are via -> Keep it always.
+        if device.via_device_id is None:
+            continue
+        identifier = list(device.identifiers)[0][1]
+        if identifier in selected:
             continue
         _LOGGER.debug("removing deselected device %s", device.name)
         registry.async_remove_device(device.id)
