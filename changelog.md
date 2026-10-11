@@ -1,4 +1,12 @@
 # Changelog
+## 4.6 (2026-10-10)
+### Added
+- the device selection can be changed after setup via "Reconfigure"; it used to
+  exist only in the initial flow, so adding a forgotten device meant deleting
+  and recreating the entry, losing every entity id
+- devices that are deselected are removed together with their entities instead
+  of lingering as permanently unavailable leftovers
+
 ## 4.5 (2026-10-10)
 ### Added
 - BM-2 appliance type (DP 357/359/360/361) is shown as an enum sensor with the

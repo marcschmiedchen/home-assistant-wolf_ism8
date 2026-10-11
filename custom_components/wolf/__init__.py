@@ -93,6 +93,24 @@ async def async_setup_entry(
             name=device_name,
             via_device_id=parent_device.id,
         )
+
+    # drop devices that are no longer selected, so a reconfigure does not leave
+    # their entities behind as permanently unavailable leftovers. Removing the
+    # device takes its entities with it. The ISM8 adapter itself is identified by
+    # the entry id and always stays.
+    selected = {config_entry.entry_id, *config_entry.data[CONF_DEVICES]}
+    for device in dr.async_entries_for_config_entry(
+        device_registry, config_entry.entry_id
+    ):
+        ours = {
+            identifier for domain, identifier in device.identifiers if domain == DOMAIN
+        }
+        # only touch devices this integration named itself, and only those whose
+        # name has disappeared from the selection
+        if not ours or ours & selected:
+            continue
+        _LOGGER.debug("removing deselected device %s", device.name)
+        device_registry.async_remove_device(device.id)
     # register the unloading callback
     config_entry.async_on_unload(lambda: async_close_server(server))
 
