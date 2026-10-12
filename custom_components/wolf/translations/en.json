@@ -10,7 +10,7 @@
                     "host": "Host",
                     "port": "Port"
                 },
-                "description": "Enter your host and port where the integration should listen. \nPort can be defined in the ISM8i Interface (default: 12004)",
+                "description": "IP address and port where Home Assistant listens for ISM8 messages. Both are configured in the ISM8i web interface (default port: 12004).",
                 "title": "WOLF ISM8i Connector"
             },
             "device": {
@@ -37,16 +37,8 @@
                     "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
                     "undok_Daten": "undocumented data -- for developers"
                 },
-                "description": "Choose installed devices",
+                "description": "Only selected devices create sensors.",
                 "title": "Select WOLF devices"
-            },
-            "reconfigure": {
-                "data": {
-                    "host": "Host",
-                    "port": "Port"
-                },
-                "description": "IP address and port Home Assistant listens on for ISM8 messages. \nBoth are configured in the ISM8i web interface.",
-                "title": "WOLF ISM8 Adapter"
             },
             "reconfigure_device": {
                 "data": {
@@ -72,7 +64,7 @@
                     "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
                     "undok_Daten": "undocumented data -- for developers"
                 },
-                "description": "Change the selection. Deselected devices are removed together with their entities, newly selected ones are added.",
+                "description": "Only selected devices create sensors. Deselected devices are removed along with their entities.",
                 "title": "Select WOLF components"
             }
         }

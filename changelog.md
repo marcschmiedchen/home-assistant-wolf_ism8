@@ -1,11 +1,11 @@
 # Changelog
 ## 4.6 (2026-10-10)
 ### Added
-- the device selection can be changed after setup via "Reconfigure"; it used to
-  exist only in the initial flow, so adding a forgotten device meant deleting
-  and recreating the entry, losing every entity id
-- devices that are deselected are removed together with their entities instead
-  of lingering as permanently unavailable leftovers
+- device selection can be changed after setup via "Reconfigure"
+- devices that are deselected are removed together with their entities
+- the internal `undok_Daten` device is no longer offered in the device selection
+### Fixed
+- structural changes, clearer code
 
 ## 4.5 (2026-10-10)
 ### Added
@@ -15,8 +15,8 @@
   they report in the `erkannt` attribute; the state stays the raw bitfield
 - the BM-2 is named in the device selection of the config flow; it had been
   showing as the raw key `Bedienmodul_BM2`
-- FW version filtering: entities only created for datapoints supported by ISM8 firmware. 
-- FW version scraped on first connection, persisted to config entry data, survives reboot and offline startup. 
+- FW version filtering: entities only created for datapoints supported by ISM8 firmware.
+- FW version scraped on first connection, persisted to config entry data, survives reboot and offline startup.
 - Entry reloads when FW version changes.
 ### Fixed
 - typo in device selection: "Wärmepumpe 4" was labelled "Wärmepumpe 3"

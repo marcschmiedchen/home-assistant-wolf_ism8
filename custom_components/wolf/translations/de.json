@@ -10,7 +10,7 @@
                     "host": "Host",
                     "port": "Port"
                 },
-                "description": "IP Adresse und Port auf dem Home Assistant auf Nachrichten von ISM8 wartet. \nBeides wird im ISM8i Web-Interface hinterlegt.",
+                "description": "IP-Adresse und Port, auf denen Home Assistant auf ISM8-Nachrichten wartet. Beide werden im ISM8i Web-Interface hinterlegt (Standard-Port: 12004).",
                 "title": "WOLF ISM8 Adapter"
             },
             "device": {
@@ -37,16 +37,8 @@
                     "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
                     "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
                 },
-                "description": "Wählen Sie zu installierende Geräte. Nicht vorhandene Geräte erzeugen unnnötige (tote) Sensor-Einträge.",
+                "description": "Nur ausgewählte Geräte erzeugen Sensoren.",
                 "title": "WOLF Komponenten auswählen"
-            },
-            "reconfigure": {
-                "data": {
-                    "host": "Host",
-                    "port": "Port"
-                },
-                "description": "IP Adresse und Port auf dem Home Assistant auf Nachrichten von ISM8 wartet. \nBeides wird im ISM8i Web-Interface hinterlegt.",
-                "title": "WOLF ISM8 Adapter"
             },
             "reconfigure_device": {
                 "data": {
@@ -72,7 +64,7 @@
                     "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
                     "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
                 },
-                "description": "Auswahl ändern. Abgewählte Geräte werden mit ihren Entitäten entfernt, neu gewählte kommen hinzu.",
+                "description": "Nur ausgewählte Geräte erzeugen Sensoren. Abgewählte Geräte werden samt Entitäten entfernt.",
                 "title": "WOLF Komponenten auswählen"
             }
         }

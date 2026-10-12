@@ -10,7 +10,7 @@ DEFAULT_PORT: Final = 12004
 WOLF: Final = "Wolf"
 WOLF_ISM8: Final = "ISM8"
 
-WOLF_DEFAULT_DEVICES: Final = ["Heizgeraet1", "Systembedienmodul"]
+WOLF_DEFAULT_DEVICES: Final = ["Heizgeraet1", "Systembedienmodul", "Bedienmodul_BM2"]
 
 
 class SensorType(StrEnum):

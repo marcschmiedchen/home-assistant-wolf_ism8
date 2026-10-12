@@ -37,8 +37,6 @@ class WolfConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         """Invoked when a user initiates a flow via the user interface."""
-        errors: dict[str, str] = {}
-
         if user_input is not None:
             self._async_abort_entries_match({CONF_HOST: user_input[CONF_HOST]})
             self.host = user_input[CONF_HOST]
@@ -47,17 +45,15 @@ class WolfConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return await self.async_step_device()
 
         return self.async_show_form(
-            step_id="user", data_schema=vol.Schema(WOLF_HOST_SCHEMA), errors=errors
+            step_id="user", data_schema=vol.Schema(WOLF_HOST_SCHEMA)
         )
 
     async def async_step_device(self, user_input=None):
         """Invoked when a user initiates a flow via the user interface."""
-        errors: dict[str, str] = {}
-
         if user_input is not None:
             self.devices = []
             for _device in Ism8.get_all_devices():
-                if user_input[_device]:
+                if user_input.get(_device):
                     self.devices.append(_device)
 
             data = {
@@ -66,38 +62,18 @@ class WolfConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_DEVICES: self.devices,
             }
 
-            return self.async_create_entry(title="WOLF ISM8 Adapter", data=data)
+            return self.async_create_entry(data=data)
 
         return self.async_show_form(
-            step_id="device", data_schema=vol.Schema(WOLF_DEVICE_SCHEMA), errors=errors
+            step_id="device", data_schema=vol.Schema(WOLF_DEVICE_SCHEMA)
         )
 
     async def async_step_reconfigure(self, user_input=None):
-        """Change host and port of an entry that is already set up."""
-        errors: dict[str, str] = {}
-        reconfigure_entry = self._get_reconfigure_entry()
-
-        if user_input is not None:
-            self.host = user_input[CONF_HOST]
-            self.port = user_input[CONF_PORT]
-
-            return await self.async_step_reconfigure_device()
-
-        return self.async_show_form(
-            step_id="reconfigure",
-            data_schema=self.add_suggested_values_to_schema(
-                vol.Schema(WOLF_HOST_SCHEMA), reconfigure_entry.data
-            ),
-            errors=errors,
-        )
+        """Change the device selection of an entry that is already set up."""
+        return await self.async_step_reconfigure_device(user_input)
 
     async def async_step_reconfigure_device(self, user_input=None):
-        """Change the device selection of an entry that is already set up.
-
-        Devices that are deselected here lose their entities on the reload that
-        follows, see async_setup_entry.
-        """
-        errors: dict[str, str] = {}
+        """Change the device selection of an entry that is already set up."""
         reconfigure_entry = self._get_reconfigure_entry()
 
         if user_input is not None:
@@ -108,8 +84,8 @@ class WolfConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_update_reload_and_abort(
                 reconfigure_entry,
                 data_updates={
-                    CONF_HOST: self.host,
-                    CONF_PORT: self.port,
+                    CONF_HOST: reconfigure_entry.data[CONF_HOST],
+                    CONF_PORT: reconfigure_entry.data[CONF_PORT],
                     CONF_DEVICES: devices,
                 },
             )
@@ -121,5 +97,4 @@ class WolfConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Schema(WOLF_DEVICE_SCHEMA),
                 {_device: _device in configured for _device in Ism8.get_all_devices()},
             ),
-            errors=errors,
         )
