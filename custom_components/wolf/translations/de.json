@@ -35,7 +35,8 @@
                     "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
                     "Waermepumpe4": "Wärmepumpe 4: BWL-1S, CHA",
                     "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
-                    "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
+                    "undok_Daten": "undokumentierte Daten -- fuer Entwickler",
+                    "suppress_unsupported": "Sensoren ausblenden, die von der Firmware nicht unterstützt werden"
                 },
                 "description": "Nur ausgewählte Geräte erzeugen Sensoren.",
                 "title": "WOLF Komponenten auswählen"
@@ -62,7 +63,8 @@
                     "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
                     "Waermepumpe4": "Wärmepumpe 4: BWL-1S, CHA",
                     "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
-                    "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
+                    "undok_Daten": "undokumentierte Daten -- fuer Entwickler",
+                    "suppress_unsupported": "Sensoren ausblenden, die von der Firmware nicht unterstützt werden"
                 },
                 "description": "Nur ausgewählte Geräte erzeugen Sensoren. Abgewählte Geräte werden samt Entitäten entfernt.",
                 "title": "WOLF Komponenten auswählen"

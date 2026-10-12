@@ -6,6 +6,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
 
+from .const import CONF_SUPPRESS_UNSUPPORTED
 from .const import DOMAIN
 from .const import SensorType
 
@@ -31,7 +32,10 @@ def wolf_datapoint_filter(
         return False
     if ism8.get_type(nbr) not in platforms:
         return False
-    if ism8.first_fw_version(nbr) > fw_version:
+    if (
+        config_entry.data.get(CONF_SUPPRESS_UNSUPPORTED, True)
+        and ism8.first_fw_version(nbr) > fw_version
+    ):
         _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")
         return False
     return True

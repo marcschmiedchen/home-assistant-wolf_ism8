@@ -3,6 +3,7 @@ from typing import Final
 
 DOMAIN: Final = "wolf"
 CONF_FW_VERSION: Final = "fw_version"
+CONF_SUPPRESS_UNSUPPORTED: Final = "suppress_unsupported"
 
 DEFAULT_HOST: Final = "0.0.0.0"
 DEFAULT_PORT: Final = 12004

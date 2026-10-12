@@ -35,7 +35,8 @@
                     "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
                     "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
                     "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
-                    "undok_Daten": "undocumented data -- for developers"
+                    "undok_Daten": "undocumented data -- for developers",
+                    "suppress_unsupported": "Suppress sensors not supported by firmware"
                 },
                 "description": "Only selected devices create sensors.",
                 "title": "Select WOLF devices"
@@ -62,7 +63,8 @@
                     "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
                     "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
                     "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
-                    "undok_Daten": "undocumented data -- for developers"
+                    "undok_Daten": "undocumented data -- for developers",
+                    "suppress_unsupported": "Suppress sensors not supported by firmware"
                 },
                 "description": "Only selected devices create sensors. Deselected devices are removed along with their entities.",
                 "title": "Select WOLF components"

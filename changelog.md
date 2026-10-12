@@ -1,8 +1,9 @@
 # Changelog
-## 4.6 (2026-10-10)
+## 4.6 (2026-10-12)
 ### Added
 - device selection can be changed after setup via "Reconfigure"
 - devices that are deselected are removed together with their entities
+- option to suppress sensors, which are not supported by firmware
 - the internal `undok_Daten` device is no longer offered in the device selection
 ### Fixed
 - structural changes, clearer code
