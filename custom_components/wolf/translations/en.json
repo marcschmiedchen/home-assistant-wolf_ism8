@@ -14,60 +14,80 @@
                 "title": "WOLF ISM8i Connector"
             },
             "device": {
-                "data": {
-                    "Heizgeraet1": "Heating unit 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet2": "Heating unit 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet3": "Heating unit 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet4": "Heating unit 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Systembedienmodul": "System controller",
-                    "Direkter_Heizkreis_WW": "Direct Heating/WarmWater",
-                    "Mischerkreis1": "Mixed heating circuit 1",
-                    "Mischerkreis2": "Mixed heating circuit 2",
-                    "Mischerkreis3": "Mixed heating circuit 3",
-                    "Kaskadenmodul": "Cascading module",
-                    "Mischermodul1": "Mixing module 1",
-                    "Mischermodul2": "Mixing module 2",
-                    "Mischermodul3": "Mixing module 3",
-                    "Solarmodul": "Solar module SM",
-                    "CWL_Wohnraumlueftung": "Ventilation: CWL-300 / CWL-2",
-                    "Waermepumpe": "Heat pump 1: BWL-1S, CHA",
-                    "Waermepumpe2": "Heat pump 2: BWL-1S, CHA",
-                    "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
-                    "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
-                    "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
-                    "undok_Daten": "undocumented data -- for developers",
-                    "suppress_unsupported": "Suppress sensors not supported by firmware"
-                },
                 "description": "Only selected devices create sensors.",
-                "title": "Select WOLF devices"
+                "title": "Select WOLF components",
+                "sections": {
+                    "filtering": {
+                        "name": "Firmware version filtering",
+                        "data": {
+                            "suppress_unsupported": "Suppress sensors not supported by firmware"
+                        }
+                    },
+                    "devices": {
+                        "name": "Device selection",
+                        "data": {
+                            "Heizgeraet1": "Heating unit 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet2": "Heating unit 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet3": "Heating unit 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet4": "Heating unit 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Systembedienmodul": "System controller",
+                            "Direkter_Heizkreis_WW": "Direct Heating/WarmWater",
+                            "Mischerkreis1": "Mixed heating circuit 1",
+                            "Mischerkreis2": "Mixed heating circuit 2",
+                            "Mischerkreis3": "Mixed heating circuit 3",
+                            "Kaskadenmodul": "Cascading module",
+                            "Mischermodul1": "Mixing module 1",
+                            "Mischermodul2": "Mixing module 2",
+                            "Mischermodul3": "Mixing module 3",
+                            "Solarmodul": "Solar module SM",
+                            "CWL_Wohnraumlueftung": "Ventilation: CWL-300 / CWL-2",
+                            "Waermepumpe": "Heat pump 1: BWL-1S, CHA",
+                            "Waermepumpe2": "Heat pump 2: BWL-1S, CHA",
+                            "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
+                            "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
+                            "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
+                            "undok_Daten": "undocumented data -- for developers"
+                        }
+                    }
+                }
             },
             "reconfigure_device": {
-                "data": {
-                    "Heizgeraet1": "Heating unit 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet2": "Heating unit 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet3": "Heating unit 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet4": "Heating unit 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Systembedienmodul": "System controller",
-                    "Direkter_Heizkreis_WW": "Direct Heating/WarmWater",
-                    "Mischerkreis1": "Mixed heating circuit 1",
-                    "Mischerkreis2": "Mixed heating circuit 2",
-                    "Mischerkreis3": "Mixed heating circuit 3",
-                    "Kaskadenmodul": "Cascading module",
-                    "Mischermodul1": "Mixing module 1",
-                    "Mischermodul2": "Mixing module 2",
-                    "Mischermodul3": "Mixing module 3",
-                    "Solarmodul": "Solar module SM",
-                    "CWL_Wohnraumlueftung": "Ventilation: CWL-300 / CWL-2",
-                    "Waermepumpe": "Heat pump 1: BWL-1S, CHA",
-                    "Waermepumpe2": "Heat pump 2: BWL-1S, CHA",
-                    "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
-                    "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
-                    "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
-                    "undok_Daten": "undocumented data -- for developers",
-                    "suppress_unsupported": "Suppress sensors not supported by firmware"
-                },
-                "description": "Only selected devices create sensors. Deselected devices are removed along with their entities.",
-                "title": "Select WOLF components"
+                "description": "Select WOLF components for this integration.",
+                "title": "Select WOLF components",
+                "sections": {
+                    "filtering": {
+                        "name": "Firmware version filtering",
+                        "data": {
+                            "suppress_unsupported": "Suppress sensors not supported by firmware"
+                        }
+                    },
+                    "devices": {
+                        "name": "Device selection",
+                        "data": {
+                            "Heizgeraet1": "Heating unit 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet2": "Heating unit 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet3": "Heating unit 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet4": "Heating unit 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Systembedienmodul": "System controller",
+                            "Direkter_Heizkreis_WW": "Direct Heating/WarmWater",
+                            "Mischerkreis1": "Mixed heating circuit 1",
+                            "Mischerkreis2": "Mixed heating circuit 2",
+                            "Mischerkreis3": "Mixed heating circuit 3",
+                            "Kaskadenmodul": "Cascading module",
+                            "Mischermodul1": "Mixing module 1",
+                            "Mischermodul2": "Mixing module 2",
+                            "Mischermodul3": "Mixing module 3",
+                            "Solarmodul": "Solar module SM",
+                            "CWL_Wohnraumlueftung": "Ventilation: CWL-300 / CWL-2",
+                            "Waermepumpe": "Heat pump 1: BWL-1S, CHA",
+                            "Waermepumpe2": "Heat pump 2: BWL-1S, CHA",
+                            "Waermepumpe3": "Heat pump 3: BWL-1S, CHA",
+                            "Waermepumpe4": "Heat pump 4: BWL-1S, CHA",
+                            "Bedienmodul_BM2": "Control module BM-2: detected appliances and circuits",
+                            "undok_Daten": "undocumented data -- for developers"
+                        }
+                    }
+                }
             }
         }
     }

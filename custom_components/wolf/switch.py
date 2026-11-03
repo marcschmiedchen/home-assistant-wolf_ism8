@@ -2,7 +2,6 @@ import logging
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -53,7 +52,7 @@ class WolfSwitch(WolfEntity, SwitchEntity):
         """Return state of switch"""
         _state = self._ism8.read_sensor(self.dp_nbr)
         _LOGGER.debug(f"current_option from ISM: {_state}")
-        return STATE_UNKNOWN if _state is None else _state
+        return None if _state is None else _state
 
     async def async_turn_on(self):
         """Change the selected option."""

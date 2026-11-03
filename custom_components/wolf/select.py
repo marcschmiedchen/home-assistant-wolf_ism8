@@ -78,7 +78,7 @@ class WolfSelect(WolfEntity, SelectEntity):
         """Return state of selection"""
         _prog = self._ism8.read_sensor(self.dp_nbr)
         _LOGGER.debug(f"current_option from ISM: {_prog}")
-        return None if _prog is None else str(_prog)
+        return None if _prog is None else _prog
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
