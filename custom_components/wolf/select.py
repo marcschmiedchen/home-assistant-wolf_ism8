@@ -17,9 +17,7 @@ async def async_setup_entry(
     config_entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """
-    performs setup of the <select> entities
-    """
+    """performs setup of the <select> entities"""
 
     ism8 = config_entry.runtime_data.protocol
 
@@ -47,7 +45,7 @@ async def async_setup_entry(
         ):
             _LOGGER.debug(f"set {ism8.get_name(nbr)} as select")
             # only the DPT_SWITCH type "Zeitprogramm1/2/"3" are select entities.
-            # then, only the first entry is instantiated as a
+            # only the first entry is instantiated as a
             # WolfSelect-Entity with custom range from 1..3, the other two
             # datapoint-entries do not create a sensor instance
             if dp_name[-1] == "1":
@@ -122,5 +120,4 @@ class WolfProgramSelect(WolfEntity, SelectEntity):
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
-        # _LOGGER.debug(f"set dp {self.dp_nbr} + offset {int(option) - 1}")
         self._ism8.send_dp_value(self.dp_nbr + (int(option) - 1), 1)

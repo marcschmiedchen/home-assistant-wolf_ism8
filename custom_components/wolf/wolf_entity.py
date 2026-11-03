@@ -2,7 +2,6 @@ import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
-from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
@@ -84,20 +83,9 @@ class WolfEntity(Entity):
     async def async_added_to_hass(self) -> None:
         """Register callbacks for this datapoint and for connection state changes."""
         self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr)
-        self.async_on_remove(
-            self._ism8.register_connection_state_callback(self._on_connection_state)
-        )
-
-    @callback
-    def _on_connection_state(self, connected: bool) -> None:
-        """ISM8 connected or dropped off: re-evaluate availability in HA."""
-        self.async_write_ha_state()
 
     async def async_will_remove_from_hass(self) -> None:
-        """un-register callback when entity is removed.
-        The ISM8 reference is kept: HA re-adds the same entity object e.g. after an
-        entity_id rename, and async_added_to_hass needs it again."""
-        _LOGGER.debug(f"remove_from_hass (entity {self._attr_name}) called")
+        """un-register callback when entity is removed."""
         self._ism8.remove_callback(self.dp_nbr)
 
     @property

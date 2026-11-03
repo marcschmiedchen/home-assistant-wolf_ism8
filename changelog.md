@@ -2,10 +2,13 @@
 ## 4.7 (2026-11-03)
 ### Added
 - config flow groups device selection and firmware filtering into collapsible sections
+### Changed
+- uses `Ism8` as its own protocol factory, following wolf_ism8 4.4
+- unload detaches the protocol callbacks before dropping clients, following the
+  same release
 ### Fixed
 - sensors supported by the firmware were missing after a fresh setup or upgrade:
-  without a stored firmware version the filter fell back to "1.00" and dropped
-  datapoints such as DP 197 Abgastemperatur and DP 364 Kesselsolltemperatur.
+  without a stored firmware version the filter fell back to "1.00".
   An unknown firmware version now disables the filter until the version is read
 
 ## 4.6 (2026-10-12)

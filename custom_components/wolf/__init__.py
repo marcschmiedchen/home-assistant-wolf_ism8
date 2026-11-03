@@ -2,6 +2,7 @@ import asyncio
 import logging
 import re
 from dataclasses import dataclass
+from functools import partial
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
@@ -62,7 +63,9 @@ def _add_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -> N
         )
 
 
-def _remove_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -> None:
+def _remove_obsolete_devices(
+    registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]
+) -> None:
     """Remove old or deselected devices, so their entities don't linger."""
 
     selected = set(entry.data[CONF_DEVICES])
@@ -77,12 +80,27 @@ def _remove_devices(registry: dr.DeviceRegistry, entry: ConfigEntry[WolfData]) -
         registry.async_remove_device(device.id)
 
 
+@callback
+def _on_connection(
+    hass: HomeAssistant, entry: ConfigEntry[WolfData], ip_address: str
+) -> None:
+    """fires once connection to ISM8 is established. Req. data and scrape FW-version."""
+    # after a HA restart, request  all entities once
+    entry.runtime_data.protocol.request_all_datapoints()
+    _LOGGER.debug("ISM8 connection to %s, starting info scraping", ip_address)
+    entry.async_create_background_task(
+        hass,
+        async_update_device_info(hass, entry, ip_address),
+        "wolf-update-device-info",
+    )
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -> bool:
     """set up the integration"""
     ism8 = Ism8()
 
     server = await hass.loop.create_server(
-        ism8.factory,
+        ism8,
         host=entry.data[CONF_HOST],
         port=entry.data[CONF_PORT],
     )
@@ -93,27 +111,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -
         fw_version=entry.data.get(CONF_FW_VERSION, ""),
     )
 
+    # put all selected devices into the registry, and remove deselected devices
     registry = dr.async_get(hass)
     _add_devices(registry, entry)
-    _remove_devices(registry, entry)
+    _remove_obsolete_devices(registry, entry)
 
-    @callback
-    def on_connection(ip_address: str) -> None:
-        """Handle connection to ISM8."""
-        _LOGGER.debug("ISM8 connection to %s, starting info scraping", ip_address)
-        # the ISM8 only pushes changed values: after a HA restart all entities
-        # would stay unknown, so request a full update on every (re)connect
-        ism8.request_all_datapoints()
-        entry.async_create_background_task(
-            hass,
-            async_update_device_info(hass, entry, ip_address),
-            "wolf-update-device-info",
-        )
-
-    ism8.register_connection_callback(on_connection)
-
-    # register the unloading callback
-    entry.async_on_unload(lambda: async_close_server(server))
+    # register the connection callback -- starts scraping FW version, etc
+    ism8.register_connection_callback(partial(_on_connection, hass, entry))
+    # register the unloading callback, to free resources when unloaded
+    entry.async_on_unload(partial(async_close_server, server, ism8))
 
     # now setup the entities, regardless of connection
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -127,8 +133,11 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) 
 
 
 # HA will call this when unloading
-async def async_close_server(server) -> None:
+async def async_close_server(server: asyncio.Server, ism8: Ism8) -> None:
     _LOGGER.info("Releasing ISM8 network connection")
+    # detach the protocol callbacks first: close_clients() makes asyncio call
+    # connection_lost(), which would otherwise fire into the torn-down entities
+    ism8.close()
     server.close()
     server.close_clients()
     await server.wait_closed()
@@ -139,8 +148,7 @@ async def async_update_device_info(
 ):
     """Update device information once connected: fetches some information from the
     ISM8-webportal. Most important is the ISM8 firmware version, which may restrict
-    datapoints available to the integration. When the FW-version could be read,
-    no unnecessary datapoints are initialized in Home Assistant.
+    datapoints available to the integration.
     """
 
     if ip_address is None:
