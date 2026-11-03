@@ -2,7 +2,6 @@ import logging
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import STATE_UNKNOWN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -79,7 +78,7 @@ class WolfSelect(WolfEntity, SelectEntity):
         """Return state of selection"""
         _prog = str(self._ism8.read_sensor(self.dp_nbr))
         _LOGGER.debug(f"current_option from ISM: {_prog}")
-        return STATE_UNKNOWN if _prog is None else _prog
+        return None if _prog is None else _prog
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""
@@ -107,7 +106,7 @@ class WolfProgramSelect(WolfEntity, SelectEntity):
             return "2"
         if self._ism8.read_sensor(self.dp_nbr + 2) == 1:
             return "3"
-        return STATE_UNKNOWN
+        return None
 
     async def async_added_to_hass(self) -> None:
         """Register callbacks for all 3 datapoints which may affect this entity."""
