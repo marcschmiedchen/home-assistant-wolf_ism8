@@ -33,7 +33,8 @@ def wolf_datapoint_filter(
     if ism8.get_type(nbr) not in platforms:
         return False
     if (
-        config_entry.data.get(CONF_SUPPRESS_UNSUPPORTED, True)
+        fw_version
+        and config_entry.data.get(CONF_SUPPRESS_UNSUPPORTED, True)
         and ism8.first_fw_version(nbr) > fw_version
     ):
         _LOGGER.debug(f"Skipping dp {nbr}, min FW {ism8.first_fw_version(nbr)}")

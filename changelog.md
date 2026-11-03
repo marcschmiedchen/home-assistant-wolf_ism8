@@ -1,4 +1,13 @@
 # Changelog
+## 4.7 (2026-11-03)
+### Added
+- config flow groups device selection and firmware filtering into collapsible sections
+### Fixed
+- sensors supported by the firmware were missing after a fresh setup or upgrade:
+  without a stored firmware version the filter fell back to "1.00" and dropped
+  datapoints such as DP 197 Abgastemperatur and DP 364 Kesselsolltemperatur.
+  An unknown firmware version now disables the filter until the version is read
+
 ## 4.6 (2026-10-12)
 ### Added
 - device selection can be changed after setup via "Reconfigure"

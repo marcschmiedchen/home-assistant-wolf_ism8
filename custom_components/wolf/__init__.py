@@ -28,7 +28,7 @@ class WolfData:
 
     protocol: Ism8
     server: asyncio.Server
-    fw_version: str = "1.00"
+    fw_version: str = ""
 
 
 PLATFORMS = [
@@ -90,7 +90,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -
     entry.runtime_data = WolfData(
         protocol=ism8,
         server=server,
-        fw_version=entry.data.get(CONF_FW_VERSION) or "1.00",
+        fw_version=entry.data.get(CONF_FW_VERSION, ""),
     )
 
     registry = dr.async_get(hass)

@@ -14,60 +14,80 @@
                 "title": "WOLF ISM8 Adapter"
             },
             "device": {
-                "data": {
-                    "Heizgeraet1": "Heizgerät 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet2": "Heizgerät 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet3": "Heizgerät 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet4": "Heizgerät 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Systembedienmodul": "Systembedienmodul",
-                    "Direkter_Heizkreis_WW": "Direkter Heizkreis/WW",
-                    "Mischerkreis1": "Mischerkreis 1",
-                    "Mischerkreis2": "Mischerkreis 2",
-                    "Mischerkreis3": "Mischerkreis 3",
-                    "Kaskadenmodul": "Kaskadenmodul",
-                    "Mischermodul1": "Mischermodul 1",
-                    "Mischermodul2": "Mischermodul 2",
-                    "Mischermodul3": "Mischermodul 3",
-                    "Solarmodul": "Solarmodul SM",
-                    "CWL_Wohnraumlueftung": "Wohnraumlüftung: CWL-300 / CWL-2",
-                    "Waermepumpe": "Wärmepumpe 1: BWL-1S, CHA",
-                    "Waermepumpe2": "Wärmepumpe 2: BWL-1S, CHA",
-                    "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
-                    "Waermepumpe4": "Wärmepumpe 4: BWL-1S, CHA",
-                    "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
-                    "undok_Daten": "undokumentierte Daten -- fuer Entwickler",
-                    "suppress_unsupported": "Sensoren ausblenden, die von der Firmware nicht unterstützt werden"
-                },
                 "description": "Nur ausgewählte Geräte erzeugen Sensoren.",
-                "title": "WOLF Komponenten auswählen"
+                "title": "WOLF Komponenten auswählen",
+                "sections": {
+                    "filtering": {
+                        "name": "Firmware-Versionsfilter",
+                        "data": {
+                            "suppress_unsupported": "Sensoren ausblenden, die von der Firmware nicht unterstützt werden"
+                        }
+                    },
+                    "devices": {
+                        "name": "Geräteauswahl",
+                        "data": {
+                            "Heizgeraet1": "Heizgerät 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet2": "Heizgerät 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet3": "Heizgerät 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet4": "Heizgerät 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Systembedienmodul": "Systembedienmodul",
+                            "Direkter_Heizkreis_WW": "Direkter Heizkreis/WW",
+                            "Mischerkreis1": "Mischerkreis 1",
+                            "Mischerkreis2": "Mischerkreis 2",
+                            "Mischerkreis3": "Mischerkreis 3",
+                            "Kaskadenmodul": "Kaskadenmodul",
+                            "Mischermodul1": "Mischermodul 1",
+                            "Mischermodul2": "Mischermodul 2",
+                            "Mischermodul3": "Mischermodul 3",
+                            "Solarmodul": "Solarmodul SM",
+                            "CWL_Wohnraumlueftung": "Wohnraumlüftung: CWL-300 / CWL-2",
+                            "Waermepumpe": "Wärmepumpe 1: BWL-1S, CHA",
+                            "Waermepumpe2": "Wärmepumpe 2: BWL-1S, CHA",
+                            "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
+                            "Waermepumpe4": "Wärmepumpe 4: BWL-1S, CHA",
+                            "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
+                            "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
+                        }
+                    }
+                }
             },
             "reconfigure_device": {
-                "data": {
-                    "Heizgeraet1": "Heizgerät 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet2": "Heizgerät 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet3": "Heizgerät 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Heizgeraet4": "Heizgerät 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
-                    "Systembedienmodul": "Systembedienmodul",
-                    "Direkter_Heizkreis_WW": "Direkter Heizkreis/WW",
-                    "Mischerkreis1": "Mischerkreis 1",
-                    "Mischerkreis2": "Mischerkreis 2",
-                    "Mischerkreis3": "Mischerkreis 3",
-                    "Kaskadenmodul": "Kaskadenmodul",
-                    "Mischermodul1": "Mischermodul 1",
-                    "Mischermodul2": "Mischermodul 2",
-                    "Mischermodul3": "Mischermodul 3",
-                    "Solarmodul": "Solarmodul SM",
-                    "CWL_Wohnraumlueftung": "Wohnraumlüftung: CWL-300 / CWL-2",
-                    "Waermepumpe": "Wärmepumpe 1: BWL-1S, CHA",
-                    "Waermepumpe2": "Wärmepumpe 2: BWL-1S, CHA",
-                    "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
-                    "Waermepumpe4": "Wärmepumpe 4: BWL-1S, CHA",
-                    "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
-                    "undok_Daten": "undokumentierte Daten -- fuer Entwickler",
-                    "suppress_unsupported": "Sensoren ausblenden, die von der Firmware nicht unterstützt werden"
-                },
                 "description": "Nur ausgewählte Geräte erzeugen Sensoren. Abgewählte Geräte werden samt Entitäten entfernt.",
-                "title": "WOLF Komponenten auswählen"
+                "title": "WOLF Komponenten auswählen",
+                "sections": {
+                    "filtering": {
+                        "name": "Firmware-Versionsfilter",
+                        "data": {
+                            "suppress_unsupported": "Sensoren ausblenden, die von der Firmware nicht unterstützt werden"
+                        }
+                    },
+                    "devices": {
+                        "name": "Geräteauswahl",
+                        "data": {
+                            "Heizgeraet1": "Heizgerät 1: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet2": "Heizgerät 2: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet3": "Heizgerät 3: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Heizgeraet4": "Heizgerät 4: TOB, CGB-2, MGK-2, COB-2, TGB-2",
+                            "Systembedienmodul": "Systembedienmodul",
+                            "Direkter_Heizkreis_WW": "Direkter Heizkreis/WW",
+                            "Mischerkreis1": "Mischerkreis 1",
+                            "Mischerkreis2": "Mischerkreis 2",
+                            "Mischerkreis3": "Mischerkreis 3",
+                            "Kaskadenmodul": "Kaskadenmodul",
+                            "Mischermodul1": "Mischermodul 1",
+                            "Mischermodul2": "Mischermodul 2",
+                            "Mischermodul3": "Mischermodul 3",
+                            "Solarmodul": "Solarmodul SM",
+                            "CWL_Wohnraumlueftung": "Wohnraumlüftung: CWL-300 / CWL-2",
+                            "Waermepumpe": "Wärmepumpe 1: BWL-1S, CHA",
+                            "Waermepumpe2": "Wärmepumpe 2: BWL-1S, CHA",
+                            "Waermepumpe3": "Wärmepumpe 3: BWL-1S, CHA",
+                            "Waermepumpe4": "Wärmepumpe 4: BWL-1S, CHA",
+                            "Bedienmodul_BM2": "Bedienmodul BM-2: erkannte Geräte und Kreise",
+                            "undok_Daten": "undokumentierte Daten -- fuer Entwickler"
+                        }
+                    }
+                }
             }
         }
     }
