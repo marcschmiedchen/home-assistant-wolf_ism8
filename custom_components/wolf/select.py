@@ -76,7 +76,7 @@ class WolfSelect(WolfEntity, SelectEntity):
     @property
     def current_option(self) -> str | None:
         """Return state of selection"""
-        _prog = str(self._ism8.read_sensor(self.dp_nbr))
+        _prog = self._ism8.read_sensor(self.dp_nbr)
         _LOGGER.debug(f"current_option from ISM: {_prog}")
         return None if _prog is None else _prog
 
@@ -110,9 +110,15 @@ class WolfProgramSelect(WolfEntity, SelectEntity):
 
     async def async_added_to_hass(self) -> None:
         """Register callbacks for all 3 datapoints which may affect this entity."""
-        self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr)
+        await super().async_added_to_hass()
         self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr + 1)
         self._ism8.register_callback(self.async_write_ha_state, self.dp_nbr + 2)
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Un-register all 3 callbacks registered in async_added_to_hass."""
+        await super().async_will_remove_from_hass()
+        self._ism8.remove_callback(self.dp_nbr + 1)
+        self._ism8.remove_callback(self.dp_nbr + 2)
 
     async def async_select_option(self, option: str) -> None:
         """Change the selected option."""

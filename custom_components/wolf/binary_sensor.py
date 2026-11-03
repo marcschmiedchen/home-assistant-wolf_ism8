@@ -9,6 +9,8 @@ from .const import SensorType
 from .wolf_entity import WolfEntity
 from .wolf_entity import wolf_datapoint_filter
 
+KEEPALIVE_NAME = "Keepalive_Ping"
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -36,7 +38,10 @@ async def async_setup_entry(
             writable=False,
         ):
             continue
-        binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
+        if ism8.get_name(nbr) == KEEPALIVE_NAME:
+            binary_sensor_entities.append(WolfKeepaliveSensor(ism8, nbr))
+        else:
+            binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
     async_add_entities(binary_sensor_entities)
 
 
@@ -65,3 +70,18 @@ class WolfBinarySensor(WolfEntity, BinarySensorEntity):
     def is_on(self) -> bool:
         """Return the state of the device."""
         return bool(self._ism8.read_sensor(self.dp_nbr))
+
+
+class WolfKeepaliveSensor(WolfBinarySensor):
+    """The keepalive datapoint reflects whether the ISM8 is talking to us.
+    Unlike all other entities it stays available and turns off when the
+    connection is lost, so automations can react on it."""
+
+    @property
+    def available(self) -> bool:
+        return True
+
+    @property
+    def is_on(self) -> bool:
+        """on while the ISM8 connection is alive (keepalives arriving)"""
+        return self._ism8.connected()

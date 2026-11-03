@@ -101,6 +101,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -
     def on_connection(ip_address: str) -> None:
         """Handle connection to ISM8."""
         _LOGGER.debug("ISM8 connection to %s, starting info scraping", ip_address)
+        # the ISM8 only pushes changed values: after a HA restart all entities
+        # would stay unknown, so request a full update on every (re)connect
+        ism8.request_all_datapoints()
         entry.async_create_background_task(
             hass,
             async_update_device_info(hass, entry, ip_address),
