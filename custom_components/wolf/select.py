@@ -8,6 +8,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import SensorType
 from .wolf_entity import WolfEntity
 from .wolf_entity import wolf_datapoint_filter
+from .wolf_entity import wolf_remove_entity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,8 +38,9 @@ async def async_setup_entry(
             ),
             writable=True,
         ):
-            continue
-        if ism8.get_type(nbr) == SensorType.DPT_SWITCH and dp_name[-1] in (
+            # an entity of an earlier setup this config no longer wants
+            wolf_remove_entity(hass, nbr)
+        elif ism8.get_type(nbr) == SensorType.DPT_SWITCH and dp_name[-1] in (
             "1",
             "2",
             "3",

@@ -2,6 +2,8 @@ import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_DEVICES
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import Entity
 from wolf_ism8 import Ism8
@@ -11,6 +13,21 @@ from .const import DOMAIN
 from .const import SensorType
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def wolf_remove_entity(hass: HomeAssistant, dp_nbr: int) -> None:
+    """Remove the entity of a datapoint that is no longer wanted, so that
+    suppressing a datapoint or deselecting a device really removes it.
+    The unique_id is the bare datapoint number and a datapoint belongs to
+    exactly one platform, so this needs no further scoping."""
+    registry = er.async_get(hass)
+    for reg_entry in registry.entities.values():
+        if reg_entry.unique_id != str(dp_nbr):
+            continue
+        _LOGGER.debug(
+            "removing obsolete entity %s (dp %s)", reg_entry.entity_id, dp_nbr
+        )
+        registry.async_remove(reg_entry.entity_id)
 
 
 def wolf_datapoint_filter(

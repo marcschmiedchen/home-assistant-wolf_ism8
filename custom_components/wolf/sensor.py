@@ -16,6 +16,7 @@ from wolf_ism8 import Ism8
 from .const import SensorType
 from .wolf_entity import WolfEntity
 from .wolf_entity import wolf_datapoint_filter
+from .wolf_entity import wolf_remove_entity
 
 
 async def async_setup_entry(
@@ -32,7 +33,7 @@ async def async_setup_entry(
     sensor_entities = []
     for nbr in ism8.get_all_sensors().keys():
         # check if this sensor should be added to THIS platform
-        if not wolf_datapoint_filter(
+        if wolf_datapoint_filter(
             nbr,
             config_entry=config_entry,
             platforms=(
@@ -52,9 +53,10 @@ async def async_setup_entry(
             ),
             writable=False,
         ):
-            continue
-
-        sensor_entities.append(WolfSensor(ism8, nbr))
+            sensor_entities.append(WolfSensor(ism8, nbr))
+        else:
+            # an entity of an earlier setup this config no longer wants
+            wolf_remove_entity(hass, nbr)
     async_add_entities(sensor_entities)
 
 

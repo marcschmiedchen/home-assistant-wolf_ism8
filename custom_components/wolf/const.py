@@ -5,6 +5,8 @@ DOMAIN: Final = "wolf"
 CONF_FW_VERSION: Final = "fw_version"
 CONF_SUPPRESS_UNSUPPORTED: Final = "suppress_unsupported"
 
+KEEPALIVE_WATCHDOG_TIMEOUT: Final = 90
+
 DEFAULT_HOST: Final = "0.0.0.0"
 DEFAULT_PORT: Final = 12004
 

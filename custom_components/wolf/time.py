@@ -8,6 +8,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import SensorType
 from .wolf_entity import WolfEntity
 from .wolf_entity import wolf_datapoint_filter
+from .wolf_entity import wolf_remove_entity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -26,14 +27,16 @@ async def async_setup_entry(
     time_entities = []
     for nbr in ism8.get_all_sensors().keys():
         # check if this sensor should be added to THIS platform
-        if not wolf_datapoint_filter(
+        if wolf_datapoint_filter(
             nbr,
             config_entry=config_entry,
             platforms=(SensorType.DPT_TIMEOFDAY,),
             writable=True,
         ):
-            continue
-        time_entities.append(WolfTime(ism8, nbr))
+            time_entities.append(WolfTime(ism8, nbr))
+        else:
+            # an entity of an earlier setup this config no longer wants
+            wolf_remove_entity(hass, nbr)
 
     async_add_entities(time_entities)
 

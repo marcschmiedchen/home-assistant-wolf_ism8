@@ -85,14 +85,14 @@ def _on_connection(
     hass: HomeAssistant, entry: ConfigEntry[WolfData], ip_address: str
 ) -> None:
     """fires once connection to ISM8 is established. Req. data and scrape FW-version."""
-    # after a HA restart, request  all entities once
-    entry.runtime_data.protocol.request_all_datapoints()
     _LOGGER.debug("ISM8 connection to %s, starting info scraping", ip_address)
     entry.async_create_background_task(
         hass,
         async_update_device_info(hass, entry, ip_address),
         "wolf-update-device-info",
     )
+    # after a HA restart, request  all entities once
+    entry.runtime_data.protocol.request_all_datapoints()
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -> bool:
@@ -137,6 +137,8 @@ async def async_close_server(server: asyncio.Server, ism8: Ism8) -> None:
     _LOGGER.info("Releasing ISM8 network connection")
     # detach the protocol callbacks first: close_clients() makes asyncio call
     # connection_lost(), which would otherwise fire into the torn-down entities
+    ism8.unregister_connection_callback()
+    ism8.unregister_disconnect_callback()
     ism8.close()
     server.close()
     server.close_clients()

@@ -8,6 +8,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import SensorType
 from .wolf_entity import WolfEntity
 from .wolf_entity import wolf_datapoint_filter
+from .wolf_entity import wolf_remove_entity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,16 +31,16 @@ async def async_setup_entry(
             platforms=(SensorType.DPT_SWITCH,),
             writable=True,
         ):
-            continue
+            # an entity of an earlier setup this config no longer wants
+            wolf_remove_entity(hass, nbr)
         # those are DPT_SWITCH, but trigger (button-)entities
-        if nbr in (193, 194):
+        elif nbr in (193, 194):
             _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")
-            continue
         # those are DPT_SWITCH, but are select entities, not on/off switches
-        if ism8.get_name(nbr)[-1] in ("1", "2", "3"):
+        elif ism8.get_name(nbr)[-1] in ("1", "2", "3"):
             _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")
-            continue
-        select_entities.append(WolfSwitch(ism8, nbr))
+        else:
+            select_entities.append(WolfSwitch(ism8, nbr))
 
     async_add_entities(select_entities)
 
