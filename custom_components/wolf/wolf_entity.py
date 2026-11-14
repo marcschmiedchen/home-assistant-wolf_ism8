@@ -15,19 +15,21 @@ from .const import SensorType
 _LOGGER = logging.getLogger(__name__)
 
 
-def wolf_remove_entity(hass: HomeAssistant, dp_nbr: int) -> None:
-    """Remove the entity of a datapoint that is no longer wanted, so that
-    suppressing a datapoint or deselecting a device really removes it.
-    The unique_id is the bare datapoint number and a datapoint belongs to
-    exactly one platform, so this needs no further scoping."""
+def wolf_remove_entity(hass: HomeAssistant, platform: str, dp_nbr: int) -> None:
+    """Remove the entity a platform of an earlier setup created for a datapoint
+    that this config no longer wants, so that suppressing a datapoint or
+    deselecting a device really removes it. The unique_id is the bare datapoint
+    number, so the platform has to be given: every platform's loop walks all
+    datapoints and would otherwise delete entities it never created."""
     registry = er.async_get(hass)
-    for reg_entry in registry.entities.values():
-        if reg_entry.unique_id != str(dp_nbr):
-            continue
-        _LOGGER.debug(
-            "removing obsolete entity %s (dp %s)", reg_entry.entity_id, dp_nbr
-        )
-        registry.async_remove(reg_entry.entity_id)
+    # "platform" here is the component (sensor, binary_sensor, ...). In the
+    # registry that is the domain; the platform column holds DOMAIN ("wolf"),
+    # the integration every entity of this entry belongs to.
+    entity_id = registry.async_get_entity_id(platform, DOMAIN, str(dp_nbr))
+    if entity_id is None:
+        return
+    _LOGGER.debug("removing obsolete entity %s (dp %s)", entity_id, dp_nbr)
+    registry.async_remove(entity_id)
 
 
 def wolf_datapoint_filter(

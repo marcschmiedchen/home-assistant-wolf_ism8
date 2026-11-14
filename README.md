@@ -32,6 +32,8 @@ An integration of WOLF's Heating ISM8 module into Home Assistant. The integratio
 ### Configuration
 1. **IP/Port:** Enter the IP address and port of your Home Assistant server that the integration should listen on (Default: `0.0.0.0` (listens on all addresses) and `12004`). This must match the settings in your ISM8 web configuration.
 2. **Devices:** Select your own devices — tick only the ones actually installed. Others won't be created.
+3. **Suppress unsupported sensors:** Leaves out datapoints your ISM8 firmware does not deliver yet. Unknown firmware disables the filter until the version has been read.
+4. Both settings can be changed later via **Reconfigure** on the integration entry.
 
 ---
 
@@ -59,6 +61,8 @@ Eine Home Assistant Integration für das WOLF ISM8 Modul. Die Integration stellt
 ### Konfiguration
 1. **IP/Port:** IP-Adresse und Port des HA-Servers angeben, auf dem die Integration lauscht (Standard: `0.0.0.0` (wartet auf allen verfügbaren IP adressen) und `12004`). Diese Werte müssen im ISM8 hinterlegt sein.
 2. **Geräte:** Eigene Geräte auswählen — nur die tatsächlich installierten Geräte anhaken. Andere Geräte werden dann nicht angelegt.
+3. **Nicht unterstützte Sensoren unterdrücken:** Lässt Datenpunkte weg, die die ISM8-Firmware noch nicht liefert. Bei unbekannter Firmware bleibt der Filter aus, bis die Version gelesen wurde.
+4. Beide Einstellungen lassen sich später über **Neu konfigurieren** am Integrationseintrag ändern.
 
 ---
 

@@ -3,6 +3,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
+from homeassistant.const import Platform
 from homeassistant.const import UnitOfEnergy
 from homeassistant.const import UnitOfPower
 from homeassistant.const import UnitOfPressure
@@ -56,7 +57,7 @@ async def async_setup_entry(
             sensor_entities.append(WolfSensor(ism8, nbr))
         else:
             # an entity of an earlier setup this config no longer wants
-            wolf_remove_entity(hass, nbr)
+            wolf_remove_entity(hass, Platform.SENSOR, nbr)
     async_add_entities(sensor_entities)
 
 

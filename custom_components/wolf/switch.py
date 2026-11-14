@@ -2,6 +2,7 @@ import logging
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -32,7 +33,7 @@ async def async_setup_entry(
             writable=True,
         ):
             # an entity of an earlier setup this config no longer wants
-            wolf_remove_entity(hass, nbr)
+            wolf_remove_entity(hass, Platform.SWITCH, nbr)
         # those are DPT_SWITCH, but trigger (button-)entities
         elif nbr in (193, 194):
             _LOGGER.debug(f"ignoring {ism8.get_name(nbr)} as switch")

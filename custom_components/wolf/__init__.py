@@ -17,6 +17,7 @@ from wolf_ism8 import Ism8
 
 from .const import CONF_FW_VERSION
 from .const import DOMAIN
+from .const import STARTUP_MESSAGE
 from .const import WOLF
 from .const import WOLF_ISM8
 
@@ -97,6 +98,8 @@ def _on_connection(
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry[WolfData]) -> bool:
     """set up the integration"""
+    _LOGGER.info(STARTUP_MESSAGE)
+
     ism8 = Ism8()
 
     server = await hass.loop.create_server(

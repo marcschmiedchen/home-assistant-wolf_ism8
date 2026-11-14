@@ -1,4 +1,14 @@
 # Changelog
+## 4.8 (2026-11-14)
+### Added
+- startup banner in the log with the integration version and the issue tracker link
+- keepalive sensor (dp 767): stays available and reports whether the ISM8 is talking,
+  turns off when the connection is lost
+- the ISM8 inactivity watchdog is now armed only after a keepalive was received, so
+  firmware that stays silent while idle is no longer dropped every 90 s
+### Fixed
+- suppressing datapoints or deselecting a device now really removes their entities.
+
 ## 4.7 (2026-11-03)
 ### Added
 - config flow groups device selection and firmware filtering into collapsible sections
@@ -15,7 +25,7 @@
 ### Added
 - device selection can be changed after setup via "Reconfigure"
 - devices that are deselected are removed together with their entities
-- option to suppress sensors, which are not supported by firmware
+- option to suppress sensors which are not supported by firmware
 - the internal `undok_Daten` device is no longer offered in the device selection
 ### Fixed
 - structural changes, clearer code

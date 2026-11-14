@@ -6,6 +6,10 @@ An integration of WOLF's Heating ISM8 module into Home Assistant. The integratio
 - **Comprehensive Monitoring:** Access up to 300 datapoints from your Wolf heating system.
 - **Control:** Write support for several datapoints.
 - **Local Push:** Real-time updates via network.
+- **Firmware aware:** Datapoints your ISM8 firmware does not deliver are left out, and
+  entities disappear again when you re-enable the filter.
+- **Connection watchdog:** A silent ISM8 is detected and reconnected; a keepalive sensor
+  shows the current link state.
 
 ## Supported Devices
 - Heating Units (TOB, CGB-2, MGK-2, COB-2, TGB-2)

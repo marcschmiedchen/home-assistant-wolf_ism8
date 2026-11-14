@@ -2,6 +2,7 @@ import logging
 
 from homeassistant.components.select import SelectEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -39,7 +40,7 @@ async def async_setup_entry(
             writable=True,
         ):
             # an entity of an earlier setup this config no longer wants
-            wolf_remove_entity(hass, nbr)
+            wolf_remove_entity(hass, Platform.SELECT, nbr)
         elif ism8.get_type(nbr) == SensorType.DPT_SWITCH and dp_name[-1] in (
             "1",
             "2",

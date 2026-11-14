@@ -13,6 +13,18 @@ DEFAULT_PORT: Final = 12004
 WOLF: Final = "Wolf"
 WOLF_ISM8: Final = "ISM8"
 
+ISSUE_URL: Final = "https://github.com/marcschmiedchen/home-assistant-wolf_ism8/issues"
+
+# logged by async_setup_entry
+STARTUP_MESSAGE: Final = f"""
+-------------------------------------------------------------------
+{WOLF} {WOLF_ISM8}
+This is a custom integration!
+If you have any issues with this you need to open an issue here:
+{ISSUE_URL}
+-------------------------------------------------------------------
+"""
+
 WOLF_DEFAULT_DEVICES: Final = ["Heizgeraet1", "Systembedienmodul", "Bedienmodul_BM2"]
 
 

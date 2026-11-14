@@ -2,6 +2,7 @@ import logging
 
 from homeassistant.components.time import TimeEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -36,7 +37,7 @@ async def async_setup_entry(
             time_entities.append(WolfTime(ism8, nbr))
         else:
             # an entity of an earlier setup this config no longer wants
-            wolf_remove_entity(hass, nbr)
+            wolf_remove_entity(hass, Platform.TIME, nbr)
 
     async_add_entities(time_entities)
 

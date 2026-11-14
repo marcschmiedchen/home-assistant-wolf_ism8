@@ -2,6 +2,7 @@ from homeassistant.components.number import NumberDeviceClass
 from homeassistant.components.number import NumberEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import PERCENTAGE
+from homeassistant.const import Platform
 from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -39,7 +40,7 @@ async def async_setup_entry(
             number_entities.append(WolfInputNumber(ism8, nbr))
         else:
             # an entity of an earlier setup this config no longer wants
-            wolf_remove_entity(hass, nbr)
+            wolf_remove_entity(hass, Platform.NUMBER, nbr)
 
     async_add_entities(number_entities)
 

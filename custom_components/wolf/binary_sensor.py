@@ -3,6 +3,7 @@ import logging
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.core import callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -50,7 +51,7 @@ async def async_setup_entry(
                 binary_sensor_entities.append(WolfBinarySensor(ism8, nbr))
         else:
             # an entity of an earlier setup this config no longer wants
-            wolf_remove_entity(hass, nbr)
+            wolf_remove_entity(hass, Platform.BINARY_SENSOR, nbr)
     async_add_entities(binary_sensor_entities)
 
 
