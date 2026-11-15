@@ -1,11 +1,16 @@
 # Changelog
-## 4.8 (2026-11-14)
+## 5.0 (2026-11-15)
 ### Added
+- Major version bump since several things have changed on user side. This includes
+  reconfiguration via GUI, a keepalive sensor, automatic entity filtering and many more
+- Thanks to many contributors who found errors, made suggestions and even provided PRs.
 - startup banner in the log with the integration version and the issue tracker link
-- keepalive sensor (dp 767): stays available and reports whether the ISM8 is talking,
-  turns off when the connection is lost
-- the ISM8 inactivity watchdog is now armed only after a keepalive was received, so
+- Keepalive sensor (dp 767,only available on newer FW, is not documented.): stays on and
+  reports whether the ISM8 is talking, turns off when the connection is lost.
+- An ISM8 inactivity watchdog is now armed only after a keepalive was received, so
   firmware that stays silent while idle is no longer dropped every 90 s
+- switched to new ISM library v5.0, which is better in filtering and fixed a bug in the
+  jump filter for writable entities.
 ### Fixed
 - suppressing datapoints or deselecting a device now really removes their entities.
 
